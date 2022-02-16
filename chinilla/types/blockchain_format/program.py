@@ -7,7 +7,7 @@ from clvm.casts import int_from_bytes
 from clvm.EvalError import EvalError
 from clvm.operators import OPERATOR_LOOKUP
 from clvm.serialize import sexp_from_stream, sexp_to_stream
-from clvm_rs import MEMPOOL_MODE, run_chinilla_program, serialized_length, run_generator2
+from clvm_rs import MEMPOOL_MODE, run_chia_program, serialized_length, run_generator2
 from clvm_tools.curry import curry, uncurry
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -279,7 +279,7 @@ class SerializedProgram:
         else:
             serialized_args += _serialize(args[0])
 
-        cost, ret = run_chinilla_program(
+        cost, ret = run_chia_program(
             self._buf,
             serialized_args,
             max_cost,
