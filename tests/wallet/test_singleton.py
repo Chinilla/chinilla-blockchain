@@ -1,10 +1,10 @@
 from clvm_tools import binutils
 
-from chia.types.blockchain_format.program import Program, INFINITE_COST
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.condition_tools import parse_sexp_to_conditions
-from chia.wallet.puzzles.load_clvm import load_clvm
+from chinilla.types.blockchain_format.program import Program, INFINITE_COST
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.util.condition_tools import parse_sexp_to_conditions
+from chinilla.wallet.puzzles.load_clvm import load_clvm
 
 SINGLETON_MOD = load_clvm("singleton_top_layer.clvm")
 LAUNCHER_PUZZLE = load_clvm("singleton_launcher.clvm")
@@ -16,7 +16,7 @@ LAUNCHER_PUZZLE_HASH = LAUNCHER_PUZZLE.get_tree_hash()
 SINGLETON_MOD_HASH = SINGLETON_MOD.get_tree_hash()
 
 LAUNCHER_ID = Program.to(b"launcher-id").get_tree_hash()
-POOL_REWARD_PREFIX_MAINNET = bytes32.fromhex("ccd5bb71183532bff220ba46c268991a00000000000000000000000000000000")
+POOL_REWARD_PREFIX_VANILLANET = bytes32.fromhex("ccd5bb71183532bff220ba46c268991a00000000000000000000000000000000")
 
 
 def singleton_puzzle(launcher_id: Program, launcher_puzzle_hash: bytes32, inner_puzzle: Program) -> Program:

@@ -8,15 +8,15 @@ from typing import List, Tuple
 
 from tests.setup_nodes import test_constants
 
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.ints import uint32, uint64
-from chia.cmds.db_upgrade_func import convert_v1_to_v2
-from chia.util.db_wrapper import DBWrapper
-from chia.full_node.block_store import BlockStore
-from chia.full_node.coin_store import CoinStore
-from chia.full_node.hint_store import HintStore
-from chia.consensus.blockchain import Blockchain
-from chia.consensus.multiprocess_validation import PreValidationResult
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.util.ints import uint32, uint64
+from chinilla.cmds.db_upgrade_func import convert_v1_to_v2
+from chinilla.util.db_wrapper import DBWrapper
+from chinilla.full_node.block_store import BlockStore
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.full_node.hint_store import HintStore
+from chinilla.consensus.blockchain import Blockchain
+from chinilla.consensus.multiprocess_validation import PreValidationResult
 
 
 class TempFile:

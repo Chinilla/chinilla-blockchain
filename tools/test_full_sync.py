@@ -13,11 +13,11 @@ import aiosqlite
 import click
 import zstd
 
-from chia.cmds.init_funcs import chia_init
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.full_node import FullNode
-from chia.types.full_block import FullBlock
-from chia.util.config import load_config
+from chinilla.cmds.init_funcs import chinilla_init
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.full_node.full_node import FullNode
+from chinilla.types.full_block import FullBlock
+from chinilla.util.config import load_config
 
 
 class ExitOnError(logging.Handler):
@@ -64,7 +64,7 @@ async def run_sync_test(file: Path, db_version, profile: bool) -> None:
     with tempfile.TemporaryDirectory() as root_dir:
 
         root_path = Path(root_dir)
-        chia_init(root_path, should_check_keys=False)
+        chinilla_init(root_path, should_check_keys=False)
         config = load_config(root_path, "config.yaml")
 
         overrides = config["network_overrides"]["constants"][config["selected_network"]]
