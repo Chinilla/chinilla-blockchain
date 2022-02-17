@@ -1,9 +1,10 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 
-from chia.farmer.farmer import Farmer
-from chia.util.keychain import generate_mnemonic
+from chinilla.farmer.farmer import Farmer
+from chinilla.util.keychain import generate_mnemonic
 from tests.setup_nodes import bt, setup_farmer_harvester, test_constants
 from tests.time_out_assert import time_out_assert
 
@@ -12,7 +13,7 @@ def farmer_is_started(farmer):
     return farmer.started
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def environment():
     async for _ in setup_farmer_harvester(test_constants, False):
         yield _

@@ -1,8 +1,6 @@
-[submodule "chia-blockchain-gui"]
-	path = chia-blockchain-gui
-	url = https://github.com/Chia-Network/chia-blockchain-gui.git
-	branch = pools
+[submodule "chinilla-blockchain-gui"]
+	path = chinilla-blockchain-gui
+	url = https://github.com/Chinilla/chinilla-blockchain-gui.git
 [submodule "mozilla-ca"]
 	path = mozilla-ca
-	url = https://github.com/Chia-Network/mozilla-ca.git
-        branch = main
+	url = https://github.com/Chinilla/mozilla-ca

@@ -2,14 +2,15 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 from colorlog import getLogger
 
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.protocols import full_node_protocol
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16, uint32
-from chia.wallet.wallet_state_manager import WalletStateManager
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.protocols import full_node_protocol
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16, uint32
+from chinilla.wallet.wallet_state_manager import WalletStateManager
 from tests.connection_utils import disconnect_all_and_reconnect
 from tests.pools.test_pool_rpc import wallet_is_synced
 from tests.setup_nodes import bt, self_hostname, setup_node_and_wallet, setup_simulators_and_wallets, test_constants
@@ -33,17 +34,17 @@ def event_loop():
 
 
 class TestWalletSync:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def wallet_node(self):
         async for _ in setup_node_and_wallet(test_constants):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def wallet_node_simulator(self):
         async for _ in setup_simulators_and_wallets(1, 1, {}):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def wallet_node_starting_height(self):
         async for _ in setup_node_and_wallet(test_constants, starting_height=100):
             yield _

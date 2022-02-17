@@ -1,17 +1,18 @@
 import asyncio
 import logging
 import pytest
+import pytest_asyncio
 
-from chia.rpc.rpc_server import start_rpc_server
-from chia.rpc.wallet_rpc_api import WalletRpcApi
-from chia.rpc.wallet_rpc_client import WalletRpcClient
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16, uint64
-from chia.wallet.util.wallet_types import WalletType
+from chinilla.rpc.rpc_server import start_rpc_server
+from chinilla.rpc.wallet_rpc_api import WalletRpcApi
+from chinilla.rpc.wallet_rpc_client import WalletRpcClient
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16, uint64
+from chinilla.wallet.util.wallet_types import WalletType
 from tests.setup_nodes import self_hostname, setup_simulators_and_wallets, bt
 from tests.time_out_assert import time_out_assert
-from chia.wallet.did_wallet.did_wallet import DIDWallet
+from chinilla.wallet.did_wallet.did_wallet import DIDWallet
 
 
 log = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ def event_loop():
 
 
 class TestDIDWallet:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def three_wallet_nodes(self):
         async for _ in setup_simulators_and_wallets(1, 3, {}):
             yield _

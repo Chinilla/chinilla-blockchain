@@ -1,25 +1,26 @@
 import pytest
+import pytest_asyncio
 
 from typing import Dict, Optional, List
 from blspy import G2Element
 
-from chia.clvm.spend_sim import SpendSim, SimClient
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.blockchain_format.program import Program
-from chia.types.announcement import Announcement
-from chia.types.spend_bundle import SpendBundle
-from chia.types.coin_spend import CoinSpend
-from chia.types.mempool_inclusion_status import MempoolInclusionStatus
-from chia.util.ints import uint64
-from chia.wallet.cat_wallet.cat_utils import (
+from chinilla.clvm.spend_sim import SpendSim, SimClient
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.announcement import Announcement
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.util.ints import uint64
+from chinilla.wallet.cat_wallet.cat_utils import (
     CAT_MOD,
     construct_cat_puzzle,
     SpendableCAT,
     unsigned_spend_bundle_for_spendable_cats,
 )
-from chia.wallet.payment import Payment
-from chia.wallet.trading.offer import Offer, NotarizedPayment
+from chinilla.wallet.payment import Payment
+from chinilla.wallet.trading.offer import Offer, NotarizedPayment
 
 from tests.clvm.benchmark_costs import cost_of_spend_bundle
 
@@ -43,14 +44,14 @@ def str_to_cat_hash(tail_str: str) -> bytes32:
 class TestOfferLifecycle:
     cost: Dict[str, int] = {}
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def setup_sim(self):
         sim = await SpendSim.create()
         sim_client = SimClient(sim)
         await sim.farm_block()
         return sim, sim_client
 
-    # This method takes a dictionary of strings mapping to amounts and generates the appropriate CAT/XCH coins
+    # This method takes a dictionary of strings mapping to amounts and generates the appropriate CAT/HCX coins
     async def generate_coins(
         self,
         sim,
@@ -185,27 +186,29 @@ class TestOfferLifecycle:
                 "blue": [3000],
             }
             all_coins: Dict[Optional[str], List[Coin]] = await self.generate_coins(sim, sim_client, coins_needed)
-            chia_coins: List[Coin] = all_coins[None]
+            chinilla_coins: List[Coin] = all_coins[None]
             red_coins: List[Coin] = all_coins["red"]
             blue_coins: List[Coin] = all_coins["blue"]
 
-            # Create an XCH Offer for RED
-            chia_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
+            # Create an HCX Offer for RED
+            chinilla_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
                 str_to_tail_hash("red"): [
                     Payment(acs_ph, 100, [b"memo"]),
                     Payment(acs_ph, 200, [b"memo"]),
                 ]
             }
 
-            chia_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
-                chia_requested_payments, chia_coins
+            chinilla_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
+                chinilla_requested_payments, chinilla_coins
             )
-            chia_announcements: List[Announcement] = Offer.calculate_announcements(chia_requested_payments)
-            chia_secured_bundle: SpendBundle = self.generate_secure_bundle(chia_coins, chia_announcements, 1000)
-            chia_offer = Offer(chia_requested_payments, chia_secured_bundle)
-            assert not chia_offer.is_valid()
+            chinilla_announcements: List[Announcement] = Offer.calculate_announcements(chinilla_requested_payments)
+            chinilla_secured_bundle: SpendBundle = self.generate_secure_bundle(
+                chinilla_coins, chinilla_announcements, 1000
+            )
+            chinilla_offer = Offer(chinilla_requested_payments, chinilla_secured_bundle)
+            assert not chinilla_offer.is_valid()
 
-            # Create a RED Offer for XCH
+            # Create a RED Offer for HCX
             red_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
                 None: [
                     Payment(acs_ph, 300, [b"red memo"]),
@@ -224,12 +227,12 @@ class TestOfferLifecycle:
             assert not red_offer.is_valid()
 
             # Test aggregation of offers
-            new_offer = Offer.aggregate([chia_offer, red_offer])
+            new_offer = Offer.aggregate([chinilla_offer, red_offer])
             assert new_offer.get_offered_amounts() == {None: 1000, str_to_tail_hash("red"): 350}
             assert new_offer.get_requested_amounts() == {None: 700, str_to_tail_hash("red"): 300}
             assert new_offer.is_valid()
 
-            # Create yet another offer of BLUE for XCH and RED
+            # Create yet another offer of BLUE for HCX and RED
             blue_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
                 None: [
                     Payment(acs_ph, 200, [b"blue memo"]),
@@ -259,14 +262,14 @@ class TestOfferLifecycle:
             assert new_offer.get_requested_amounts() == {None: 900, str_to_tail_hash("red"): 350}
             assert new_offer.summary() == (
                 {
-                    "xch": 1000,
+                    "hcx": 1000,
                     str_to_tail_hash("red").hex(): 350,
                     str_to_tail_hash("blue").hex(): 2000,
                 },
-                {"xch": 900, str_to_tail_hash("red").hex(): 350},
+                {"hcx": 900, str_to_tail_hash("red").hex(): 350},
             )
             assert new_offer.get_pending_amounts() == {
-                "xch": 1200,
+                "hcx": 1200,
                 str_to_tail_hash("red").hex(): 350,
                 str_to_tail_hash("blue").hex(): 3000,
             }

@@ -2,15 +2,16 @@ import asyncio
 import logging
 
 import pytest
+import pytest_asyncio
 from clvm.casts import int_to_bytes
 
-from chia.protocols import full_node_protocol, wallet_protocol
-from chia.types.announcement import Announcement
-from chia.types.condition_opcodes import ConditionOpcode
-from chia.types.condition_with_args import ConditionWithArgs
-from chia.types.spend_bundle import SpendBundle
-from chia.util.errors import ConsensusError, Err
-from chia.util.ints import uint64
+from chinilla.protocols import full_node_protocol, wallet_protocol
+from chinilla.types.announcement import Announcement
+from chinilla.types.condition_opcodes import ConditionOpcode
+from chinilla.types.condition_with_args import ConditionWithArgs
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.errors import ConsensusError, Err
+from chinilla.util.ints import uint64
 from tests.blockchain.blockchain_test_utils import _validate_and_add_block
 from tests.wallet_tools import WalletTool
 from tests.setup_nodes import bt, setup_two_nodes, test_constants
@@ -31,7 +32,7 @@ def event_loop():
 
 
 class TestBlockchainTransactions:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def two_nodes(self, db_version):
         async for _ in setup_two_nodes(test_constants, db_version=db_version):
             yield _
@@ -962,9 +963,9 @@ class TestBlockchainTransactions:
             if coin.puzzle_hash == coinbase_puzzlehash:
                 spend_coin_block_1 = coin
 
-        # This condition requires fee to be 10 mojo
+        # This condition requires fee to be 10 vojo
         cvp_fee = ConditionWithArgs(ConditionOpcode.RESERVE_FEE, [int_to_bytes(10)])
-        # This spend bundle has 9 mojo as fee
+        # This spend bundle has 9 vojo as fee
         block1_dic_bad = {cvp_fee.opcode: [cvp_fee]}
         block1_dic_good = {cvp_fee.opcode: [cvp_fee]}
         block1_spend_bundle_bad = wallet_a.generate_signed_transaction(

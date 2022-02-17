@@ -4,13 +4,14 @@ import asyncio
 import time
 
 import pytest
+import pytest_asyncio
 import logging
 
-from chia.protocols import full_node_protocol
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.wallet_node import WalletNode
+from chinilla.protocols import full_node_protocol
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.wallet_node import WalletNode
 from tests.connection_utils import connect_and_get_peer
 from tests.setup_nodes import bt, self_hostname, setup_simulators_and_wallets
 from tests.time_out_assert import time_out_assert
@@ -41,7 +42,7 @@ def event_loop():
 
 
 class TestMempoolPerformance:
-    @pytest.fixture(scope="module")
+    @pytest_asyncio.fixture(scope="module")
     async def wallet_nodes(self):
         key_seed = bt.farmer_master_sk_entropy
         async for _ in setup_simulators_and_wallets(2, 1, {}, key_seed=key_seed):

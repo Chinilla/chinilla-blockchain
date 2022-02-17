@@ -5,14 +5,15 @@ import time
 from typing import List
 
 import pytest
+import pytest_asyncio
 
-from chia.full_node.weight_proof import _validate_sub_epoch_summaries
-from chia.protocols import full_node_protocol
-from chia.types.blockchain_format.sub_epoch_summary import SubEpochSummary
-from chia.types.full_block import FullBlock
-from chia.types.peer_info import PeerInfo
-from chia.util.hash import std_hash
-from chia.util.ints import uint16
+from chinilla.full_node.weight_proof import _validate_sub_epoch_summaries
+from chinilla.protocols import full_node_protocol
+from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
+from chinilla.types.full_block import FullBlock
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint16
 from tests.core.node_height import node_height_exactly, node_height_between
 from tests.setup_nodes import bt, self_hostname, setup_n_nodes, setup_two_nodes, test_constants
 from tests.time_out_assert import time_out_assert
@@ -28,22 +29,22 @@ log = logging.getLogger(__name__)
 
 
 class TestFullSync:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def two_nodes(self, db_version):
         async for _ in setup_two_nodes(test_constants, db_version=db_version):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def three_nodes(self, db_version):
         async for _ in setup_n_nodes(test_constants, 3, db_version=db_version):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def four_nodes(self, db_version):
         async for _ in setup_n_nodes(test_constants, 4, db_version=db_version):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def five_nodes(self, db_version):
         async for _ in setup_n_nodes(test_constants, 5, db_version=db_version):
             yield _

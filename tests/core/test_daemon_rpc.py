@@ -1,13 +1,14 @@
 import pytest
+import pytest_asyncio
 
 from tests.setup_nodes import setup_daemon
-from chia.daemon.client import connect_to_daemon
+from chinilla.daemon.client import connect_to_daemon
 from tests.setup_nodes import bt
-from chia import __version__
+from chinilla import __version__
 
 
 class TestDaemonRpc:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_daemon(self):
         async for _ in setup_daemon(btools=bt):
             yield _

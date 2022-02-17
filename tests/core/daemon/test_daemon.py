@@ -1,9 +1,9 @@
-from chia.server.outbound_message import NodeType
-from chia.types.peer_info import PeerInfo
+from chinilla.server.outbound_message import NodeType
+from chinilla.types.peer_info import PeerInfo
 from tests.block_tools import BlockTools, create_block_tools_async
-from chia.util.ints import uint16
-from chia.util.keyring_wrapper import DEFAULT_PASSPHRASE_IF_NO_MASTER_PASSPHRASE
-from chia.util.ws_message import create_payload
+from chinilla.util.ints import uint16
+from chinilla.util.keyring_wrapper import DEFAULT_PASSPHRASE_IF_NO_MASTER_PASSPHRASE
+from chinilla.util.ws_message import create_payload
 from tests.core.node_height import node_height_at_least
 from tests.setup_nodes import setup_daemon, self_hostname, setup_full_system
 from tests.simulation.test_simulation import test_constants_modified
@@ -15,10 +15,11 @@ import json
 
 import aiohttp
 import pytest
+import pytest_asyncio
 
 
 class TestDaemon:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_daemon(self, get_b_tools):
         async for _ in setup_daemon(btools=get_b_tools):
             yield _
@@ -27,23 +28,23 @@ class TestDaemon:
     # fixture, to test all versions of the database schema. This doesn't work
     # because of a hack in shutting down the full node, which means you cannot run
     # more than one simulations per process.
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def simulation(self, get_b_tools, get_b_tools_1):
         async for _ in setup_full_system(
             test_constants_modified, b_tools=get_b_tools, b_tools_1=get_b_tools_1, connect_to_daemon=True, db_version=1
         ):
             yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_temp_keyring(self):
         with TempKeyring() as keychain:
             yield keychain
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_b_tools_1(self, get_temp_keyring):
         return await create_block_tools_async(constants=test_constants_modified, keychain=get_temp_keyring)
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_b_tools(self, get_temp_keyring):
         local_b_tools = await create_block_tools_async(constants=test_constants_modified, keychain=get_temp_keyring)
         new_config = local_b_tools._config
@@ -51,7 +52,7 @@ class TestDaemon:
         local_b_tools.change_config(new_config)
         return local_b_tools
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def get_daemon_with_temp_keyring(self, get_b_tools):
         async for _ in setup_daemon(btools=get_b_tools):
             yield get_b_tools
@@ -108,7 +109,7 @@ class TestDaemon:
 
         read_handler = asyncio.create_task(reader(ws, message_queue))
         data = {}
-        payload = create_payload("get_blockchain_state", data, service_name, "chia_full_node")
+        payload = create_payload("get_blockchain_state", data, service_name, "chinilla_full_node")
         await ws.send_str(payload)
 
         await asyncio.sleep(5)

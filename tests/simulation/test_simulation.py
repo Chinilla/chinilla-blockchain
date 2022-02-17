@@ -1,8 +1,9 @@
 import pytest
+import pytest_asyncio
 
-from chia.types.peer_info import PeerInfo
+from chinilla.types.peer_info import PeerInfo
 from tests.block_tools import create_block_tools_async
-from chia.util.ints import uint16
+from chinilla.util.ints import uint16
 from tests.core.node_height import node_height_at_least
 from tests.setup_nodes import self_hostname, setup_full_node, setup_full_system, test_constants
 from tests.time_out_assert import time_out_assert
@@ -30,7 +31,7 @@ class TestSimulation:
     # fixture, to test all versions of the database schema. This doesn't work
     # because of a hack in shutting down the full node, which means you cannot run
     # more than one simulations per process.
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def extra_node(self):
         with TempKeyring() as keychain:
             b_tools = await create_block_tools_async(constants=test_constants_modified, keychain=keychain)
@@ -43,7 +44,7 @@ class TestSimulation:
             ):
                 yield _
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def simulation(self):
         async for _ in setup_full_system(test_constants_modified, db_version=1):
             yield _

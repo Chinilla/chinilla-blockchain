@@ -1,11 +1,12 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16, uint64
-from chia.wallet.rl_wallet.rl_wallet import RLWallet
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16, uint64
+from chinilla.wallet.rl_wallet.rl_wallet import RLWallet
 from tests.setup_nodes import self_hostname, setup_simulators_and_wallets
 from tests.time_out_assert import time_out_assert
 
@@ -17,7 +18,7 @@ def event_loop():
 
 
 class TestCATWallet:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def two_wallet_nodes(self):
         async for _ in setup_simulators_and_wallets(1, 2, {}):
             yield _

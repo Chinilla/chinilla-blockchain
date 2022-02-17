@@ -4,15 +4,15 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from blspy import G1Element, G2Element
 from clvm_tools import binutils
 
-from chia.types.blockchain_format.program import Program, SerializedProgram
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_spend import CoinSpend
-from chia.types.spend_bundle import SpendBundle
-from chia.util.condition_tools import ConditionOpcode
-from chia.util.ints import uint64
-from chia.wallet.puzzles.load_clvm import load_clvm
+from chinilla.types.blockchain_format.program import Program, SerializedProgram
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.condition_tools import ConditionOpcode
+from chinilla.util.ints import uint64
+from chinilla.wallet.puzzles.load_clvm import load_clvm
 
 from tests.clvm.coin_store import BadSpendBundleError, CoinStore, CoinTimestamp
 
@@ -30,7 +30,7 @@ P2_SINGLETON_MOD_HASH = P2_SINGLETON_MOD.get_tree_hash()
 ANYONE_CAN_SPEND_PUZZLE = Program.to(1)
 ANYONE_CAN_SPEND_WITH_PADDING_PUZZLE_HASH = Program.to(binutils.assemble("(a (q . 1) 3)")).get_tree_hash()
 
-POOL_REWARD_PREFIX_MAINNET = bytes32.fromhex("ccd5bb71183532bff220ba46c268991a00000000000000000000000000000000")
+POOL_REWARD_PREFIX_VANILLANET = bytes32.fromhex("ccd5bb71183532bff220ba46c268991a00000000000000000000000000000000")
 
 MAX_BLOCK_COST_CLVM = int(1e18)
 COST_PER_BYTE = int(12000)
@@ -120,7 +120,7 @@ def solve_anyone_can_spend_with_padding(
 def solve_singleton(solver: Solver, puzzle_db: PuzzleDB, args: List[Program], kwargs: Dict) -> Program:
     """
     `lineage_proof`: a `Program` that proves the parent is also a singleton (or the launcher).
-    `coin_amount`: a necessarily-odd value of mojos in this coin.
+    `coin_amount`: a necessarily-odd value of vojos in this coin.
     """
     singleton_struct, inner_puzzle = args
     inner_solution = solver.solve(puzzle_db, inner_puzzle, **kwargs)
@@ -478,7 +478,7 @@ def test_lifecycle_with_coinstore_as_wallet():
     #######
     # farm a coin
 
-    coin_store = CoinStore(int.from_bytes(POOL_REWARD_PREFIX_MAINNET, "big"))
+    coin_store = CoinStore(int.from_bytes(POOL_REWARD_PREFIX_VANILLANET, "big"))
     now = CoinTimestamp(10012300, 1)
 
     DELAY_SECONDS = 86400
@@ -573,7 +573,7 @@ def test_lifecycle_with_coinstore_as_wallet():
 
     owner_public_key = bytes(create_throwaway_pubkey(b"foo"))
     pool_puzzle_hash = Program.to(bytes(create_throwaway_pubkey(b""))).get_tree_hash()
-    pool_reward_prefix = POOL_REWARD_PREFIX_MAINNET
+    pool_reward_prefix = POOL_REWARD_PREFIX_VANILLANET
     relative_lock_height = 1440
 
     pool_escaping_puzzle = POOL_WAITINGROOM_MOD.curry(
