@@ -157,6 +157,7 @@ MANIFEST
 *.manifest
 *.spec
 !chinilla/pyinstaller.spec
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
