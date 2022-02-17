@@ -1,6 +1,7 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
@@ -52,7 +53,7 @@ async def check_balance(api, wallet_id):
 
 
 class TestRLWallet:
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def three_wallet_nodes(self):
         async for _ in setup_simulators_and_wallets(1, 3, {}):
             yield _
