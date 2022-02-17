@@ -273,7 +273,10 @@ async def summary(
 
     if amounts is None:
         if wallet_not_running:
-            print("For details on farmed rewards and fees you should run 'chinilla start wallet' and 'chinilla wallet show'")
+            print(
+                "For details on farmed rewards and fees you should run 'chinilla start wallet' and 'chinilla wallet "
+                "show'"
+            )
         elif wallet_not_ready:
             print("For details on farmed rewards and fees you should run 'chinilla wallet show'")
     else:

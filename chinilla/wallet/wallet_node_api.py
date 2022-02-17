@@ -26,7 +26,9 @@ class WalletNodeAPI:
     async def respond_removals(self, response: wallet_protocol.RespondRemovals, peer: WSChinillaConnection):
         pass
 
-    async def reject_removals_request(self, response: wallet_protocol.RejectRemovalsRequest, peer: WSChinillaConnection):
+    async def reject_removals_request(
+        self, response: wallet_protocol.RejectRemovalsRequest, peer: WSChinillaConnection
+    ):
         """
         The full node has rejected our request for removals.
         """

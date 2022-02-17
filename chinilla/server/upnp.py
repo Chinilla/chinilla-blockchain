@@ -47,7 +47,8 @@ class UPnP:
                         keep_going = False
             except Exception as e:
                 log.info(
-                    "UPnP failed. This is not required to run chinilla, it allows incoming connections from other peers."
+                    "UPnP failed. This is not required to run chinilla, it allows incoming connections from other "
+                    "peers."
                 )
                 log.info(e)
 

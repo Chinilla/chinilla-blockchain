@@ -16,7 +16,13 @@ from chinilla.full_node.bundle_tools import best_solution_generator_from_templat
 from chinilla.full_node.full_node import FullNode
 from chinilla.full_node.mempool_check_conditions import get_puzzle_and_solution_for_coin
 from chinilla.full_node.signage_point import SignagePoint
-from chinilla.protocols import farmer_protocol, full_node_protocol, introducer_protocol, timelord_protocol, wallet_protocol
+from chinilla.protocols import (
+    farmer_protocol,
+    full_node_protocol,
+    introducer_protocol,
+    timelord_protocol,
+    wallet_protocol,
+)
 from chinilla.protocols.full_node_protocol import RejectBlock, RejectBlocks
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.protocols.wallet_protocol import (

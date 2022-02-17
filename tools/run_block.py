@@ -27,7 +27,7 @@ then be verified by the consensus rules, or used to view some aspects of transac
 
 The information for each spend is an "NPC" (Name, Puzzle, Condition):
         "coin_name": a unique 32 byte identifier
-        "conditions": a list of condition expressions, as in [condition_opcodes.py](../chinilla/types/condition_opcodes.py)
+        "conditions": a list of condition expressions, as in [condition_opcodes.py]
         "puzzle_hash": the sha256 of the CLVM bytecode that controls spending this coin
 
 Condition Opcodes, such as AGG_SIG_ME, or CREATE_COIN are created by running the "puzzle", i.e. the CLVM bytecode

@@ -16,7 +16,12 @@ from chinilla.consensus.block_record import BlockRecord
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
 from chinilla.types.blockchain_format.pool_target import PoolTarget
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageTransactionBlock, TransactionsInfo, FoliageBlockData
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+    FoliageBlockData,
+)
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary

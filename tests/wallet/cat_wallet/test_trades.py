@@ -212,7 +212,9 @@ class TestCATTrades:
             trade_take.trade_id
         )
         assert len(maker_txs) == 1  # The other side will show up as a regular incoming transaction
-        assert len(taker_txs) == 3  # One for each: the outgoing CAT, the incoming chinilla, and the outgoing chinilla fee
+        assert (
+            len(taker_txs) == 3
+        )  # One for each: the outgoing CAT, the incoming chinilla, and the outgoing chinilla fee
 
         # cat_for_chinilla
         success, trade_make, error = await trade_manager_maker.create_offer_for_ids(cat_for_chinilla)

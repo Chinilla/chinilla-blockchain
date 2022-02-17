@@ -37,7 +37,10 @@ async def add_dummy_connection(
     dummy_crt_path = server._private_key_path.parent / "dummy.crt"
     dummy_key_path = server._private_key_path.parent / "dummy.key"
     generate_ca_signed_cert(
-        server.chinilla_ca_crt_path.read_bytes(), server.chinilla_ca_key_path.read_bytes(), dummy_crt_path, dummy_key_path
+        server.chinilla_ca_crt_path.read_bytes(),
+        server.chinilla_ca_key_path.read_bytes(),
+        dummy_crt_path,
+        dummy_key_path,
     )
     ssl_context = ssl_context_for_client(
         server.chinilla_ca_crt_path, server.chinilla_ca_key_path, dummy_crt_path, dummy_key_path

@@ -52,7 +52,12 @@ from chinilla.plotting.manager import PlotManager
 from chinilla.server.server import ssl_context_for_server
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_list
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+)
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import INFINITE_COST
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
@@ -95,7 +100,7 @@ test_constants = DEFAULT_CONSTANTS.replace(
     **{
         "MIN_PLOT_SIZE": 18,
         "MIN_BLOCKS_PER_CHALLENGE_BLOCK": 12,
-        "DIFFICULTY_STARTING": 2 ** 12,
+        "DIFFICULTY_STARTING": 2**12,
         "DISCRIMINANT_SIZE_BITS": 16,
         "SUB_EPOCH_BLOCKS": 170,
         "WEIGHT_PROOF_THRESHOLD": 2,
@@ -106,7 +111,7 @@ test_constants = DEFAULT_CONSTANTS.replace(
         "EPOCH_BLOCKS": 340,
         "BLOCKS_CACHE_SIZE": 340 + 3 * 50,  # Coordinate with the above values
         "SUB_SLOT_TIME_TARGET": 600,  # The target number of seconds per slot, vanillanet 600
-        "SUB_SLOT_ITERS_STARTING": 2 ** 10,  # Must be a multiple of 64
+        "SUB_SLOT_ITERS_STARTING": 2**10,  # Must be a multiple of 64
         "NUMBER_ZERO_BITS_PLOT_FILTER": 1,  # H(plot signature of the challenge) must start with these many zeroes
         "MAX_FUTURE_TIME": 3600
         * 24

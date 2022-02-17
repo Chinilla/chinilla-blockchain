@@ -202,7 +202,9 @@ class TestOfferLifecycle:
                 chinilla_requested_payments, chinilla_coins
             )
             chinilla_announcements: List[Announcement] = Offer.calculate_announcements(chinilla_requested_payments)
-            chinilla_secured_bundle: SpendBundle = self.generate_secure_bundle(chinilla_coins, chinilla_announcements, 1000)
+            chinilla_secured_bundle: SpendBundle = self.generate_secure_bundle(
+                chinilla_coins, chinilla_announcements, 1000
+            )
             chinilla_offer = Offer(chinilla_requested_payments, chinilla_secured_bundle)
             assert not chinilla_offer.is_valid()
 

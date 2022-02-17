@@ -295,7 +295,9 @@ async def make_offer(args: dict, wallet_client: WalletRpcClient, fingerprint: in
                     with open(pathlib.Path(filepath), "w") as file:
                         file.write(offer.to_bech32())
                     print(f"Created offer with ID {trade_record.trade_id}")
-                    print(f"Use chinilla wallet get_offers --id {trade_record.trade_id} -f {fingerprint} to view status")
+                    print(
+                        f"Use chinilla wallet get_offers --id {trade_record.trade_id} -f {fingerprint} to view status"
+                    )
                 else:
                     print("Error creating offer")
 

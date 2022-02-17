@@ -23,7 +23,11 @@ from chinilla.util.path import path_from_root
 from chinilla.util.ws_message import WsRpcMessage, create_payload_dict
 from chinilla.wallet.cat_wallet.cat_constants import DEFAULT_CATS
 from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
-from chinilla.wallet.derive_keys import master_sk_to_singleton_owner_sk, master_sk_to_wallet_sk_unhardened, MAX_POOL_WALLETS
+from chinilla.wallet.derive_keys import (
+    master_sk_to_singleton_owner_sk,
+    master_sk_to_wallet_sk_unhardened,
+    MAX_POOL_WALLETS,
+)
 from chinilla.wallet.rl_wallet.rl_wallet import RLWallet
 from chinilla.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
 from chinilla.wallet.did_wallet.did_wallet import DIDWallet

@@ -576,7 +576,9 @@ class CATWallet:
         elif payment_amount < starting_amount:
             regular_chinilla_to_claim = payment_amount
 
-        need_chinilla_transaction = (fee > 0 or regular_chinilla_to_claim > 0) and (fee - regular_chinilla_to_claim != 0)
+        need_chinilla_transaction = (fee > 0 or regular_chinilla_to_claim > 0) and (
+            fee - regular_chinilla_to_claim != 0
+        )
 
         # Calculate standard puzzle solutions
         change = selected_cat_amount - starting_amount

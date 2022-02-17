@@ -107,7 +107,10 @@ class TestSSL:
         pub_crt = farmer_server._private_key_path.parent / "non_valid.crt"
         pub_key = farmer_server._private_key_path.parent / "non_valid.key"
         generate_ca_signed_cert(
-            farmer_server.chinilla_ca_crt_path.read_bytes(), farmer_server.chinilla_ca_key_path.read_bytes(), pub_crt, pub_key
+            farmer_server.chinilla_ca_crt_path.read_bytes(),
+            farmer_server.chinilla_ca_key_path.read_bytes(),
+            pub_crt,
+            pub_key,
         )
         ssl_context = ssl_context_for_client(
             farmer_server.chinilla_ca_crt_path, farmer_server.chinilla_ca_key_path, pub_crt, pub_key
@@ -150,7 +153,10 @@ class TestSSL:
         pub_crt = wallet_server._private_key_path.parent / "p2p.crt"
         pub_key = wallet_server._private_key_path.parent / "p2p.key"
         generate_ca_signed_cert(
-            wallet_server.chinilla_ca_crt_path.read_bytes(), wallet_server.chinilla_ca_key_path.read_bytes(), pub_crt, pub_key
+            wallet_server.chinilla_ca_crt_path.read_bytes(),
+            wallet_server.chinilla_ca_key_path.read_bytes(),
+            pub_crt,
+            pub_key,
         )
         ssl_context = ssl_context_for_client(
             wallet_server.chinilla_ca_crt_path, wallet_server.chinilla_ca_key_path, pub_crt, pub_key

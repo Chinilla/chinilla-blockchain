@@ -1284,7 +1284,10 @@ class WalletNode:
         )
 
     async def get_coin_state(
-        self, coin_names: List[bytes32], fork_height: Optional[uint32] = None, peer: Optional[WSChinillaConnection] = None
+        self,
+        coin_names: List[bytes32],
+        fork_height: Optional[uint32] = None,
+        peer: Optional[WSChinillaConnection] = None,
     ) -> List[CoinState]:
         assert self.server is not None
         all_nodes = self.server.connection_by_type[NodeType.FULL_NODE]
