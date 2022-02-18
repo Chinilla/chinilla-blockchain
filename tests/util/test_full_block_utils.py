@@ -1,19 +1,18 @@
 import random
+
 import pytest
 
-from chinilla.util.full_block_utils import generator_from_block
-from chinilla.types.full_block import FullBlock
-from chinilla.util.ints import uint128, uint64, uint32, uint8
-from chinilla.types.blockchain_format.pool_target import PoolTarget
+from benchmarks.utils import rand_bytes, rand_g1, rand_g2, rand_hash, rand_vdf, rand_vdf_proof, rewards
 from chinilla.types.blockchain_format.foliage import (
     Foliage,
+    FoliageBlockData,
     FoliageTransactionBlock,
     TransactionsInfo,
-    FoliageBlockData,
 )
+from chinilla.types.blockchain_format.pool_target import PoolTarget
+from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
-from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.slots import (
     ChallengeChainSubSlot,
     InfusedChallengeChainSubSlot,
@@ -21,8 +20,9 @@ from chinilla.types.blockchain_format.slots import (
     SubSlotProofs,
 )
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
-
-from benchmarks.utils import rand_hash, rand_bytes, rewards, rand_g1, rand_g2, rand_vdf, rand_vdf_proof
+from chinilla.types.full_block import FullBlock
+from chinilla.util.full_block_utils import generator_from_block
+from chinilla.util.ints import uint8, uint32, uint64, uint128
 
 test_g2s = [rand_g2() for _ in range(10)]
 test_g1s = [rand_g1() for _ in range(10)]

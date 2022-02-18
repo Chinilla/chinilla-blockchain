@@ -28,7 +28,7 @@ from chinilla.types.blockchain_format.foliage import (
     Foliage,
     FoliageTransactionBlock,
     TransactionsInfo,
-    FoliageBlockData
+    FoliageBlockData,
 )
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
