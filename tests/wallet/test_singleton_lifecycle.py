@@ -10,8 +10,8 @@ from chinilla.types.announcement import Announcement
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.spend_bundle import SpendBundle
-from chinilla.util.condition_tools import ConditionOpcode
 
 from chinilla.util.ints import uint64
 from chinilla.wallet.puzzles.load_clvm import load_clvm

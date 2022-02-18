@@ -6,10 +6,10 @@ from chinilla.full_node.generator import run_generator_unsafe
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
 from chinilla.types.name_puzzle_condition import NPC
 from chinilla.types.generator_types import BlockGenerator
-from chinilla.util.condition_tools import ConditionOpcode
 from chinilla.util.ints import uint32
 from chinilla.wallet.puzzles.load_clvm import load_clvm
 from chinilla.consensus.condition_costs import ConditionCost
