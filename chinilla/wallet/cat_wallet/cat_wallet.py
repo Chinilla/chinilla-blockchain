@@ -619,7 +619,7 @@ class CATWallet:
                 announcement = Announcement(coin.name(), std_hash(b"".join([c.name() for c in cat_coins])), b"\xca")
                 if need_chinilla_transaction:
                     if fee > regular_chinilla_to_claim:
-                        chinilla_tx, _ = await self.create_tandem_xch_tx(
+                        chinilla_tx, _ = await self.create_tandem_hcx_tx(
                             fee, uint64(regular_chinilla_to_claim), announcement_to_assert=announcement
                         )
                         innersol = self.standard_wallet.make_solution(
