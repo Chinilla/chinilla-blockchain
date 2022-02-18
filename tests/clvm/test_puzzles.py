@@ -6,8 +6,8 @@ from blspy import AugSchemeMPL, BasicSchemeMPL, G1Element, G2Element
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.spend_bundle import SpendBundle
-from chinilla.util.condition_tools import ConditionOpcode
 from chinilla.util.hash import std_hash
 from chinilla.wallet.puzzles import (
     p2_conditions,

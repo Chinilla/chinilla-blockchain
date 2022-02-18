@@ -8,10 +8,10 @@ from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.full_node.generator import create_generator_args, setup_generator_args
 from chinilla.types.coin_record import CoinRecord
+from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
 from chinilla.types.generator_types import BlockGenerator
 from chinilla.types.name_puzzle_condition import NPC
-from chinilla.util.condition_tools import ConditionOpcode
 from chinilla.util.errors import Err
 from chinilla.util.ints import uint32, uint64, uint16
 from chinilla.wallet.puzzles.generator_loader import GENERATOR_FOR_SINGLE_COIN_MOD
