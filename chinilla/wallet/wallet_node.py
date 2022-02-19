@@ -1286,7 +1286,7 @@ class WalletNode:
                         return False
             return True
 
-    async def fetch_puzzle_solution(self, peer: WSChiaConnection, height: uint32, coin: Coin) -> CoinSpend:
+    async def fetch_puzzle_solution(self, peer: WSChinillaConnection, height: uint32, coin: Coin) -> CoinSpend:
         solution_response = await peer.request_puzzle_solution(
             wallet_protocol.RequestPuzzleSolution(coin.name(), height)
         )
