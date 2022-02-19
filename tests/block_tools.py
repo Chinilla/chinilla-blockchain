@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple, Any
 
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from chiabip158 import PyBIP158
+from chinillabip158 import PyBIP158
 
 from chinilla.cmds.init_funcs import create_all_ssl, create_default_chinilla_config
 from chinilla.daemon.keychain_proxy import connect_to_keychain_and_validate, wrap_local_keychain
@@ -71,6 +71,7 @@ from chinilla.types.blockchain_format.slots import (
 )
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
+from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
 from chinilla.types.full_block import FullBlock
 from chinilla.types.generator_types import BlockGenerator, CompressorArg
@@ -78,7 +79,6 @@ from chinilla.types.spend_bundle import SpendBundle
 from chinilla.types.unfinished_block import UnfinishedBlock
 from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.block_cache import BlockCache
-from chinilla.util.condition_tools import ConditionOpcode
 from chinilla.util.config import load_config, save_config
 from chinilla.util.hash import std_hash
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
@@ -2008,7 +2008,7 @@ def create_test_unfinished_block(
         foliage_transaction_block,
         transactions_info,
         block_generator.program if block_generator else None,
-        block_generator.block_height_list if block_generator else [],  # TODO: can block_generator ever be None?
+        block_generator.block_height_list if block_generator else [],
     )
 
 

@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from chinilla.util.condition_tools import ConditionOpcode
+from chinilla.types.condition_opcodes import ConditionOpcode
 
 
 def make_create_coin_condition(puzzle_hash, amount, memos: Optional[List[bytes]]) -> List:
