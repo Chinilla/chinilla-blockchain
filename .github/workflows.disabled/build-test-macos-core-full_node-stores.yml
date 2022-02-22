@@ -1,7 +1,7 @@
 #
-# THIS FILE IS GENERATED. SEE https://github.com/Chinilla/chinilla-blockchain/tree/main/tests#readme
+# THIS FILE IS GENERATED. SEE https://github.com/Chinilla-Network/chinilla-blockchain/tree/main/tests#readme
 #
-name: MacOS core-full_node Tests
+name: MacOS core-full_node-stores Tests
 
 on:
   push:
@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   build:
-    name: MacOS core-full_node Tests
+    name: MacOS core-full_node-stores Tests
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
@@ -65,7 +65,7 @@ jobs:
     - name: Checkout test blocks and plots
       uses: actions/checkout@v2
       with:
-        repository: 'Chinilla/test-cache'
+        repository: 'Chinilla-Network/test-cache'
         path: '.chinilla'
         ref: '0.28.0'
         fetch-depth: 1
@@ -91,10 +91,10 @@ jobs:
         sh install-timelord.sh
         ./vdf_bench square_asm 400000
 
-    - name: Test core-full_node code with pytest
+    - name: Test core-full_node-stores code with pytest
       run: |
         . ./activate
-        ./venv/bin/py.test tests/core/full_node/test_*.py -s -v --durations 0
+        ./venv/bin/py.test tests/core/full_node/stores/test_*.py -s -v --durations 0
 #
-# THIS FILE IS GENERATED. SEE https://github.com/Chinilla/chinilla-blockchain/tree/main/tests#readme
+# THIS FILE IS GENERATED. SEE https://github.com/Chinilla-Network/chinilla-blockchain/tree/main/tests#readme
 #
