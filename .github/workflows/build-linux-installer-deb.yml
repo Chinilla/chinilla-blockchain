@@ -173,7 +173,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb
-          out_dir: /dev/
+          out_dir: dev
           cdn_domain: download.chinilla.com
 
     - name: Create Checksums
@@ -207,7 +207,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb
-          out_dir: /beta/chinilla-blockchain_amd64_latest_beta.deb
+          out_dir: beta/chinilla-blockchain_amd64_latest_beta.deb
           cdn_domain: download.chinilla.com
 
     - name: Upload Beta Installer Sha256
@@ -219,7 +219,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb.sha256
-          out_dir: /beta/chinilla-blockchain_amd64_latest_beta.deb.sha256
+          out_dir: beta/chinilla-blockchain_amd64_latest_beta.deb.sha256
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer
@@ -231,7 +231,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb
-          out_dir: /install/
+          out_dir: install
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer SHA256
@@ -243,7 +243,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb.sha256
-          out_dir: /install/
+          out_dir: install
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer Torrent
@@ -255,7 +255,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb.torrent
-          out_dir: /torrents/
+          out_dir: torrents
 
     - name: Get tag name
       if: startsWith(github.ref, 'refs/tags/')

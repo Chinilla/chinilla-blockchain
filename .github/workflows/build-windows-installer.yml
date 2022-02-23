@@ -173,7 +173,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
-          out_dir: /dev/
+          out_dir: dev
           cdn_domain: download.chinilla.com
 
     - name: Create Checksums
@@ -203,7 +203,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
-          out_dir: /beta/CChinillaSetup-latest-beta.exe
+          out_dir: beta/CChinillaSetup-latest-beta.exe
           cdn_domain: download.chinilla.com
 
     - name: Upload Beta Installer Sha256
@@ -215,7 +215,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.sha256
-          out_dir: /beta/ChinillaSetup-latest-beta.exe.sha256
+          out_dir: beta/ChinillaSetup-latest-beta.exe.sha256
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer
@@ -227,7 +227,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
-          out_dir: /install/
+          out_dir: install
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer SHA256
@@ -239,7 +239,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.sha256
-          out_dir: /install/
+          out_dir: install
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer Torrent
@@ -251,7 +251,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.torrent
-          out_dir: /torrents/
+          out_dir: torrents
 
     - name: Get tag name
       if: startsWith(github.ref, 'refs/tags/')
