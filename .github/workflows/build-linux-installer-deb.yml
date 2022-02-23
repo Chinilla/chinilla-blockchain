@@ -174,7 +174,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain_${CHINILLA_INSTALLER_VERSION}_amd64.deb
+          source: /build_scripts/final_installer/chinilla-blockchain_${CHINILLA_INSTALLER_VERSION}_amd64.deb
           out_dir: /dev/
           cdn_domain: download.chinilla.com
 
