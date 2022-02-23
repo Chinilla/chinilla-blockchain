@@ -174,7 +174,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${CHINILLA_INSTALLER_VERSION}.exe
+          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ CHINILLA_INSTALLER_VERSION }}.exe
           out_dir: /dev/
           cdn_domain: download.chinilla.com
 
