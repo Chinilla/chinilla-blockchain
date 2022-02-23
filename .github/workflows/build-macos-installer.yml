@@ -44,13 +44,13 @@ jobs:
       shell: bash
       run: |
         unset HAS_APPLE_SECRET
-        unset HAS_AWS_SECRET
+        unset HAS_DO_SECRET
 
         if [ -n "$APPLE_SECRET" ]; then HAS_APPLE_SECRET='true' ; fi
         echo ::set-output name=HAS_APPLE_SECRET::${HAS_APPLE_SECRET}
 
-        if [ -n "$AWS_SECRET" ]; then HAS_AWS_SECRET='true' ; fi
-        echo ::set-output name=HAS_AWS_SECRET::${HAS_AWS_SECRET}
+        if [ -n "$AWS_SECRET" ]; then HAS_DO_SECRET='true' ; fi
+        echo ::set-output name=HAS_DO_SECRET::${HAS_DO_SECRET}
       env:
         APPLE_SECRET: "${{ secrets.APPLE_DEV_ID_APP }}"
         AWS_SECRET: "${{ secrets.INSTALLER_UPLOAD_KEY }}"
@@ -159,18 +159,17 @@ jobs:
         ls
         shasum -a 256 ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg > ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.sha256
 
-    - name: Upload to s3
-      if: steps.check_secrets.outputs.HAS_AWS_SECRET
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.INSTALLER_UPLOAD_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
-        AWS_REGION: us-west-2
-        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
-      run: |
-        GIT_SHORT_HASH=$(echo "${GITHUB_SHA}" | cut -c1-8)
-        CHINILLA_DEV_BUILD=${CHINILLA_INSTALLER_VERSION}-$GIT_SHORT_HASH
-        echo "CHINILLA_DEV_BUILD=$CHINILLA_DEV_BUILD" >>$GITHUB_ENV
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg s3://chinilla-downloads/builds/Chinilla-${CHINILLA_DEV_BUILD}.dmg
+    - name: Upload to DO Spaces
+      if: steps.check_secrets.outputs.HAS_DO_SECRET
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
+          out_dir: dev
+          cdn_domain: download.chinilla.com
 
     - name: Install py3createtorrent
       if: startsWith(github.ref, 'refs/tags/')
@@ -180,30 +179,67 @@ jobs:
     - name: Create torrent
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg -o ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.torrent --webseed https://chinilla-downloads.s3.us-west-2.amazonaws.com/install/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
+        py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg -o ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.torrent --webseed https://download.chinilla.com/install/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
         ls ${{ github.workspace }}/build_scripts/final_installer/
 
     - name: Upload Beta Installer
-      if: steps.check_secrets.outputs.HAS_AWS_SECRET && github.ref == 'refs/heads/main'
-      env:
-        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.INSTALLER_UPLOAD_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
-        AWS_REGION: us-west-2
-      run: |
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg s3://chinilla-downloads/beta/Chinilla_latest_beta.dmg
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.sha256 s3://chinilla-downloads/beta/Chinilla_latest_beta.dmg.sha256
+      if: steps.check_secrets.outputs.HAS_SECRET && github.ref == 'refs/heads/main'
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
+          out_dir: beta/Chinilla_latest_beta.dmg
+          cdn_domain: download.chinilla.com
 
-    - name: Upload Release Files
-      if: steps.check_secrets.outputs.HAS_AWS_SECRET && startsWith(github.ref, 'refs/tags/')
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.INSTALLER_UPLOAD_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
-        AWS_REGION: us-west-2
-      run: |
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg s3://chinilla-downloads/install/
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.sha256 s3://chinilla-downloads/install/
-        aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.torrent s3://chinilla-downloads/torrents/
+    - name: Upload Beta Installer Sha256
+      if: steps.check_secrets.outputs.HAS_SECRET && github.ref == 'refs/heads/main'
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.sha256
+          out_dir: beta/Chinilla_latest_beta.dmg.sha256
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Release Installer
+      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags/')
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
+          out_dir: install
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Release Installer SHA256
+      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags/')
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.sha256
+          out_dir: install
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Release Installer Torrent
+      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags/')
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg.torrent
+          out_dir: torrents
 
     - name: Get tag name
       if: startsWith(github.ref, 'refs/tags/')
@@ -211,8 +247,3 @@ jobs:
       run: |
         echo "::set-output name=TAG_NAME::$(echo ${{ github.ref }} | cut -d'/' -f 3)"
         echo "::set-output name=REPO_NAME::$(echo ${{ github.repository }} | cut -d'/' -f 2)"
-
-    - name: Mark installer complete
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        curl -s -XPOST -H "Authorization: Bearer ${{ secrets.GLUE_ACCESS_TOKEN }}" --data '{"chinilla_ref": "${{ steps.tag-name.outputs.TAG_NAME }}"}' ${{ secrets.GLUE_API_URL }}/api/v1/${{ steps.tag-name.outputs.REPO_NAME }}/${{ steps.tag-name.outputs.TAG_NAME }}/success/build-macos
