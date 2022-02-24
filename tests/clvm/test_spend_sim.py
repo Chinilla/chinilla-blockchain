@@ -19,7 +19,7 @@ class TestSpendSim:
 
             assert len(sim.blocks) == 5
             assert sim.blocks[-1].height == 4
-            assert sim.block_records[0].reward_claims_incorporated[0].amount == 18375000000000000000
+            assert sim.block_records[0].reward_claims_incorporated[0].amount == 18375000000000000
         finally:
             await sim.close()
 
