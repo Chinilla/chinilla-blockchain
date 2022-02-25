@@ -126,20 +126,20 @@ test_dirs = subdirs()
 current_workflows: Dict[Path, str] = {file: read_file(file) for file in args.output_dir.iterdir()}
 changed: bool = False
 
-for os in testconfig.oses:
-    template_text = workflow_yaml_template_text(os)
-    for dir in test_dirs:
-        if len([f for f in Path(root_path / dir).glob("test_*.py")]) == 0:
-            logging.info(f"Skipping {dir}: no tests collected")
-            continue
-        conf = update_config(module_dict(testconfig), dir_config(dir))
-        replacements = generate_replacements(conf, dir)
-        txt = transform_template(template_text, replacements)
-        logging.info(f"Writing {os}-{test_name(dir)}")
-        workflow_yaml_path: Path = workflow_yaml_file(args.output_dir, os, test_name(dir))
-        if workflow_yaml_path not in current_workflows or current_workflows[workflow_yaml_path] != txt:
-            changed = True
-        workflow_yaml_path.write_bytes(txt.encode("utf8"))
+#for os in testconfig.oses:
+#    template_text = workflow_yaml_template_text(os)
+#    for dir in test_dirs:
+#        if len([f for f in Path(root_path / dir).glob("test_*.py")]) == 0:
+#            logging.info(f"Skipping {dir}: no tests collected")
+#            continue
+#        conf = update_config(module_dict(testconfig), dir_config(dir))
+#        replacements = generate_replacements(conf, dir)
+#        txt = transform_template(template_text, replacements)
+#        logging.info(f"Writing {os}-{test_name(dir)}")
+#        workflow_yaml_path: Path = workflow_yaml_file(args.output_dir, os, test_name(dir))
+#        if workflow_yaml_path not in current_workflows or current_workflows[workflow_yaml_path] != txt:
+#            changed = True
+#        workflow_yaml_path.write_bytes(txt.encode("utf8"))
 
 if changed:
     print("New workflow updates available.")
