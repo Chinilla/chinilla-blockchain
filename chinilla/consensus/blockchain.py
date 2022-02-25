@@ -47,6 +47,7 @@ from chinilla.types.weight_proof import SubEpochChallengeSegment
 from chinilla.util.errors import ConsensusError, Err
 from chinilla.util.generator_tools import get_block_header, tx_removals_and_additions
 from chinilla.util.ints import uint16, uint32, uint64, uint128
+from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import recurse_jsonify
 
 log = logging.getLogger(__name__)
@@ -117,7 +118,11 @@ class Blockchain(BlockchainInterface):
         if cpu_count > 61:
             cpu_count = 61  # Windows Server 2016 has an issue https://bugs.python.org/issue26903
         num_workers = max(cpu_count - reserved_cores, 1)
-        self.pool = ProcessPoolExecutor(max_workers=num_workers)
+        self.pool = ProcessPoolExecutor(
+            max_workers=num_workers,
+            initializer=setproctitle,
+            initargs=(f"{getproctitle()}_worker",),
+        )
         log.info(f"Started {num_workers} processes for block validation")
 
         self.constants = consensus_constants
