@@ -126,7 +126,7 @@ test_dirs = subdirs()
 current_workflows: Dict[Path, str] = {file: read_file(file) for file in args.output_dir.iterdir()}
 changed: bool = False
 
-#for os in testconfig.oses:
+# for os in testconfig.oses:
 #    template_text = workflow_yaml_template_text(os)
 #    for dir in test_dirs:
 #        if len([f for f in Path(root_path / dir).glob("test_*.py")]) == 0:
