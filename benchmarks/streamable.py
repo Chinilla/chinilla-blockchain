@@ -5,11 +5,12 @@ from time import process_time as clock
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import click
+from utils import EnumType, rand_bytes, rand_full_block, rand_hash
+
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.full_block import FullBlock
 from chinilla.util.ints import uint8, uint64
 from chinilla.util.streamable import Streamable, streamable
-from utils import EnumType, rand_bytes, rand_full_block, rand_hash
 
 
 @dataclass(frozen=True)

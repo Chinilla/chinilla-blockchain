@@ -9,6 +9,7 @@ from typing import Iterator, List
 import aiosqlite
 import pytest
 import pytest_asyncio
+
 from chinilla.cmds.db_validate_func import validate_v2
 from chinilla.consensus.blockchain import Blockchain
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
