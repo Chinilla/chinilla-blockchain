@@ -21,7 +21,6 @@ from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.full_block import FullBlock
 from chinilla.util.db_wrapper import DBWrapper
 from chinilla.util.ints import uint32, uint64
-
 from tests.setup_nodes import test_constants
 from tests.util.temp_file import TempFile
 
