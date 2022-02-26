@@ -5,7 +5,7 @@
 import argparse
 import sys
 
-import testconfig
+# import testconfig
 import logging
 from pathlib import Path
 from typing import Dict, List

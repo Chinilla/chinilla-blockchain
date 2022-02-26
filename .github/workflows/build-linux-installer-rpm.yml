@@ -1,4 +1,4 @@
-name: Linux .rpm installer on Python 3.9
+name: Linux .rpm Installer (Python 3.9)
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    name: Linux .rpm installer on Python 3.9
+    name: Linux .rpm Installer (Python 3.9)
     runs-on: ubuntu-latest
     container:
       image: chianetwork/centos7-builder:latest
@@ -61,7 +61,7 @@ jobs:
       env:
         SECRET: "${{ secrets.INSTALLER_UPLOAD_SECRET }}"
 
-      # Get the most recent release from chinilla-plotter-madmax
+    # Get the most recent release from chinilla-plotter-madmax
     - uses: actions/github-script@v4
       id: 'latest-madmax'
       with:
@@ -69,20 +69,20 @@ jobs:
         result-encoding: string
         script: |
           const releases = await github.repos.listReleases({
-            owner: 'Chinilla',
-            repo: 'chinilla-plotter-madmax',
+            owner: 'Chia-Network',
+            repo: 'chia-plotter-madmax',
           });
           return releases.data[0].tag_name;
 
     - name: Get latest madmax plotter
       run: |
         mkdir "$GITHUB_WORKSPACE/madmax"
-        wget -O "$GITHUB_WORKSPACE/madmax/chinilla_plot" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot-${{ steps.latest-madmax.outputs.result }}-x86-64
-        wget -O "$GITHUB_WORKSPACE/madmax/chinilla_plot_k34" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot_k34-${{ steps.latest-madmax.outputs.result }}-x86-64
-        chmod +x "$GITHUB_WORKSPACE/madmax/chinilla_plot"
-        chmod +x "$GITHUB_WORKSPACE/madmax/chinilla_plot_k34"
+        wget -O "$GITHUB_WORKSPACE/madmax/chia_plot" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}-x86-64
+        wget -O "$GITHUB_WORKSPACE/madmax/chia_plot_k34" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}-x86-64
+        chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot"
+        chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot_k34"
 
-      # Get the most recent release from bladebit
+    # Get the most recent release from bladebit
     - uses: actions/github-script@v4
       id: 'latest-bladebit'
       with:
@@ -90,7 +90,7 @@ jobs:
         result-encoding: string
         script: |
           const releases = await github.repos.listReleases({
-            owner: 'Chinilla',
+            owner: 'Chia-Network',
             repo: 'bladebit',
           });
           return releases.data[0].tag_name;
@@ -98,7 +98,7 @@ jobs:
     - name: Get latest bladebit plotter
       run: |
         mkdir "$GITHUB_WORKSPACE/bladebit"
-        wget -O /tmp/bladebit.tar.gz https://github.com/Chinilla/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-centos-x86-64.tar.gz
+        wget -O /tmp/bladebit.tar.gz https://github.com/Chia-Network/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-ubuntu-x86-64.tar.gz
         tar -xvzf /tmp/bladebit.tar.gz -C $GITHUB_WORKSPACE/bladebit
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
 

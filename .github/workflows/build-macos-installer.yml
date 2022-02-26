@@ -1,4 +1,4 @@
-name: MacOS Intel installer on Python 3.9
+name: MacOS Intel Installer (Python 3.9)
 
 on:
   push:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    name: MacOS Intel Installer on Python 3.9
+    name: MacOS Intel Installer (Python 3.9)
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
@@ -111,18 +111,18 @@ jobs:
         result-encoding: string
         script: |
           const releases = await github.repos.listReleases({
-            owner: 'Chinilla',
-            repo: 'chinilla-plotter-madmax',
+            owner: 'Chia-Network',
+            repo: 'chia-plotter-madmax',
           });
           return releases.data[0].tag_name;
 
     - name: Get latest madmax plotter
       run: |
         mkdir "$GITHUB_WORKSPACE/madmax"
-        wget -O "$GITHUB_WORKSPACE/madmax/chinilla_plot" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot-${{ steps.latest-madmax.outputs.result }}-macos-intel
-        wget -O "$GITHUB_WORKSPACE/madmax/chinilla_plot_k34" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot_k34-${{ steps.latest-madmax.outputs.result }}-macos-intel
-        chmod +x "$GITHUB_WORKSPACE/madmax/chinilla_plot"
-        chmod +x "$GITHUB_WORKSPACE/madmax/chinilla_plot_k34"
+        wget -O "$GITHUB_WORKSPACE/madmax/chia_plot" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}-macos-intel
+        wget -O "$GITHUB_WORKSPACE/madmax/chia_plot_k34" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}-macos-intel
+        chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot"
+        chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot_k34"
 
     - name: Run install script
       env:

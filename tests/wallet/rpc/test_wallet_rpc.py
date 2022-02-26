@@ -67,8 +67,8 @@ class TestWalletRpc:
         ph = await wallet.get_new_puzzlehash()
         ph_2 = await wallet_2.get_new_puzzlehash()
 
-        await server_2.start_client(PeerInfo("localhost", uint16(full_node_server._port)), None)
-        await server_3.start_client(PeerInfo("localhost", uint16(full_node_server._port)), None)
+        await server_2.start_client(PeerInfo(self_hostname, uint16(full_node_server._port)), None)
+        await server_3.start_client(PeerInfo(self_hostname, uint16(full_node_server._port)), None)
 
         if trusted:
             wallet_node.config["trusted_peers"] = {full_node_server.node_id.hex(): full_node_server.node_id.hex()}
@@ -385,11 +385,11 @@ class TestWalletRpc:
 
             # Test get_transactions to address
             ph_by_addr = await wallet.get_new_puzzlehash()
-            await client.send_transaction("1", 1, encode_puzzle_hash(ph_by_addr, "xch"))
-            await client.farm_block(encode_puzzle_hash(ph_by_addr, "xch"))
+            await client.send_transaction("1", 1, encode_puzzle_hash(ph_by_addr, "hcx"))
+            await client.farm_block(encode_puzzle_hash(ph_by_addr, "hcx"))
             await time_out_assert(10, wallet_is_synced, True, wallet_node, full_node_api)
             tx_for_address = await wallet_rpc_api.get_transactions(
-                {"wallet_id": "1", "to_address": encode_puzzle_hash(ph_by_addr, "xch")}
+                {"wallet_id": "1", "to_address": encode_puzzle_hash(ph_by_addr, "hcx")}
             )
             assert len(tx_for_address["transactions"]) == 1
             assert decode_puzzle_hash(tx_for_address["transactions"][0]["to_address"]) == ph_by_addr
