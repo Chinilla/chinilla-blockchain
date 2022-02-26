@@ -1,4 +1,4 @@
-name: Linux RPM Installer (Python 3.9)
+name: Linux .rpm Installer (Python 3.9)
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    name: Linux .rpm installer on Python 3.9
+    name: Linux .rpm Installer (Python 3.9)
     runs-on: ubuntu-latest
     container:
       image: chianetwork/centos7-builder:latest

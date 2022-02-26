@@ -1,4 +1,4 @@
-name: Linux DEB Installer on (Python 3.9)
+name: Linux .deb Installer (Python 3.8)
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    name: Linux .deb installer on Python 3.8
+    name:  Linux .deb Installer (Python 3.8)
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
