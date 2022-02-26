@@ -9,18 +9,18 @@ from typing import Iterator, List
 import aiosqlite
 import pytest
 import pytest_asyncio
+from chinilla.cmds.db_validate_func import validate_v2
+from chinilla.consensus.blockchain import Blockchain
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.consensus.multiprocess_validation import PreValidationResult
+from chinilla.full_node.block_store import BlockStore
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.full_node.hint_store import HintStore
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.full_block import FullBlock
+from chinilla.util.db_wrapper import DBWrapper
+from chinilla.util.ints import uint32, uint64
 
-from chia.cmds.db_validate_func import validate_v2
-from chia.consensus.blockchain import Blockchain
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.consensus.multiprocess_validation import PreValidationResult
-from chia.full_node.block_store import BlockStore
-from chia.full_node.coin_store import CoinStore
-from chia.full_node.hint_store import HintStore
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.full_block import FullBlock
-from chia.util.db_wrapper import DBWrapper
-from chia.util.ints import uint32, uint64
 from tests.setup_nodes import test_constants
 from tests.util.temp_file import TempFile
 
@@ -144,7 +144,7 @@ async def make_db(db_file: Path, blocks: List[FullBlock]) -> None:
         await conn.execute("pragma synchronous=OFF")
         await conn.execute("pragma locking_mode=exclusive")
 
-        # this is done by chia init normally
+        # this is done by chinilla init normally
         await conn.execute("CREATE TABLE database_version(version int)")
         await conn.execute("INSERT INTO database_version VALUES (2)")
         await conn.commit()
