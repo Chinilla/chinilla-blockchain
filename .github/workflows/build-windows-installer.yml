@@ -112,16 +112,16 @@ jobs:
         result-encoding: string
         script: |
           const releases = await github.repos.listReleases({
-            owner: 'Chinilla',
-            repo: 'chinilla-plotter-madmax',
+            owner: 'Chia-Network',
+            repo: 'chia-plotter-madmax',
           });
           return releases.data[0].tag_name;
 
     - name: Get latest madmax plotter
       run: |
         mkdir "$env:GITHUB_WORKSPACE\madmax"
-        Invoke-WebRequest https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot.exe"
-        Invoke-WebRequest https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chinilla_plot_k34-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot_k34.exe"
+        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot.exe"
+        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot_k34.exe"
 
       # Get the most recent release from bladebit
     - uses: actions/github-script@v4
@@ -131,7 +131,7 @@ jobs:
         result-encoding: string
         script: |
           const releases = await github.repos.listReleases({
-            owner: 'Chinilla',
+            owner: 'Chia-Network',
             repo: 'bladebit',
           });
           return releases.data[0].tag_name;
@@ -139,7 +139,7 @@ jobs:
     - name: Get latest bladebit plotter
       run: |
         mkdir "$env:GITHUB_WORKSPACE\bladebit"
-        Invoke-WebRequest https://github.com/Chinilla/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-windows-x86-64.zip -OutFile "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip"
+        Invoke-WebRequest https://github.com/Chia-Network/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-windows-x86-64.zip -OutFile "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip"
         Expand-Archive -Path "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip" -DestinationPath "$env:GITHUB_WORKSPACE\bladebit\"
         rm "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip"
 
