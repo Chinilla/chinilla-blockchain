@@ -1,4 +1,4 @@
-name: Windows 10 Installer (Python 3.9)
+name: Installer - Windows 10 (Python 3.9)
 
 on:
   push:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    name: Windows 10 Installer (Python 3.9)
+    name: Installer - Windows 10 (Python 3.9)
     runs-on: [windows-2019]
     timeout-minutes: 40
 

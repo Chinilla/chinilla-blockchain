@@ -1,4 +1,4 @@
-name: MacOS Intel Installer (Python 3.9)
+name: Installer - MacOS Intel (Python 3.9)
 
 on:
   push:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    name: MacOS Intel Installer (Python 3.9)
+    name: Installer - MacOS Intel (Python 3.9)
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
