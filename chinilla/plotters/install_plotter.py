@@ -8,7 +8,7 @@ def install_plotter(plotter, root_path):
         print("Chiapos already installed. No action taken.")
         return
     elif plotter == "madmax":
-        if not os.path.exists(root_path / "madmax-plotter/build/chinilla_plot"):
+        if not os.path.exists(root_path / "madmax-plotter/build/chia_plot"):
             print("Installing madmax plotter.")
             try:
                 install_madmax(root_path)

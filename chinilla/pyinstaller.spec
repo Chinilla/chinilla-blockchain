@@ -114,11 +114,11 @@ if THIS_IS_WINDOWS:
             ".",
         ),
         (
-            f"{ROOT}\\madmax\\chinilla_plot.exe",
+            f"{ROOT}\\madmax\\chia_plot.exe",
             "madmax"
         ),
         (
-            f"{ROOT}\\madmax\\chinilla_plot_k34.exe",
+            f"{ROOT}\\madmax\\chia_plot_k34.exe",
             "madmax"
         ),
         (

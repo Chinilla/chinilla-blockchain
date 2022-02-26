@@ -120,8 +120,8 @@ jobs:
     - name: Get latest madmax plotter
       run: |
         mkdir "$env:GITHUB_WORKSPACE\madmax"
-        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot.exe"
-        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chinilla_plot_k34.exe"
+        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chia_plot.exe"
+        Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chia_plot_k34.exe"
 
       # Get the most recent release from bladebit
     - uses: actions/github-script@v4
