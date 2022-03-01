@@ -88,8 +88,7 @@ cd ../../../build_scripts || exit
 DMG_NAME="Chinilla-$CHINILLA_INSTALLER_VERSION.dmg"
 echo "Create $DMG_NAME"
 mkdir final_installer
-electron-installer-dmg dist/Chinilla-darwin-x64/Chinilla.app Chinilla-$CHINILLA_INSTALLER_VERSION \
---overwrite --out final_installer
+NODE_PATH=./npm_macos/node_modules node build_dmg.js dist/Chinilla-darwin-x64/Chinilla.app $CHINILLA_INSTALLER_VERSION
 LAST_EXIT_CODE=$?
 if [ "$LAST_EXIT_CODE" -ne 0 ]; then
 	echo >&2 "electron-installer-dmg failed!"
