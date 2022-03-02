@@ -34,7 +34,6 @@ from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
 from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
-from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import Streamable, streamable
 
 log = logging.getLogger(__name__)
