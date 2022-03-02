@@ -32,6 +32,7 @@ from chinilla.types.blockchain_format.slots import (
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
+from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
 from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import Streamable, streamable
@@ -117,6 +118,20 @@ class Timelord:
         self.pending_bluebox_info: List[Tuple[float, timelord_protocol.RequestCompactProofOfTime]] = []
         self.last_active_time = time.time()
         self.bluebox_pool: Optional[ProcessPoolExecutor] = None
+    
+    async def delayed_start(self):
+        config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "timelord")
+        self.config = config
+        self.constants = constants
+        await self.regular_start()
+
+    async def regular_start(self):
+        self.last_state: LastState = LastState(self.constants)
+        if not self.sanitizer_mode:
+            self.main_loop = asyncio.create_task(self._manage_chains())
+        else:
+            self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
+        log.info("Started timelord.")
 
     async def _start(self):
         self.lock: asyncio.Lock = asyncio.Lock()
@@ -125,24 +140,10 @@ class Timelord:
             self.config["vdf_server"]["host"],
             self.config["vdf_server"]["port"],
         )
-        self.last_state: LastState = LastState(self.constants)
-        slow_bluebox = self.config.get("slow_bluebox", False)
-        if not self.bluebox_mode:
-            self.main_loop = asyncio.create_task(self._manage_chains())
+        if self.constants.GENESIS_CHALLENGE is None:
+            asyncio.create_task(self.delayed_start())
         else:
-            if os.name == "nt" or slow_bluebox:
-                # `vdf_client` doesn't build on windows, use `prove()` from chiavdf.
-                workers = self.config.get("slow_bluebox_process_count", 1)
-                self.bluebox_pool = ProcessPoolExecutor(
-                    max_workers=workers,
-                    initializer=setproctitle,
-                    initargs=(f"{getproctitle()}_worker",),
-                )
-                self.main_loop = asyncio.create_task(
-                    self._start_manage_discriminant_queue_sanitizer_slow(self.bluebox_pool, workers)
-                )
-            else:
-                self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
+            await self.regular_start()
         log.info("Started timelord.")
 
     def _close(self):

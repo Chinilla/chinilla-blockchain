@@ -152,8 +152,16 @@ class WalletStateManager:
         self.sync_mode = False
         self.sync_target = uint32(0)
         self.finished_sync_up_to = uint32(0)
-        self.weight_proof_handler = WalletWeightProofHandler(self.constants)
-        self.blockchain = await WalletBlockchain.create(self.basic_store, self.constants, self.weight_proof_handler)
+        if self.constants.GENESIS_CHALLENGE is not None:
+            self.blockchain = await WalletBlockchain.create(
+                self.basic_store,
+                self.constants,
+                self.weight_proof_handler
+            )
+            self.weight_proof_handler = WalletWeightProofHandler(self.constants)
+        else:
+            self.blockchain = None
+            self.weight_proof_handler = None
 
         self.state_changed_callback = None
         self.pending_tx_callback = None
@@ -197,6 +205,16 @@ class WalletStateManager:
                 self.wallets[wallet_info.id] = wallet
 
         return self
+
+    async def initialize_constants(self, config, constants):
+        self.config = config
+        self.constants = constants
+        self.blockchain = await WalletBlockchain.create(
+            self.basic_store,
+            self.constants,
+            self.weight_proof_handler,
+        )
+        self.weight_proof_handler = WalletWeightProofHandler(self.constants)
 
     def get_derivation_index(self, pubkey: G1Element, max_depth: int = 1000) -> int:
         for i in range(0, max_depth):
