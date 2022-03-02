@@ -265,7 +265,7 @@ python -m pip install -e ."${EXTRAS}" --extra-index-url https://pypi.chia.net/si
 echo ""
 echo "Chinilla blockchain install.sh complete."
 echo "For assistance join us on Keybase in the #support chat channel:"
-echo "https://keybase.io/team/chinilla_network.public"
+echo "https://keybase.io/team/chinilla"
 echo ""
 echo "Try the Quick Start Guide to running chinilla-blockchain:"
 echo "https://github.com/Chinilla/chinilla-blockchain/wiki/Quick-Start-Guide"
