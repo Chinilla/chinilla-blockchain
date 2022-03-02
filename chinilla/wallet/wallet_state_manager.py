@@ -153,11 +153,7 @@ class WalletStateManager:
         self.sync_target = uint32(0)
         self.finished_sync_up_to = uint32(0)
         if self.constants.GENESIS_CHALLENGE is not None:
-            self.blockchain = await WalletBlockchain.create(
-                self.basic_store,
-                self.constants,
-                self.weight_proof_handler
-            )
+            self.blockchain = await WalletBlockchain.create(self.basic_store, self.constants, self.weight_proof_handler)
             self.weight_proof_handler = WalletWeightProofHandler(self.constants)
         else:
             self.blockchain = None

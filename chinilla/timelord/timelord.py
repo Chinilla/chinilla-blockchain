@@ -118,7 +118,7 @@ class Timelord:
         self.pending_bluebox_info: List[Tuple[float, timelord_protocol.RequestCompactProofOfTime]] = []
         self.last_active_time = time.time()
         self.bluebox_pool: Optional[ProcessPoolExecutor] = None
-    
+
     async def delayed_start(self):
         config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "timelord")
         self.config = config
