@@ -50,7 +50,7 @@ venv\scripts\pip install --editable . --extra-index-url https://pypi.chia.net/si
 Write-Output ""
 Write-Output "Chinilla blockchain .\Install.ps1 complete."
 Write-Output "For assistance join us on Keybase in the #support chat channel:"
-Write-Output "https://keybase.io/team/chinilla_network.public"
+Write-Output "https://keybase.io/team/chinilla"
 Write-Output ""
 Write-Output "Try the Quick Start Guide to running chinilla-blockchain:"
 Write-Output "https://github.com/Chinilla/chinilla-blockchain/wiki/Quick-Start-Guide"
