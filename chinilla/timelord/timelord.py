@@ -34,6 +34,7 @@ from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
 from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
+from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import Streamable, streamable
 
 log = logging.getLogger(__name__)
@@ -126,12 +127,25 @@ class Timelord:
 
     async def regular_start(self):
         self.last_state: LastState = LastState(self.constants)
-        if not self.sanitizer_mode:
+        slow_bluebox = self.config.get("slow_bluebox", False)
+        if not self.bluebox_mode:
             self.main_loop = asyncio.create_task(self._manage_chains())
         else:
-            self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
+            if os.name == "nt" or slow_bluebox:
+                # `vdf_client` doesn't build on windows, use `prove()` from chiavdf.
+                workers = self.config.get("slow_bluebox_process_count", 1)
+                self.bluebox_pool = ProcessPoolExecutor(
+                    max_workers=workers,
+                    initializer=setproctitle,
+                    initargs=(f"{getproctitle()}_worker",),
+                )
+                self.main_loop = asyncio.create_task(
+                    self._start_manage_discriminant_queue_sanitizer_slow(self.bluebox_pool, workers)
+                )
+            else:
+                self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
         log.info("Started timelord.")
-
+    
     async def _start(self):
         self.lock: asyncio.Lock = asyncio.Lock()
         self.vdf_server = await asyncio.start_server(
@@ -143,7 +157,6 @@ class Timelord:
             asyncio.create_task(self.delayed_start())
         else:
             await self.regular_start()
-        log.info("Started timelord.")
 
     def _close(self):
         self._shut_down = True
