@@ -145,7 +145,7 @@ class Timelord:
             else:
                 self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
         log.info("Started timelord.")
-    
+
     async def _start(self):
         self.lock: asyncio.Lock = asyncio.Lock()
         self.vdf_server = await asyncio.start_server(
