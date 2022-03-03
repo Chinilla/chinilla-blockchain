@@ -50,6 +50,7 @@ from chinilla.types.weight_proof import WeightProof, SubEpochData
 from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.config import WALLET_PEERS_PATH_KEY_DEPRECATED
 from chinilla.util.default_root import STANDALONE_ROOT_PATH
+from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint32, uint64
 from chinilla.util.keychain import KeyringIsLocked, Keychain
 from chinilla.util.path import mkdir, path_from_root
@@ -85,6 +86,7 @@ class WalletNode:
     syncing: bool
     full_node_peer: Optional[PeerInfo]
     peer_task: Optional[asyncio.Task]
+    genesis_initialized: bool
     logged_in: bool
     wallet_peers_initialized: bool
     keychain_proxy: Optional[KeychainProxy]
@@ -126,6 +128,10 @@ class WalletNode:
         self.sync_task: Optional[asyncio.Task] = None
         self.logged_in_fingerprint: Optional[int] = None
         self.peer_task = None
+        if self.constants.GENESIS_CHALLENGE is None:
+            self.genesis_initialized = False
+        else:
+            self.genesis_initialized = True
         self.logged_in = False
         self.keychain_proxy = None
         self.local_keychain = local_keychain
@@ -180,10 +186,10 @@ class WalletNode:
             raise e  # Re-raise so that the caller can decide whether to continue or abort
         return key
 
-    async def _start(
+    async def regular_start(
         self,
         fingerprint: Optional[int] = None,
-    ) -> bool:
+    ):
         # Makes sure the coin_state_updates get higher priority than new_peak messages
         self.new_peak_queue = NewPeakQueue(asyncio.PriorityQueue())
 
@@ -250,6 +256,28 @@ class WalletNode:
                 await self.wallet_state_manager.create_more_puzzle_hashes(from_zero=True)
                 self.wsm_close_task = None
         return True
+
+    async def delayed_start(self):
+        self.log.info("delayed_start")
+        config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "wallet")
+        self.config = config
+        self.constants = constants
+        self.genesis_initialized = True
+        await self.wallet_state_manager.initialize_constants(self.config, self.constants)
+        self.wallet_state_manager.state_changed("sync_changed")
+
+    async def _start(
+        self,
+        fingerprint: Optional[int] = None,
+    ) -> bool:
+        if self.constants.GENESIS_CHALLENGE is None:
+            await self.regular_start(fingerprint)
+            asyncio.create_task(self.delayed_start())
+            if self.wallet_state_manager is not None:
+                self.wallet_state_manager.state_changed("sync_changed")
+            return True
+        else:
+            return await self.regular_start(fingerprint)
 
     def _close(self):
         self.log.info("self._close")

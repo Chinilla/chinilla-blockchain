@@ -66,6 +66,7 @@ from chinilla.util.condition_tools import pkm_pairs
 from chinilla.util.config import PEER_DB_PATH_KEY_DEPRECATED
 from chinilla.util.db_wrapper import DBWrapper
 from chinilla.util.errors import ConsensusError, Err, ValidationError
+from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint32, uint64, uint128
 from chinilla.util.path import mkdir, path_from_root
 from chinilla.util.safe_cancel_task import cancel_task_safe
@@ -145,8 +146,8 @@ class FullNode:
     def _set_state_changed_callback(self, callback: Callable):
         self.state_changed_callback = callback
 
-    async def _start(self):
-        self.timelord_lock = asyncio.Lock()
+    async def regular_start(self):
+        self.log.info("regular_start")
         self.compact_vdf_sem = asyncio.Semaphore(4)
 
         # We don't want to run too many concurrent new_peak instances, because it would fetch the same block from
@@ -254,6 +255,22 @@ class FullNode:
         self.initialized = True
         if self.full_node_peers is not None:
             asyncio.create_task(self.full_node_peers.start())
+
+    async def delayed_start(self):
+        self.log.info("delayed_start")
+        config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "full_node")
+
+        self.config = config
+        self.constants = constants
+        await self.regular_start()
+
+    async def _start(self):
+        self.timelord_lock = asyncio.Lock()
+        # create the store (db) and full node instance
+        if self.constants.GENESIS_CHALLENGE is not None:
+            await self.regular_start()
+        else:
+            asyncio.create_task(self.delayed_start())
 
     async def _handle_one_transaction(self, entry: TransactionQueueEntry):
         peer = entry.peer
@@ -732,17 +749,19 @@ class FullNode:
             self._transaction_queue_task.cancel()
         if hasattr(self, "_blockchain_lock_queue"):
             self._blockchain_lock_queue.close()
-        cancel_task_safe(task=self._sync_task, log=self.log)
+        if hasattr(self, "_sync_task"):
+            cancel_task_safe(task=self._sync_task, log=self.log)
 
     async def _await_closed(self):
         for task_id, task in list(self.full_node_store.tx_fetch_tasks.items()):
             cancel_task_safe(task, self.log)
-        await self.connection.close()
+        if hasattr(self, "connection"):
+            await self.connection.close()
         if self._init_weight_proof is not None:
             await asyncio.wait([self._init_weight_proof])
         if hasattr(self, "_blockchain_lock_queue"):
             await self._blockchain_lock_queue.await_closed()
-        if self._sync_task is not None:
+        if hasattr(self, "_sync_test") and self._sync_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await self._sync_task
 
