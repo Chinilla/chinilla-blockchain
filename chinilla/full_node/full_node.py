@@ -761,7 +761,7 @@ class FullNode:
             await asyncio.wait([self._init_weight_proof])
         if hasattr(self, "_blockchain_lock_queue"):
             await self._blockchain_lock_queue.await_closed()
-        if self._sync_task is not None:
+        if hasattr(self, "_sync_task") and self._sync_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await self._sync_task
 

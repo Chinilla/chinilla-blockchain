@@ -227,7 +227,11 @@ class WebSocketServer:
                 await asyncio.sleep(2)
 
                 selected = self.net_config["selected_network"]
-                alert_url = self.net_config["ALERTS_URL"]
+                if selected == "vanillanet":
+                    alert_url = self.net_config["ALERTS_URL"]
+                else:
+                    alert_url = self.net_config["TESTNET_ALERTS_URL"]
+                
                 log.debug("Fetching alerts")
                 response = await fetch(alert_url)
                 log.debug(f"Fetched alert: {response}")
@@ -236,7 +240,10 @@ class WebSocketServer:
 
                 json_response = json.loads(response)
                 if "data" in json_response:
-                    pubkey = self.net_config["CHINILLA_ALERTS_PUBKEY"]
+                    if selected == "vanillanet":
+                        pubkey = self.net_config["ALERTS_PUBKEY"]
+                    else:
+                        pubkey = self.net_config["TESTNET_ALERTS_PUBKEY"]
                     validated = validate_alert(response, pubkey)
                     if validated is False:
                         self.log.error(f"Error unable to validate alert! {response}")
