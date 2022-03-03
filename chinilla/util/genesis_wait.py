@@ -7,7 +7,7 @@ from chinilla.util.config import load_config
 
 
 async def wait_for_genesis_challenge(  # type: ignore
-    root_path: Path, constants: ConsensusConstants, SERVICE_NAME  # type: ignore
+    root_path: Path, constants: ConsensusConstants, SERVICE_NAME
 ) -> Tuple[Dict, ConsensusConstants]:  # type: ignore
     while True:
         await asyncio.sleep(1)
