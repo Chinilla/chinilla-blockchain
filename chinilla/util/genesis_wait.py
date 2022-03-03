@@ -6,9 +6,9 @@ from chinilla.consensus.constants import ConsensusConstants
 from chinilla.util.config import load_config
 
 
-async def wait_for_genesis_challenge(
-    root_path: Path, constants: ConsensusConstants, SERVICE_NAME
-) -> Tuple[Dict, ConsensusConstants]:
+async def wait_for_genesis_challenge(  # type: ignore
+    root_path: Path, constants: ConsensusConstants, SERVICE_NAME  # type: ignore
+) -> Tuple[Dict, ConsensusConstants]:  # type: ignore
     while True:
         await asyncio.sleep(1)
         config = load_config(root_path, "config.yaml", SERVICE_NAME)
