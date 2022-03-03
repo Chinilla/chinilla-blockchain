@@ -439,7 +439,7 @@ class FullNodeRpcApi:
                 return {"headers": []}
         else:
             return {"headers": []}
-        
+
 
         response_headers: List[UnfinishedHeaderBlock] = []
         for ub_height, block, _ in (self.service.full_node_store.get_unfinished_blocks()).values():
