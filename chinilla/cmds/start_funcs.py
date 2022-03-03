@@ -8,6 +8,7 @@ from typing import Optional
 
 from chinilla.cmds.passphrase_funcs import get_current_passphrase
 from chinilla.daemon.client import DaemonProxy, connect_to_daemon_and_validate
+from chinilla.daemon.server import not_launched_error_message
 from chinilla.util.keychain import Keychain, KeyringMaxUnlockAttempts
 from chinilla.util.service_groups import services_for_groups
 
@@ -79,7 +80,16 @@ async def async_start(root_path: Path, group: str, restart: bool) -> None:
             print("started")
         else:
             error = "no response"
-            if msg:
-                error = msg["data"]["error"]
-            print(f"{service} failed to start. Error: {error}")
+            if error == not_launched_error_message:
+                print("Waiting for genesis challenge, network not launched yet.")
+                while True:
+                    if await daemon.is_running(service_name=service):
+                        print("Network launched! ")
+                        break
+                    await asyncio.sleep(2)
+            else:
+                if msg:
+                    error = msg["data"]["error"]
+                    print(f"{service} failed to start. Error: {error}")
+            
     await daemon.close()
