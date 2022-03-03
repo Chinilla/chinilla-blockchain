@@ -432,11 +432,14 @@ class FullNodeRpcApi:
 
     async def get_unfinished_block_headers(self, request: Dict) -> Optional[Dict]:
 
-        peak
         if hasattr(self.service, "blockchain"):
             peak: Optional[BlockRecord] = self.service.blockchain.get_peak()
-        if peak is None:
+
+            if peak is None:
+                return {"headers": []}
+        else:
             return {"headers": []}
+        
 
         response_headers: List[UnfinishedHeaderBlock] = []
         for ub_height, block, _ in (self.service.full_node_store.get_unfinished_blocks()).values():
