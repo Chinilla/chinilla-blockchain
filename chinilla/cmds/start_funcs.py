@@ -91,5 +91,5 @@ async def async_start(root_path: Path, group: str, restart: bool) -> None:
                 if msg:
                     error = msg["data"]["error"]
                     print(f"{service} failed to start. Error: {error}")
-            
+
     await daemon.close()

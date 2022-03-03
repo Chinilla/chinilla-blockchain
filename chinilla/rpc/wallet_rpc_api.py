@@ -1014,7 +1014,7 @@ class WalletRpcApi:
         trade_mgr = self.service.wallet_state_manager.trade_manager
 
         if self.service.genesis_initialized is False:
-            (total, my_offers_count, taken_offers_count) = 0,0,0
+            (total, my_offers_count, taken_offers_count) = 0, 0, 0
         else:
             (total, my_offers_count, taken_offers_count) = await trade_mgr.trade_store.get_trades_count()
 
