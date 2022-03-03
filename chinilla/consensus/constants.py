@@ -65,7 +65,8 @@ class ConsensusConstants:
         return dataclasses.replace(self, **changes)
 
     def replace_str_to_bytes(self, **changes) -> "ConsensusConstants":
-        """        Overrides str (hex) values with bytes.
+        """        
+        Overrides str (hex) values with bytes.
         """
 
         filtered_changes = {}

@@ -231,7 +231,7 @@ class WebSocketServer:
                     alert_url = self.net_config["ALERTS_URL"]
                 else:
                     alert_url = self.net_config["TESTNET_ALERTS_URL"]
-                
+
                 log.debug("Fetching alerts")
                 response = await fetch(alert_url)
                 log.debug(f"Fetched alert: {response}")
