@@ -163,7 +163,11 @@ class WalletStateManager:
                 constants=self.constants,
                 multiprocessing_context=self.multiprocessing_context,
             )
-            self.blockchain = await WalletBlockchain.create(self.basic_store, self.constants, self.weight_proof_handler)
+            self.blockchain = await WalletBlockchain.create(
+                self.basic_store,
+                self.constants,
+                self.weight_proof_handler,
+            )
         else:
             self.blockchain = None
             self.weight_proof_handler = None
