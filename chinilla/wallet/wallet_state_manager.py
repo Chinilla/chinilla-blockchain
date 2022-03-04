@@ -1,6 +1,8 @@
 import asyncio
 import json
 import logging
+import multiprocessing
+import multiprocessing.context
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -24,6 +26,7 @@ from chinilla.types.coin_spend import CoinSpend
 from chinilla.types.full_block import FullBlock
 from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
 from chinilla.util.byte_types import hexstr_to_bytes
+from chinilla.util.config import process_config_start_method
 from chinilla.util.db_wrapper import DBWrapper
 from chinilla.util.errors import Err
 from chinilla.util.ints import uint32, uint64, uint128, uint8
@@ -101,6 +104,7 @@ class WalletStateManager:
     sync_store: WalletSyncStore
     finished_sync_up_to: uint32
     interested_store: WalletInterestedStore
+    multiprocessing_context: multiprocessing.context.BaseContext
     weight_proof_handler: WalletWeightProofHandler
     server: ChinillaServer
     root_path: Path
@@ -153,12 +157,17 @@ class WalletStateManager:
         self.sync_target = uint32(0)
         self.finished_sync_up_to = uint32(0)
         if self.constants.GENESIS_CHALLENGE is not None:
+            multiprocessing_start_method = process_config_start_method(config=self.config, log=self.log)
+            self.multiprocessing_context = multiprocessing.get_context(method=multiprocessing_start_method)
+            self.weight_proof_handler = WalletWeightProofHandler(
+                constants=self.constants,
+                multiprocessing_context=self.multiprocessing_context,
+            )
             self.blockchain = await WalletBlockchain.create(
                 self.basic_store,
                 self.constants,
                 self.weight_proof_handler,
             )
-            self.weight_proof_handler = WalletWeightProofHandler(self.constants)
         else:
             self.blockchain = None
             self.weight_proof_handler = None
