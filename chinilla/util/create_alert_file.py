@@ -8,7 +8,7 @@ from chinilla.util.keychain import Keychain
 from chinilla.util.validate_alert import create_alert_file, create_not_ready_alert_file, validate_alert_file
 
 bitcoin_hash = None
-bram_message = None
+teach_message = None
 
 status = None
 while True:
@@ -91,15 +91,15 @@ if status is True:
             break
 
     print("")
-    print("___________ BRAM MESSAGE ____________")
+    print("___________ TEACH MESSAGE ____________")
     while True:
-        bram_message = input("Insert message from Bram: ")
-        print(f"Bram message = {bram_message}")
+        teach_message = input("Insert message from Teach: ")
+        print(f"Teach message = {teach_message}")
         y_n = input("Does this look good (y/n): ").lower()
         if y_n == "y":
             break
 
-    genesis_challenge_preimage = f"bitcoin_hash:{bitcoin_hash},bram_message:{bram_message}"
+    genesis_challenge_preimage = f"bitcoin_hash:{bitcoin_hash},teach_message:{teach_message}"
 
     create_alert_file(f_path, selected_key, genesis_challenge_preimage)
     print(f"Alert written to file {f_path}")

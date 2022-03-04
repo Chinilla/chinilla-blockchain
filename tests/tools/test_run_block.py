@@ -14,10 +14,10 @@ testnet10 = {
     "EPOCH_BLOCKS": 768,
     "GENESIS_CHALLENGE": bytes.fromhex("ae7d0fd40f1be9e29e8408cb23c18c73751889e8f2eca3b55bf4a9b8dbe90643"),
     "GENESIS_PRE_FARM_FARMER_PUZZLE_HASH": bytes.fromhex(
-        "95c3ebafbf8fe70ff7d97464dc97e1304928b7abbeba2836272f7c55e376a4dd"
+        "4a85e6e2658adc5690cd0a4ef00587a4ca63aa28b73dfb737430e3540f4578a9"
     ),
     "GENESIS_PRE_FARM_POOL_PUZZLE_HASH": bytes.fromhex(
-        "95c3ebafbf8fe70ff7d97464dc97e1304928b7abbeba2836272f7c55e376a4dd"
+        "b235cd8d5005ca6e73081af2577d89751fe9986198026b507e0700167a42aa88"
     ),
     "MEMPOOL_BLOCK_BUFFER": 10,
     "MIN_PLOT_SIZE": 18,
