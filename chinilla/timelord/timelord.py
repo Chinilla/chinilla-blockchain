@@ -33,8 +33,8 @@ from chinilla.types.blockchain_format.slots import (
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
-from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.config import process_config_start_method
+from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
 from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import Streamable, streamable
