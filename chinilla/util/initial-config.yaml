@@ -46,9 +46,9 @@ network_overrides: &network_overrides
 
 selected_network: &selected_network "vanillanet"
 ALERTS_URL: https://download.chinilla.com/notify/vanillanet_alert.txt
-ALERTS_PUBKEY: 89b7fd87cb56e926ecefb879a29aae308be01f31980569f6a75a69d2a9a69daefd71fb778d865f7c50d6c967e3025937
+ALERTS_PUBKEY: 8329937cb5ee3777cfb80d6a385565271211c4658d3edc47b2417a92ee473b783f12de34331c5e787993d70c967dc2d4
 TESTNET_ALERTS_URL: https://download.chinilla.com/notify/testnet10_alert.txt
-TESTNET_ALERTS_PUBKEY: 89b7fd87cb56e926ecefb879a29aae308be01f31980569f6a75a69d2a9a69daefd71fb778d865f7c50d6c967e3025937
+TESTNET_ALERTS_PUBKEY: 8efab5e81fa81654e4dcb7d7d5ba6cc2d4d1f7d5219f62002b92f08a042c9fb1e38f41c7114b21877add1d3bba1a8cf0
 
 # public ssl ca is included in source code
 # Private ssl ca is used for trusted connections between machines user owns
