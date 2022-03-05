@@ -28,7 +28,7 @@ testnet_kwargs = {
     # Used as the initial cc rc challenges, as well as first block back pointers, and first SES back pointer
     # We override this value based on the chain being run (testnet0, vanillanet, etc)
     # Default used for tests is std_hash(b'')
-    "GENESIS_CHALLENGE": bytes.fromhex("ae7d0fd40f1be9e29e8408cb23c18c73751889e8f2eca3b55bf4a9b8dbe90643"),
+    "GENESIS_CHALLENGE": bytes.fromhex("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
     # Forks of chinilla should change this value to provide replay attack protection. This is set to vanillanet genesis
     "AGG_SIG_ME_ADDITIONAL_DATA": bytes.fromhex("7331d2e4f056ba73d093bcebd5827abd78f7791d622ac4e4fac270762bf1f635"),
     "GENESIS_PRE_FARM_POOL_PUZZLE_HASH": bytes.fromhex(

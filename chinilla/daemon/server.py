@@ -25,7 +25,7 @@ from chinilla.plotting.util import add_plot_directory
 from chinilla.server.server import ssl_context_for_root, ssl_context_for_server
 from chinilla.ssl.create_ssl import get_mozilla_ca_crt
 from chinilla.util.chinilla_logging import initialize_logging
-from chinilla.util.config import load_config, save_config
+from chinilla.util.config import load_config
 from chinilla.util.json_util import dict_to_json_str
 from chinilla.util.keychain import (
     Keychain,
@@ -38,7 +38,6 @@ from chinilla.util.keychain import (
 from chinilla.util.path import mkdir
 from chinilla.util.service_groups import validate_service
 from chinilla.util.setproctitle import setproctitle
-from chinilla.util.validate_alert import validate_alert
 from chinilla.util.ws_message import WsRpcMessage, create_payload, format_response
 from chinilla import __version__
 
@@ -127,9 +126,6 @@ async def ping() -> Dict[str, Any]:
     return response
 
 
-not_launched_error_message = "Network not launched yet, waiting for genesis challenge"
-
-
 class WebSocketServer:
     def __init__(
         self,
@@ -154,7 +150,6 @@ class WebSocketServer:
         self.websocket_server = None
         self.ssl_context = ssl_context_for_server(ca_crt_path, ca_key_path, crt_path, key_path, log=self.log)
         self.shut_down = False
-        self.genesis_initialized = False
         self.keychain_server = KeychainServer()
         self.run_check_keys_on_unlock = run_check_keys_on_unlock
 
@@ -192,15 +187,6 @@ class WebSocketServer:
             ping_timeout=300,
             ssl=self.ssl_context,
         )
-        selected = self.net_config["selected_network"]
-        challenge = self.net_config["network_overrides"]["constants"][selected]["GENESIS_CHALLENGE"]
-
-        if challenge is None:
-            self.genesis_initialized = False
-            self.alert_task = asyncio.create_task(self.check_for_alerts())
-        else:
-            self.alert_task = None
-            self.genesis_initialized = True
         self.log.info("Waiting Daemon WebSocketServer closure")
 
     def cancel_task_safe(self, task: Optional[asyncio.Task]):
@@ -216,50 +202,7 @@ class WebSocketServer:
         await self.exit()
         if self.websocket_server is not None:
             self.websocket_server.close()
-        self.cancel_task_safe(self.alert_task)
         return {"success": True}
-
-    async def check_for_alerts(self):
-        while True:
-            try:
-                if self.shut_down:
-                    break
-                await asyncio.sleep(2)
-
-                selected = self.net_config["selected_network"]
-                alert_url = self.net_config["ALERTS_URL"]
-                if selected != "vanillanet":
-                    alert_url = self.net_config["TESTNET_ALERTS_URL"]
-                log.debug("Fetching alerts")
-                response = await fetch(alert_url)
-                log.debug(f"Fetched alert: {response}")
-                if response is None:
-                    continue
-
-                json_response = json.loads(response)
-                if "data" in json_response:
-                    pubkey = self.net_config["ALERTS_PUBKEY"]
-                    if selected != "vanillanet":
-                        pubkey = self.net_config["TESTNET_ALERTS_PUBKEY"]
-                    validated = validate_alert(response, pubkey)
-                    if validated is False:
-                        self.log.error(f"Error unable to validate alert! {response}")
-                        continue
-
-                    data = json_response["data"]
-                    data_json = json.loads(data)
-                    if data_json["ready"] is False:
-                        # Network not launched yet
-                        log.info("Network is not ready yet")
-                        continue
-
-                    challenge = data_json["genesis_challenge"]
-                    self.net_config["network_overrides"]["constants"][selected]["GENESIS_CHALLENGE"] = challenge
-                    save_config(self.root_path, "config.yaml", self.net_config)
-                    self.genesis_initialized = True
-                    break
-            except Exception as e:
-                log.error(f"Exception in check alerts task: {e}")
 
     async def safe_handle(self, websocket: WebSocketServerProtocol, path: str):
         service_name = ""
@@ -654,7 +597,7 @@ class WebSocketServer:
         return response
 
     def get_status(self) -> Dict[str, Any]:
-        response = {"success": True, "genesis_initialized": self.genesis_initialized}
+        response = {"success": True, "genesis_initialized": True}
         return response
 
     def get_version(self) -> Dict[str, Any]:
