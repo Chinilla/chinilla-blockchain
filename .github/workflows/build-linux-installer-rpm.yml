@@ -167,7 +167,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm
-          out_dir: beta/chinilla-blockchain.x86_64_latest_beta.rpm
+          out_dir: beta/chinilla-blockchain_x86_64_latest_beta.rpm
           cdn_domain: download.chinilla.com
 
     - name: Upload Beta Installer Sha256
@@ -179,7 +179,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.sha256
-          out_dir: beta/chinilla-blockchain.x86_64_latest_beta.rpm.sha256
+          out_dir: beta/chinilla-blockchain_x86_64_latest_beta.rpm.sha256
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer
@@ -191,7 +191,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm
-          out_dir: install/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.x86_64.rpm
+          out_dir: install/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_x86_64.rpm
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer SHA256
@@ -203,7 +203,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.sha256
-          out_dir: install/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.x86_64.rpm.sha256
+          out_dir: install/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_x86_64.rpm.sha256
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer Torrent
@@ -215,7 +215,7 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.torrent
-          out_dir: torrentschinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.x86_64.rpm.torrent
+          out_dir: torrents/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_x86_64.rpm.torrent
 
     - name: Get tag name
       if: startsWith(github.ref, 'refs/tags/')
