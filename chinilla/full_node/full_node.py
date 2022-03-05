@@ -2,6 +2,8 @@ import asyncio
 import contextlib
 import dataclasses
 import logging
+import multiprocessing
+from multiprocessing.context import BaseContext
 import random
 import time
 import traceback
@@ -63,10 +65,9 @@ from chinilla.util import cached_bls
 from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.check_fork_next_block import check_fork_next_block
 from chinilla.util.condition_tools import pkm_pairs
-from chinilla.util.config import PEER_DB_PATH_KEY_DEPRECATED
+from chinilla.util.config import PEER_DB_PATH_KEY_DEPRECATED, process_config_start_method
 from chinilla.util.db_wrapper import DBWrapper
 from chinilla.util.errors import ConsensusError, Err, ValidationError
-from chinilla.util.genesis_wait import wait_for_genesis_challenge
 from chinilla.util.ints import uint8, uint32, uint64, uint128
 from chinilla.util.path import mkdir, path_from_root
 from chinilla.util.safe_cancel_task import cancel_task_safe
@@ -96,6 +97,7 @@ class FullNode:
     state_changed_callback: Optional[Callable]
     timelord_lock: asyncio.Lock
     initialized: bool
+    multiprocessing_start_context: Optional[BaseContext]
     weight_proof_handler: Optional[WeightProofHandler]
     _ui_tasks: Set[asyncio.Task]
     _blockchain_lock_queue: LockQueue
@@ -127,6 +129,10 @@ class FullNode:
         self.compact_vdf_requests: Set[bytes32] = set()
         self.log = logging.getLogger(name if name else __name__)
 
+        # TODO: Logging isn't setup yet so the log entries related to parsing the
+        #       config would end up on stdout if handled here.
+        self.multiprocessing_context = None
+
         # Used for metrics
         self.dropped_tx: Set[bytes32] = set()
         self.not_dropped_tx = 0
@@ -146,8 +152,8 @@ class FullNode:
     def _set_state_changed_callback(self, callback: Callable):
         self.state_changed_callback = callback
 
-    async def regular_start(self):
-        self.log.info("regular_start")
+    async def _start(self):
+        self.timelord_lock = asyncio.Lock()
         self.compact_vdf_sem = asyncio.Semaphore(4)
 
         # We don't want to run too many concurrent new_peak instances, because it would fetch the same block from
@@ -186,10 +192,22 @@ class FullNode:
         self.log.info("Initializing blockchain from disk")
         start_time = time.time()
         reserved_cores = self.config.get("reserved_cores", 0)
+        multiprocessing_start_method = process_config_start_method(config=self.config, log=self.log)
+        self.multiprocessing_context = multiprocessing.get_context(method=multiprocessing_start_method)
         self.blockchain = await Blockchain.create(
-            self.coin_store, self.block_store, self.constants, self.hint_store, self.db_path.parent, reserved_cores
+            coin_store=self.coin_store,
+            block_store=self.block_store,
+            consensus_constants=self.constants,
+            hint_store=self.hint_store,
+            blockchain_dir=self.db_path.parent,
+            reserved_cores=reserved_cores,
+            multiprocessing_context=self.multiprocessing_context,
         )
-        self.mempool_manager = MempoolManager(self.coin_store, self.constants)
+        self.mempool_manager = MempoolManager(
+            coin_store=self.coin_store,
+            consensus_constants=self.constants,
+            multiprocessing_context=self.multiprocessing_context,
+        )
 
         # Blocks are validated under high priority, and transactions under low priority. This guarantees blocks will
         # be validated first.
@@ -256,22 +274,6 @@ class FullNode:
         if self.full_node_peers is not None:
             asyncio.create_task(self.full_node_peers.start())
 
-    async def delayed_start(self):
-        self.log.info("delayed_start")
-        config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "full_node")
-
-        self.config = config
-        self.constants = constants
-        await self.regular_start()
-
-    async def _start(self):
-        self.timelord_lock = asyncio.Lock()
-        # create the store (db) and full node instance
-        if self.constants.GENESIS_CHALLENGE is not None:
-            await self.regular_start()
-        else:
-            asyncio.create_task(self.delayed_start())
-
     async def _handle_one_transaction(self, entry: TransactionQueueEntry):
         peer = entry.peer
         try:
@@ -302,7 +304,11 @@ class FullNode:
             raise
 
     async def initialize_weight_proof(self):
-        self.weight_proof_handler = WeightProofHandler(self.constants, self.blockchain)
+        self.weight_proof_handler = WeightProofHandler(
+            constants=self.constants,
+            blockchain=self.blockchain,
+            multiprocessing_context=self.multiprocessing_context,
+        )
         peak = self.blockchain.get_peak()
         if peak is not None:
             await self.weight_proof_handler.create_sub_epoch_segments()
@@ -749,19 +755,17 @@ class FullNode:
             self._transaction_queue_task.cancel()
         if hasattr(self, "_blockchain_lock_queue"):
             self._blockchain_lock_queue.close()
-        if hasattr(self, "_sync_task"):
-            cancel_task_safe(task=self._sync_task, log=self.log)
+        cancel_task_safe(task=self._sync_task, log=self.log)
 
     async def _await_closed(self):
         for task_id, task in list(self.full_node_store.tx_fetch_tasks.items()):
             cancel_task_safe(task, self.log)
-        if hasattr(self, "connection"):
-            await self.connection.close()
+        await self.connection.close()
         if self._init_weight_proof is not None:
             await asyncio.wait([self._init_weight_proof])
         if hasattr(self, "_blockchain_lock_queue"):
             await self._blockchain_lock_queue.await_closed()
-        if hasattr(self, "_sync_test") and self._sync_task is not None:
+        if self._sync_task is not None:
             with contextlib.suppress(asyncio.CancelledError):
                 await self._sync_task
 
@@ -1412,6 +1416,7 @@ class FullNode:
         self,
         respond_block: full_node_protocol.RespondBlock,
         peer: Optional[ws.WSChinillaConnection] = None,
+        raise_on_disconnected: bool = False,
     ) -> Optional[Message]:
         """
         Receive a full block from a peer full node (or ourselves).
@@ -1533,6 +1538,8 @@ class FullNode:
 
                 elif added == ReceiveBlockResult.DISCONNECTED_BLOCK:
                     self.log.info(f"Disconnected block {header_hash} at height {block.height}")
+                    if raise_on_disconnected:
+                        raise RuntimeError("Expected block to be added, received disconnected block.")
                     return None
                 elif added == ReceiveBlockResult.NEW_PEAK:
                     # Only propagate blocks which extend the blockchain (becomes one of the heads)
@@ -1916,7 +1923,7 @@ class FullNode:
             self.log.warning("Trying to make a pre-farm block but height is not 0")
             return None
         try:
-            await self.respond_block(full_node_protocol.RespondBlock(block))
+            await self.respond_block(full_node_protocol.RespondBlock(block), raise_on_disconnected=True)
         except Exception as e:
             self.log.warning(f"Consensus error validating block: {e}")
             if timelord_peer is not None:

@@ -28,14 +28,14 @@ testnet_kwargs = {
     # Used as the initial cc rc challenges, as well as first block back pointers, and first SES back pointer
     # We override this value based on the chain being run (testnet0, vanillanet, etc)
     # Default used for tests is std_hash(b'')
-    "GENESIS_CHALLENGE": bytes.fromhex("ae7d0fd40f1be9e29e8408cb23c18c73751889e8f2eca3b55bf4a9b8dbe90643"),
+    "GENESIS_CHALLENGE": bytes.fromhex("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
     # Forks of chinilla should change this value to provide replay attack protection. This is set to vanillanet genesis
     "AGG_SIG_ME_ADDITIONAL_DATA": bytes.fromhex("7331d2e4f056ba73d093bcebd5827abd78f7791d622ac4e4fac270762bf1f635"),
     "GENESIS_PRE_FARM_POOL_PUZZLE_HASH": bytes.fromhex(
-        "95c3ebafbf8fe70ff7d97464dc97e1304928b7abbeba2836272f7c55e376a4dd"
+        "63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12"
     ),
     "GENESIS_PRE_FARM_FARMER_PUZZLE_HASH": bytes.fromhex(
-        "95c3ebafbf8fe70ff7d97464dc97e1304928b7abbeba2836272f7c55e376a4dd"
+        "09c505b9aae9fe97ba20d8622b63574fa2bfc19dcb9cbf2d45f3b53bcac60072"
     ),
     "MAX_VDF_WITNESS_SIZE": 64,
     # Size of mempool = 50x the size of block # temporary change until #9125 gets in

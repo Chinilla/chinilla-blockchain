@@ -2,6 +2,7 @@ import asyncio
 import dataclasses
 import io
 import logging
+import multiprocessing
 import os
 import random
 import time
@@ -32,7 +33,7 @@ from chinilla.types.blockchain_format.slots import (
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
-from chinilla.util.genesis_wait import wait_for_genesis_challenge
+from chinilla.util.config import process_config_start_method
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
 from chinilla.util.setproctitle import getproctitle, setproctitle
 from chinilla.util.streamable import Streamable, streamable
@@ -101,6 +102,9 @@ class Timelord:
         # Used to label proofs in `finished_proofs` and to only filter proofs corresponding to the most recent state.
         self.num_resets: int = 0
 
+        multiprocessing_start_method = process_config_start_method(config=self.config, log=log)
+        self.multiprocessing_context = multiprocessing.get_context(method=multiprocessing_start_method)
+
         self.process_communication_tasks: List[asyncio.Task] = []
         self.main_loop = None
         self.vdf_server = None
@@ -119,13 +123,13 @@ class Timelord:
         self.last_active_time = time.time()
         self.bluebox_pool: Optional[ProcessPoolExecutor] = None
 
-    async def delayed_start(self):
-        config, constants = await wait_for_genesis_challenge(self.root_path, self.constants, "timelord")
-        self.config = config
-        self.constants = constants
-        await self.regular_start()
-
-    async def regular_start(self):
+    async def _start(self):
+        self.lock: asyncio.Lock = asyncio.Lock()
+        self.vdf_server = await asyncio.start_server(
+            self._handle_client,
+            self.config["vdf_server"]["host"],
+            self.config["vdf_server"]["port"],
+        )
         self.last_state: LastState = LastState(self.constants)
         slow_bluebox = self.config.get("slow_bluebox", False)
         if not self.bluebox_mode:
@@ -136,6 +140,7 @@ class Timelord:
                 workers = self.config.get("slow_bluebox_process_count", 1)
                 self.bluebox_pool = ProcessPoolExecutor(
                     max_workers=workers,
+                    mp_context=self.multiprocessing_context,
                     initializer=setproctitle,
                     initargs=(f"{getproctitle()}_worker",),
                 )
@@ -145,18 +150,6 @@ class Timelord:
             else:
                 self.main_loop = asyncio.create_task(self._manage_discriminant_queue_sanitizer())
         log.info("Started timelord.")
-
-    async def _start(self):
-        self.lock: asyncio.Lock = asyncio.Lock()
-        self.vdf_server = await asyncio.start_server(
-            self._handle_client,
-            self.config["vdf_server"]["host"],
-            self.config["vdf_server"]["port"],
-        )
-        if self.constants.GENESIS_CHALLENGE is None:
-            asyncio.create_task(self.delayed_start())
-        else:
-            await self.regular_start()
 
     def _close(self):
         self._shut_down = True
