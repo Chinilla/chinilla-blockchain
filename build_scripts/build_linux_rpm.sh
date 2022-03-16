@@ -69,7 +69,7 @@ cp package.json package.json.orig
 jq --arg VER "$CHINILLA_INSTALLER_VERSION" '.version=$VER' package.json > temp.json && mv temp.json package.json
 
 electron-packager . chinilla-blockchain --asar.unpack="**/daemon/**" --platform=linux \
---icon=src/assets/img/Chinilla.icns --overwrite --app-bundle-id=net.chinilla.blockchain \
+--icon=src/assets/img/Chinilla.icns --overwrite --app-bundle-id=com.chinilla.blockchain \
 --appVersion=$CHINILLA_INSTALLER_VERSION --executable-name=chinilla-blockchain
 LAST_EXIT_CODE=$?
 

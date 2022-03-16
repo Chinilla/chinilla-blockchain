@@ -60,7 +60,7 @@ cp package.json package.json.orig
 jq --arg VER "$CHINILLA_INSTALLER_VERSION" '.version=$VER' package.json > temp.json && mv temp.json package.json
 
 electron-packager . Chinilla --asar.unpack="**/daemon/**" --platform=darwin \
---icon=src/assets/img/Chinilla.icns --overwrite --app-bundle-id=net.chinilla.blockchain \
+--icon=src/assets/img/Chinilla.icns --overwrite --app-bundle-id=com.chinilla.blockchain \
 --appVersion=$CHINILLA_INSTALLER_VERSION
 LAST_EXIT_CODE=$?
 
@@ -102,7 +102,7 @@ ls -lh final_installer
 if [ "$NOTARIZE" ]; then
 	echo "Notarize $DMG_NAME on ci"
 	cd final_installer || exit
-  notarize-cli --file=$DMG_NAME --bundle-id net.chinilla.blockchain \
+  notarize-cli --file=$DMG_NAME --bundle-id com.chinilla.blockchain \
 	--username "$APPLE_NOTARIZE_USERNAME" --password "$APPLE_NOTARIZE_PASSWORD"
   echo "Notarization step complete"
 else
@@ -113,7 +113,7 @@ fi
 #
 # Ask for username and password. password should be an app specific password.
 # Generate app specific password https://support.apple.com/en-us/HT204397
-# xcrun altool --notarize-app -f Chinilla-0.1.X.dmg --primary-bundle-id net.chinilla.blockchain -u username -p password
+# xcrun altool --notarize-app -f Chinilla-0.1.X.dmg --primary-bundle-id com.chinilla.blockchain -u username -p password
 # xcrun altool --notarize-app; -should return REQUEST-ID, use it in next command
 #
 # Wait until following command return a success message".
