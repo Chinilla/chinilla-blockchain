@@ -20,7 +20,9 @@ from tests.time_out_assert import time_out_assert
 log = logging.getLogger(__name__)
 
 
-async def disconnect_all_and_reconnect(server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str) -> bool:
+async def disconnect_all_and_reconnect(
+    server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str
+) -> bool:
     cons = list(server.all_connections.values())[:]
     for con in cons:
         await con.close()
@@ -68,7 +70,9 @@ async def add_dummy_connection(
     return incoming_queue, peer_id
 
 
-async def connect_and_get_peer(server_1: ChinillaServer, server_2: ChinillaServer, self_hostname: str) -> WSChinillaConnection:
+async def connect_and_get_peer(
+    server_1: ChinillaServer, server_2: ChinillaServer, self_hostname: str
+) -> WSChinillaConnection:
     """
     Connect server_2 to server_1, and get return the connection in server_1.
     """
