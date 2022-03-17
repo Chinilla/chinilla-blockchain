@@ -28,7 +28,7 @@ for setuptools_scm/PEP 440 reasons.
 
 ### Added
 
-- Added checks to ensure wallet address prefixes are either `xch` or `txch`.
+- Added checks to ensure wallet address prefixes are either `hcx` or `thcx`.
 - Added a better TLS1.3 check to handle cases where python is using a non-openssl TLS library.
 
 ### Changed
