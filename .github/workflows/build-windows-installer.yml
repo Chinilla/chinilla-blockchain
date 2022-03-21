@@ -168,8 +168,8 @@ jobs:
       if: github.ref == 'refs/heads/main'
       uses: canastro/copy-file-action@master
       with:
-        source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
-        target: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe
+        source: ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
+        target: ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe
 
     - name: Upload to DO Spaces
       if: steps.check_secrets.outputs.HAS_DO_SECRET
