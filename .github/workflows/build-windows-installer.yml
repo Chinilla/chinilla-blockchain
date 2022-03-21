@@ -164,6 +164,13 @@ jobs:
         name: Windows-Installers
         path: ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\
 
+    - name: Create Beta File
+      if: github.ref == 'refs/heads/main'
+      uses: canastro/copy-file-action@master
+      with:
+        source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
+        target: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe
+
     - name: Upload to DO Spaces
       if: steps.check_secrets.outputs.HAS_DO_SECRET
       uses: BetaHuhn/do-spaces-action@v2
@@ -181,6 +188,13 @@ jobs:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
          certutil.exe -hashfile ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe SHA256 > ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.sha256
+         ls ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\
+
+    - name: Create Beta Checksum
+      env:
+        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
+      run: |
+         certutil.exe -hashfile ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe SHA256 > ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe.sha256
          ls ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\
 
     - name: Install py3createtorrent
@@ -202,8 +216,8 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe
-          out_dir: beta/ChinillaSetup-latest-beta.exe
+          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe
+          out_dir: beta
           cdn_domain: download.chinilla.com
 
     - name: Upload Beta Installer Sha256
@@ -214,8 +228,8 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.sha256
-          out_dir: beta/ChinillaSetup-latest-beta.exe.sha256
+          source: \chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-latest.exe.sha256
+          out_dir: beta
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer
