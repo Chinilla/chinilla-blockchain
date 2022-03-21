@@ -147,19 +147,13 @@ jobs:
         git status
         cd ../build_scripts
         sh build_macos.sh
+        cp final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg final_installer/Chinilla-beta-latest.dmg
 
     - name: Upload MacOS artifacts
       uses: actions/upload-artifact@v2
       with:
         name: Chinilla-Installer-MacOS-intel-dmg
         path: ${{ github.workspace }}/build_scripts/final_installer/
-
-    - name: Create Beta File
-      if: github.ref == 'refs/heads/main'
-      uses: canastro/copy-file-action@master
-      with:
-        source:  ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.dmg
-        target:  ${{ github.workspace }}/build_scripts/final_installer/Chinilla-latest.dmg
 
     - name: Create Checksums
       run: |
@@ -170,7 +164,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         ls
-        shasum -a 256 ${{ github.workspace }}/build_scripts/final_installer/Chinilla-latest.dmg > ${{ github.workspace }}/build_scripts/final_installer/Chinilla-latest.dmg.sha256
+        shasum -a 256 ${{ github.workspace }}/build_scripts/final_installer/Chinilla-beta-latest.dmg > ${{ github.workspace }}/build_scripts/final_installer/Chinilla-beta-latest.dmg.sha256
 
     - name: Upload to DO Spaces
       if: steps.check_secrets.outputs.HAS_DO_SECRET
@@ -203,7 +197,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/Chinilla-latest.dmg
+          source: /build_scripts/final_installer/Chinilla-beta-latest.dmg
           out_dir: beta
           cdn_domain: download.chinilla.com
 
@@ -215,7 +209,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/Chinilla-$latest.dmg.sha256
+          source: /build_scripts/final_installer/Chinilla-beta-latest.dmg.sha256
           out_dir: beta
           cdn_domain: download.chinilla.com
 

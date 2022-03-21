@@ -151,6 +151,7 @@ jobs:
         $env:path="C:\Program` Files` (x86)\Microsoft` Visual` Studio\2019\Enterprise\SDK\ScopeCppSDK\vc15\VC\bin\;$env:path"
         $env:path="C:\Program` Files` (x86)\Windows` Kits\10\App` Certification` Kit;$env:path"
         .\build_scripts\build_windows.ps1
+        cp 
 
     - name: Upload Windows exe's to artifacts
       uses: actions/upload-artifact@v2.2.2
@@ -191,6 +192,7 @@ jobs:
          ls ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\
 
     - name: Create Beta Checksum
+      if: github.ref == 'refs/heads/main'
       env:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
