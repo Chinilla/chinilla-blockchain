@@ -100,7 +100,7 @@ for setuptools_scm/PEP 440 reasons.
 - Thanks to @risner for fixes related to using colorlog.
 - Fixed issues in reading the pool_list from config if set to null.
 - Fixed display info in CLI chinilla show -c when No Info should be displayed.
-- Thanks to @madMAx43v3r for fixes in chinillapos related to a possible race condition when multiple threads call Verifier::ValidateProof.
+- Thanks to @madMAx42v3r for fixes in chiapos related to a possible race condition when multiple threads call Verifier::ValidateProof.
 - Thanks to @PastaPastaPasta for some compiler warning fixes in bls-signatures.
 - Thanks to @random-zebra for fixing a bug in the bls-signature copy assignment operator.
 - Thanks to @lourkeur for fixes in blspy related to pybind11 2.8+.
@@ -125,7 +125,6 @@ for setuptools_scm/PEP 440 reasons.
 - Sending a TX with too low of a fee can cause an infinite spinner in the GUI when the mempool is full.
   - Workaround: Restart the GUI, or clear unconfirmed TX.
 - Claiming rewards when self-pooling using CLI will show an error message, but it will actually create the transaction.
-
 
 ## 1.2.11 Chinilla blockchain 2021-11-4
 
