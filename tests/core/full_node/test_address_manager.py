@@ -1,4 +1,3 @@
-import asyncio
 import math
 import time
 from pathlib import Path
@@ -9,12 +8,6 @@ from chinilla.server.address_manager import AddressManager, ExtendedPeerInfo
 from chinilla.server.address_manager_store import AddressManagerStore
 from chinilla.types.peer_info import PeerInfo, TimestampedPeerInfo
 from chinilla.util.ints import uint16, uint64
-
-
-@pytest.fixture(scope="module")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
 
 
 class AddressManagerTest(AddressManager):

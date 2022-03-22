@@ -41,6 +41,9 @@ jobs:
     - name: Cleanup any leftovers that exist from previous runs
       run: bash build_scripts/clean-runner.sh || true
 
+    - uses: Chinilla/actions/enforce-semver@main
+      if: startsWith(github.ref, 'refs/tags/')
+
     # Create our own venv outside of the git directory JUST for getting the ACTUAL version so that install can't break it
     - name: Get version number
       id: version_number
@@ -117,6 +120,8 @@ jobs:
         git status
         cd ../build_scripts
         sh build_linux_rpm.sh amd64
+        cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm
+        cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
 
     - name: Upload Linux artifacts
       uses: actions/upload-artifact@v2
@@ -132,21 +137,30 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm
           out_dir: dev
           cdn_domain: download.chinilla.com
 
-    - name: Create Checksums
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+    - name: Create Beta Checksum
+      if: github.ref == 'refs/heads/main'
       env:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
          ls $GITHUB_WORKSPACE/build_scripts/final_installer/
-         sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm.sha256
+         sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-beta-latest-x86-64.rpm.sha256
+         ls $GITHUB_WORKSPACE/build_scripts/final_installer/
+
+    - name: Create Release Checksum
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
+      run: |
+         ls $GITHUB_WORKSPACE/build_scripts/final_installer/
+         sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm.sha256
          ls $GITHUB_WORKSPACE/build_scripts/final_installer/
 
     - name: Install py3createtorrent
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+      if: startsWith(github.ref, 'refs/tags/')
       run: |
         pip3 install py3createtorrent
 
@@ -155,7 +169,7 @@ jobs:
       env:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
-          py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm -o $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm.torrent --webseed https://download.chinilla.com/install/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm
+          py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm -o $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm.torrent --webseed https://download.chinilla.com/install/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm
           ls
 
     - name: Upload Beta Installer
@@ -166,8 +180,8 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm
-          out_dir: beta/chinilla-blockchain-x86_64_latest_beta.rpm
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm
+          out_dir: beta
           cdn_domain: download.chinilla.com
 
     - name: Upload Beta Installer Sha256
@@ -178,8 +192,8 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.sha256
-          out_dir: beta/chinilla-blockchain-x86_64_latest_beta.rpm.sha256
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm.sha256
+          out_dir: beta
           cdn_domain: download.chinilla.com
 
     - name: Upload Release Installer
@@ -190,7 +204,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm
           out_dir: install
           cdn_domain: download.chinilla.com
 
@@ -202,7 +216,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.sha256
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm.sha256
           out_dir: install
           cdn_domain: download.chinilla.com
 
@@ -214,7 +228,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm.torrent
+          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm.torrent
           out_dir: torrents
 
     - name: Get tag name

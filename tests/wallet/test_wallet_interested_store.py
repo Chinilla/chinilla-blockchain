@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 from secrets import token_bytes
 import aiosqlite
@@ -9,12 +8,6 @@ from chinilla.util.db_wrapper import DBWrapper
 from chinilla.util.ints import uint64
 
 from chinilla.wallet.wallet_interested_store import WalletInterestedStore
-
-
-@pytest.fixture(scope="module")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
 
 
 class TestWalletInterestedStore:

@@ -11,7 +11,7 @@ from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.full_block import FullBlock
 from chinilla.types.weight_proof import SubEpochChallengeSegment
-from chinilla.util.ints import uint8, uint32
+from chinilla.util.ints import uint8, uint32, uint64
 from chinilla.util.streamable import (
     Streamable,
     streamable,
@@ -25,7 +25,7 @@ from chinilla.util.streamable import (
     parse_size_hints,
     parse_str,
 )
-from tests.setup_nodes import bt, test_constants
+from tests.setup_nodes import test_constants
 
 
 def test_basic():
@@ -65,9 +65,8 @@ def test_variable_size():
             a: int
 
 
-def test_json():
-    block = bt.create_genesis_block(test_constants, bytes([0] * 32), b"0")
-
+def test_json(bt):
+    block = bt.create_genesis_block(test_constants, bytes32([0] * 32), uint64(0))
     dict_block = block.to_json_dict()
     assert FullBlock.from_json_dict(dict_block) == block
 

@@ -6,6 +6,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 for setuptools_scm/PEP 440 reasons.
 
+## [Unreleased]
+
+
+## 1.3.1 Chinilla blockchain 2022-3-16
+
+### Fixed
+
+- Improved config.yaml update concurrency to prevent some cases of the wrong pool being used for a PlotNFT.
+- Fixed `chinilla keys show` displaying non-observer-derived wallet address.
+- Fixed `plotnft claim` returning an error.
+- Fixed invalid DB commit that prevented rollback of coin store changes.
+- Fixed locking issue with `PlotManager.plots` that caused high lookup times on plots.
+- Fixed exception when `chinilla keys migrate` is run without needing migration.
+- Fixed farmer rewards dialog (GUI).
+- Fixed display of pool payout address (GUI).
+- Fixed display of harvesters status when harvesters are restarted (GUI).
+- Fixed wallet RPC `get_offers_count` returning an error when there are no trades (Thanks, @dkackman!)
+- Fixed spelling of "genrated" (Thanks again, @dkackman!)
+- Fixed typo "log_maxbytessrotation" in initial-config (@skweee made their first contribution!)
+
+### Added
+
+- Added checks to ensure wallet address prefixes are either `hcx` or `thcx`.
+- Added a better TLS1.3 check to handle cases where python is using a non-openssl TLS library.
+
+### Changed
+
+- Update the database queries for the `block_count_metrics` RPC endpoint to utilize indexes effectively for V2 DBs.
+- Several improvements to tests.
+
+
 ## 1.3.0 Chinilla blockchain 2022-3-07
 
 ### Added:
@@ -37,7 +68,7 @@ for setuptools_scm/PEP 440 reasons.
 - CA certificate store update.
 - VDF, chiapos, and blspy workflows updated to support python 3.10 wheels.
 - We now store peers and peer information in a serialized format instead of sqlite. The new files are called peers.dat and wallet_peers.dat. New settings peers_file_path and wallet_peers_file_path added to config.yaml.
-- CLI option chinilla show will display the currently selected network (mainnet or testnet).
+- CLI option chinilla show will display the currently selected network (vanillanet or testnet).
 - CLI option chinilla plots check will display the Pool Contract Address for Portable (PlotNFT) plots.
 - Thanks to @cross for adding the ability to resolve IPv6 from hostnames in config.yaml. Added new config option prefer_ipv6 to toggle whether to resolve to IPv6 or IPv4. Default is false (IPv4).
 - The default timeout when syncing the node was increased from 10 seconds to 30 seconds to avoid timing out when syncing from slower peers.
@@ -54,6 +85,8 @@ for setuptools_scm/PEP 440 reasons.
 - Removed the option to display "All" rows per page on the transactions page of the GUI.
 - Updated the background image for the MacOS installer.
 - Changed the behavior of what info is displayed if the database is still syncing.
+  - It should not be expected that wallet info, such as payout address, should not reflect what their desired values until everything has completed syncing.
+  - The payout instructions may not be editable via the GUI until syncing has completed.
 
 ### Fixed:
 
@@ -76,18 +109,22 @@ for setuptools_scm/PEP 440 reasons.
 - Fixed issue where the DB could lose the peak of the chain when receiving a compressed block.
 - Fixed showing inbound transaction after an offer is cancelled.
 - Fixed blockchain fee "Value seems high" message showing up when it shouldn't.
+- Bugs in pool farming where auth key was being set incorrectly, leading to invalid signature bugs.
+- Memory leak in the full node sync store where peak hashes were stored without being pruned.
+- Fixed a timelord issue which could cause a few blocks to not be infused on chain if a certain proof of space signs conflicting blocks.
 
 ### Known Issues:
 
 - When you are adding plots and you choose the option to “create a Plot NFT”, you will get an error message “Initial_target_state” and the plots will not get created.
   - Workaround: Create the Plot NFT first in the “Pool” tab, and then add your plots and choose the created plot NFT in the drop down.
-- If you are installing on a machine for the first time, when the GUI loads and you don’t have any pre-existing wallet keys, the GUI will flicker and not load anything.
-  - Workaround: close and relaunch the GUI.
 - When you close the Chinilla app, regardless if you are in farmer mode or wallet, the content on the exit dialog isn’t correct.
 - If you start with wallet mode and then switch to farmer mode and back to wallet mode, the full node will continue to sync in the background. To get the full node to stop syncing after switching to wallet mode, you will need to close the Chinilla and relaunch the Chinilla app.
 - Wallets with large number of transactions or large number of coins will take longer to sync (more than a few minutes), but should take less time than a full node sync. It could fail in some cases.
 - Huge numbers cannot be put into amount/fee input for transactions in the GUI.
 - Some Linux systems experience excessive memory usage with the value *default*/*python_default*/*fork* configured for *multiprocessing_start_method:*. Setting this value to *spawn* may produce better results, but in some uncommon cases, is know to cause crashes.
+- Sending a TX with too low of a fee can cause an infinite spinner in the GUI when the mempool is full.
+  - Workaround: Restart the GUI, or clear unconfirmed TX.
+- Claiming rewards when self-pooling using CLI will show an error message, but it will actually create the transaction.
 
 ## 1.2.11 Chinilla blockchain 2021-11-4
 
@@ -122,6 +159,7 @@ This release also includes several important performance improvements as a resul
 ### Known Issues
 
 - PlotNFT transactions via CLI (e.g. `chinilla plotnft join`) now accept a fee parameter, but it is not yet operable.
+
 
 ## 1.2.10 Chinilla blockchain 2021-10-25
 

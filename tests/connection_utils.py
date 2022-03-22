@@ -15,13 +15,14 @@ from chinilla.ssl.create_ssl import generate_ca_signed_cert
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.peer_info import PeerInfo
 from chinilla.util.ints import uint16
-from tests.setup_nodes import self_hostname
 from tests.time_out_assert import time_out_assert
 
 log = logging.getLogger(__name__)
 
 
-async def disconnect_all_and_reconnect(server: ChinillaServer, reconnect_to: ChinillaServer) -> bool:
+async def disconnect_all_and_reconnect(
+    server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str
+) -> bool:
     cons = list(server.all_connections.values())[:]
     for con in cons:
         await con.close()
@@ -29,7 +30,7 @@ async def disconnect_all_and_reconnect(server: ChinillaServer, reconnect_to: Chi
 
 
 async def add_dummy_connection(
-    server: ChinillaServer, dummy_port: int, type: NodeType = NodeType.FULL_NODE
+    server: ChinillaServer, self_hostname: str, dummy_port: int, type: NodeType = NodeType.FULL_NODE
 ) -> Tuple[asyncio.Queue, bytes32]:
     timeout = aiohttp.ClientTimeout(total=10)
     session = aiohttp.ClientSession(timeout=timeout)
@@ -69,7 +70,9 @@ async def add_dummy_connection(
     return incoming_queue, peer_id
 
 
-async def connect_and_get_peer(server_1: ChinillaServer, server_2: ChinillaServer) -> WSChinillaConnection:
+async def connect_and_get_peer(
+    server_1: ChinillaServer, server_2: ChinillaServer, self_hostname: str
+) -> WSChinillaConnection:
     """
     Connect server_2 to server_1, and get return the connection in server_1.
     """
