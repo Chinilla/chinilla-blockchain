@@ -144,7 +144,7 @@ jobs:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
         ls $GITHUB_WORKSPACE/build_scripts/final_installer/
-        sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-beta-latest-arm64.deb > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-beta-latest-arm64.deb.sha256
+        sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-beta-latest-arm64.deb > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-beta-latest-arm64.deb.sha256
         ls $GITHUB_WORKSPACE/build_scripts/final_installer/
 
     - name: Create Release Checksum
