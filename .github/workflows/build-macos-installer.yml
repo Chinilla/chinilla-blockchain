@@ -1,6 +1,7 @@
 name: Installer - MacOS Intel (Python 3.9)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

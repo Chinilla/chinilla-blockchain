@@ -1,6 +1,7 @@
 name: Installer - Linux arm64 (Python 3.8)
 
 on:
+ workflow_dispatch:
   push:
     branches:
       - main
