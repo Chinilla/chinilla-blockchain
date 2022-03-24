@@ -147,7 +147,7 @@ jobs:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
          ls $GITHUB_WORKSPACE/build_scripts/final_installer/
-         sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-beta-latest-x86-64.rpm.sha256
+         sha256sum $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-beta-latest-x86-64.rpm > $GITHUB_WORKSPACE/build_scripts/final_installer/chinilla-blockchain-beta-latest-x86-64.rpm.sha256
          ls $GITHUB_WORKSPACE/build_scripts/final_installer/
 
     - name: Create Release Checksum
@@ -180,7 +180,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm
+          source: /build_scripts/final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
           out_dir: beta
           cdn_domain: download.chinilla.com
 
@@ -192,7 +192,7 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-beta-latest-x86-64.rpm.sha256
+          source: /build_scripts/final_installer/chinilla-blockchain-beta-latest-x86-64.rpm.sha256
           out_dir: beta
           cdn_domain: download.chinilla.com
 
