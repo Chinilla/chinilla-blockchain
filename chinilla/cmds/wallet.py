@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, Tuple
 
 import click
 
-from chia.wallet.util.wallet_types import WalletType
+from chinilla.wallet.util.wallet_types import WalletType
 
 
 @click.group("wallet", short_help="Manage your wallet")

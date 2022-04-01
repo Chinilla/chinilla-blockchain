@@ -88,7 +88,7 @@ do_install_npm_locally(){
 }
 
 # Work around for inconsistent `npm` exec path issue
-# https://github.com/Chia-Network/chia-blockchain/pull/10460#issuecomment-1054492495
+# https://github.com/Chinilla/chinilla-blockchain/pull/10460#issuecomment-1054492495
 patch_inconsistent_npm_issue(){
   node_module_dir=$1
   if [ ! -d "$node_module_dir" ]; then
@@ -194,14 +194,14 @@ if [ ! "$CI" ]; then
   fi
 
   # Work around for inconsistent `npm` exec path issue
-  # https://github.com/Chia-Network/chia-blockchain/pull/10460#issuecomment-1054492495
+  # https://github.com/Chinilla/chinilla-blockchain/pull/10460#issuecomment-1054492495
   patch_inconsistent_npm_issue "../node_modules"
 
   npm ci
   npm audit fix || true
   npm run build
 
-  # Set modified output of `chia version` to version property of GUI's package.json
+  # Set modified output of `chinilla version` to version property of GUI's package.json
   python ../installhelper.py
 else
   echo "Skipping node.js in install.sh on MacOS ci."

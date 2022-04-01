@@ -30,7 +30,7 @@ jobs:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest]
     env:
-      CHIA_ROOT: ${{ github.workspace }}/.chia/mainnet
+      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
       JOB_FILE_NAME: tests_${{ matrix.os }}_python-${{ matrix.python-version }}_farmer_harvester
 
     steps:

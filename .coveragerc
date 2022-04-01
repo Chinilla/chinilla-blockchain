@@ -2,7 +2,7 @@
 branch=True
 relative_files=True
 source=
-  chia
+  chinilla
   tests
 concurrency=multiprocessing
 parallel=True

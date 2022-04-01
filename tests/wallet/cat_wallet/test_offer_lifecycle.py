@@ -38,7 +38,7 @@ def str_to_cat_hash(tail_str: str) -> bytes32:
     return construct_cat_puzzle(CAT_MOD, str_to_tail_hash(tail_str), acs).get_tree_hash()
 
 
-# This method takes a dictionary of strings mapping to amounts and generates the appropriate CAT/XCH coins
+# This method takes a dictionary of strings mapping to amounts and generates the appropriate CAT/HCX coins
 async def generate_coins(
     sim,
     sim_client,
