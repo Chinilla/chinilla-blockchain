@@ -1,14 +1,7 @@
     - name: Checkout test blocks and plots
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: 'Chinilla/test-cache'
         path: '.chinilla'
         ref: '0.28.0'
         fetch-depth: 1
-
-    - name: Link home directory
-      run: |
-        cd $HOME
-        ln -s $GITHUB_WORKSPACE/.chinilla
-        echo "$HOME/.chinilla"
-        ls -al $HOME/.chinilla

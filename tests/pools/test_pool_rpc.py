@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from shutil import rmtree
@@ -64,7 +65,9 @@ class TemporaryPoolPlot:
     plot_id: Optional[bytes32] = None
 
     async def __aenter__(self):
-        plot_id: bytes32 = await self.bt.new_plot(self.p2_singleton_puzzle_hash, get_pool_plot_dir())
+        self._tmpdir = tempfile.TemporaryDirectory()
+        dirname = self._tmpdir.__enter__()
+        plot_id: bytes32 = await self.bt.new_plot(self.p2_singleton_puzzle_hash, Path(dirname), tmp_dir=Path(dirname))
         assert plot_id is not None
         await self.bt.refresh_plots()
         self.plot_id = plot_id
@@ -72,12 +75,7 @@ class TemporaryPoolPlot:
 
     async def __aexit__(self, exc_type, exc_value, exc_traceback):
         await self.bt.delete_plot(self.plot_id)
-
-
-async def create_pool_plot(bt: BlockTools, p2_singleton_puzzle_hash: bytes32) -> Optional[bytes32]:
-    plot_id = await bt.new_plot(p2_singleton_puzzle_hash, get_pool_plot_dir())
-    await bt.refresh_plots()
-    return plot_id
+        self._tmpdir.__exit__(None, None, None)
 
 
 async def wallet_is_synced(wallet_node: WalletNode, full_node_api):
@@ -89,12 +87,6 @@ async def wallet_is_synced(wallet_node: WalletNode, full_node_api):
 
 
 PREFARMED_BLOCKS = 4
-
-
-@pytest_asyncio.fixture(scope="function")
-async def two_wallet_nodes():
-    async for _ in setup_simulators_and_wallets(1, 2, {}):
-        yield _
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -171,9 +163,9 @@ async def setup(two_wallet_nodes, bt, self_hostname):
 
 class TestPoolWalletRpc:
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_create_new_pool_wallet_self_farm(self, one_wallet_node_and_rpc, fee, trusted, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_create_new_pool_wallet_self_farm(self, one_wallet_node_and_rpc, trusted_and_fee, self_hostname):
+        trusted, fee = trusted_and_fee
         client, wallet_node_0, full_node_api = one_wallet_node_and_rpc
         wallet_0 = wallet_node_0.wallet_state_manager.main_wallet
         if trusted:
@@ -191,10 +183,7 @@ class TestPoolWalletRpc:
         await time_out_assert(10, wallet_node_0.wallet_state_manager.blockchain.get_peak_height, PREFARMED_BLOCKS)
 
         our_ph = await wallet_0.get_new_puzzlehash()
-        summaries_response = await client.get_wallets()
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                assert False
+        assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
         await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
         creation_tx: TransactionRecord = await client.create_new_pool_wallet(
             our_ph, "", 0, f"{self_hostname}:5000", "new", "SELF_POOLING", fee
@@ -210,12 +199,9 @@ class TestPoolWalletRpc:
         assert full_node_api.full_node.mempool_manager.get_spendbundle(creation_tx.name) is None
 
         await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
-        summaries_response = await client.get_wallets()
-        wallet_id: Optional[int] = None
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                wallet_id = summary["id"]
-        assert wallet_id is not None
+        summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+        assert len(summaries_response) == 1
+        wallet_id: int = summaries_response[0]["id"]
         status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
 
         assert status.current.state == PoolSingletonState.SELF_POOLING.value
@@ -247,9 +233,9 @@ class TestPoolWalletRpc:
         assert pool_config["pool_url"] == ""
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_create_new_pool_wallet_farm_to_pool(self, one_wallet_node_and_rpc, fee, trusted, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_create_new_pool_wallet_farm_to_pool(self, one_wallet_node_and_rpc, trusted_and_fee, self_hostname):
+        trusted, fee = trusted_and_fee
         client, wallet_node_0, full_node_api = one_wallet_node_and_rpc
         wallet_0 = wallet_node_0.wallet_state_manager.main_wallet
         if trusted:
@@ -270,10 +256,7 @@ class TestPoolWalletRpc:
         await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
 
         our_ph = await wallet_0.get_new_puzzlehash()
-        summaries_response = await client.get_wallets()
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                assert False
+        assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
         creation_tx: TransactionRecord = await client.create_new_pool_wallet(
             our_ph, "http://pool.example.com", 10, f"{self_hostname}:5000", "new", "FARMING_TO_POOL", fee
@@ -289,12 +272,9 @@ class TestPoolWalletRpc:
         assert full_node_api.full_node.mempool_manager.get_spendbundle(creation_tx.name) is None
 
         await time_out_assert(5, wallet_is_synced, True, wallet_node_0, full_node_api)
-        summaries_response = await client.get_wallets()
-        wallet_id: Optional[int] = None
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                wallet_id = summary["id"]
-        assert wallet_id is not None
+        summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+        assert len(summaries_response) == 1
+        wallet_id: int = summaries_response[0]["id"]
         status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
 
         assert status.current.state == PoolSingletonState.FARMING_TO_POOL.value
@@ -326,9 +306,9 @@ class TestPoolWalletRpc:
         assert pool_config["pool_url"] == "http://pool.example.com"
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_create_multiple_pool_wallets(self, one_wallet_node_and_rpc, fee, trusted, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_create_multiple_pool_wallets(self, one_wallet_node_and_rpc, trusted_and_fee, self_hostname):
+        trusted, fee = trusted_and_fee
         client, wallet_node_0, full_node_api = one_wallet_node_and_rpc
         if trusted:
             wallet_node_0.config["trusted_peers"] = {
@@ -348,10 +328,7 @@ class TestPoolWalletRpc:
 
         our_ph_1 = await wallet_0.get_new_puzzlehash()
         our_ph_2 = await wallet_0.get_new_puzzlehash()
-        summaries_response = await client.get_wallets()
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                assert False
+        assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
         creation_tx: TransactionRecord = await client.create_new_pool_wallet(
             our_ph_1, "", 0, f"{self_hostname}:5000", "new", "SELF_POOLING", fee
@@ -395,7 +372,7 @@ class TestPoolWalletRpc:
         assert len(await wallet_node_0.wallet_state_manager.tx_store.get_unconfirmed_for_wallet(3)) == 0
         # Doing a reorg reverts and removes the pool wallets
         await full_node_api.reorg_from_index_to_new_index(ReorgProtocol(uint32(0), uint32(20), our_ph_2))
-        await asyncio.sleep(5)
+        await time_out_assert(30, wallet_is_synced, True, wallet_node_0, full_node_api)
         summaries_response = await client.get_wallets()
         assert len(summaries_response) == 1
 
@@ -421,7 +398,7 @@ class TestPoolWalletRpc:
 
         # Test creation of many pool wallets. Use untrusted since that is the more complicated protocol, but don't
         # run this code more than once, since it's slow.
-        if fee == 0 and not trusted:
+        if not trusted:
             for i in range(22):
                 await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
                 creation_tx_3: TransactionRecord = await client.create_new_pool_wallet(
@@ -456,9 +433,9 @@ class TestPoolWalletRpc:
                             assert owner_sk != auth_sk
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_absorb_self(self, one_wallet_node_and_rpc, fee, trusted, bt, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_absorb_self(self, one_wallet_node_and_rpc, trusted_and_fee, bt, self_hostname):
+        trusted, fee = trusted_and_fee
         client, wallet_node_0, full_node_api = one_wallet_node_and_rpc
         if trusted:
             wallet_node_0.config["trusted_peers"] = {
@@ -476,10 +453,7 @@ class TestPoolWalletRpc:
         await time_out_assert(10, wallet_node_0.wallet_state_manager.blockchain.get_peak_height, PREFARMED_BLOCKS)
 
         our_ph = await wallet_0.get_new_puzzlehash()
-        summaries_response = await client.get_wallets()
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                assert False
+        assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
         await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
         creation_tx: TransactionRecord = await client.create_new_pool_wallet(
@@ -572,9 +546,9 @@ class TestPoolWalletRpc:
             # await time_out_assert(10, wallet_0.get_confirmed_balance, total_block_rewards)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_absorb_pooling(self, one_wallet_node_and_rpc, fee, trusted, bt, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_absorb_pooling(self, one_wallet_node_and_rpc, trusted_and_fee, bt, self_hostname):
+        trusted, fee = trusted_and_fee
         client, wallet_node_0, full_node_api = one_wallet_node_and_rpc
         if trusted:
             wallet_node_0.config["trusted_peers"] = {
@@ -593,10 +567,7 @@ class TestPoolWalletRpc:
 
         await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
         our_ph = await wallet_0.get_new_puzzlehash()
-        summaries_response = await client.get_wallets()
-        for summary in summaries_response:
-            if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                assert False
+        assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
         # Balance stars at 6 HCX
         assert (await wallet_0.get_confirmed_balance()) == 6000000000000
         creation_tx: TransactionRecord = await client.create_new_pool_wallet(
@@ -720,10 +691,14 @@ class TestPoolWalletRpc:
             assert (250000000000 + fee) in [tx.additions[0].amount for tx in tx1]
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True])
-    @pytest.mark.parametrize("fee", [0])
-    async def test_self_pooling_to_pooling(self, setup, fee, trusted, self_hostname):
-        """This tests self-pooling -> pooling"""
+    @pytest.mark.parametrize("trusted_and_fee", [(True, 0), (False, 0)])
+    async def test_self_pooling_to_pooling(self, setup, trusted_and_fee, self_hostname):
+        """
+        This tests self-pooling -> pooling
+        TODO: Fix this test for a positive fee value
+        """
+
+        trusted, fee = trusted_and_fee
         num_blocks = 4  # Num blocks to farm at a time
         total_blocks = 0  # Total blocks farmed so far
         full_nodes, wallet_nodes, receive_address, client, rpc_cleanup = setup
@@ -753,10 +728,7 @@ class TestPoolWalletRpc:
             await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
             assert total_block_rewards > 0
 
-            summaries_response = await client.get_wallets()
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    assert False
+            assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
             creation_tx: TransactionRecord = await client.create_new_pool_wallet(
                 our_ph, "", 0, f"{self_hostname}:5000", "new", "SELF_POOLING", fee
@@ -782,18 +754,11 @@ class TestPoolWalletRpc:
             assert full_node_api.full_node.mempool_manager.get_spendbundle(creation_tx.name) is None
             await time_out_assert(10, wallet_is_synced, True, wallet_node_0, full_node_api)
 
-            summaries_response = await client.get_wallets()
-            wallet_id: Optional[int] = None
-            wallet_id_2: Optional[int] = None
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    if wallet_id is not None:
-                        wallet_id_2 = summary["id"]
-                    else:
-                        wallet_id = summary["id"]
+            summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+            assert len(summaries_response) == 2
+            wallet_id: int = summaries_response[0]["id"]
+            wallet_id_2: int = summaries_response[1]["id"]
             await asyncio.sleep(1)
-            assert wallet_id is not None
-            assert wallet_id_2 is not None
             status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
             status_2: PoolWalletInfo = (await client.pw_status(wallet_id_2))[0]
 
@@ -830,8 +795,8 @@ class TestPoolWalletRpc:
                 fetched: Optional[TransactionRecord] = await client.get_transaction(wid, tx.name)
                 return fetched is not None and fetched.is_in_mempool()
 
-            await time_out_assert(5, tx_is_in_mempool, True, wallet_id, join_pool_tx)
-            await time_out_assert(5, tx_is_in_mempool, True, wallet_id_2, join_pool_tx_2)
+            await time_out_assert(10, tx_is_in_mempool, True, wallet_id, join_pool_tx)
+            await time_out_assert(10, tx_is_in_mempool, True, wallet_id_2, join_pool_tx_2)
 
             assert status.current.state == PoolSingletonState.SELF_POOLING.value
             assert status.target is not None
@@ -858,13 +823,10 @@ class TestPoolWalletRpc:
             await rpc_cleanup()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize(
-        "fee",
-        [0, FEE_AMOUNT],
-    )
-    async def test_leave_pool(self, setup, fee, trusted, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_leave_pool(self, setup, trusted_and_fee, self_hostname):
         """This tests self-pooling -> pooling -> escaping -> self pooling"""
+        trusted, fee = trusted_and_fee
         full_nodes, wallet_nodes, receive_address, client, rpc_cleanup = setup
         our_ph = receive_address[0]
         wallets = [wallet_n.wallet_state_manager.main_wallet for wallet_n in wallet_nodes]
@@ -884,10 +846,7 @@ class TestPoolWalletRpc:
         WAIT_SECS = 200
 
         try:
-            summaries_response = await client.get_wallets()
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    assert False
+            assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
             async def have_chinilla():
                 await farm_blocks(full_node_api, our_ph, 1)
@@ -912,12 +871,9 @@ class TestPoolWalletRpc:
 
             await time_out_assert(10, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
-            summaries_response = await client.get_wallets()
-            wallet_id: Optional[int] = None
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    wallet_id = summary["id"]
-            assert wallet_id is not None
+            summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+            assert len(summaries_response) == 1
+            wallet_id: int = summaries_response[0]["id"]
             status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
 
             assert status.current.state == PoolSingletonState.SELF_POOLING.value
@@ -985,10 +941,10 @@ class TestPoolWalletRpc:
             await rpc_cleanup()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_change_pools(self, setup, fee, trusted, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_change_pools(self, setup, trusted_and_fee, self_hostname):
         """This tests Pool A -> escaping -> Pool B"""
+        trusted, fee = trusted_and_fee
         full_nodes, wallet_nodes, receive_address, client, rpc_cleanup = setup
         our_ph = receive_address[0]
         pool_a_ph = receive_address[1]
@@ -1009,10 +965,7 @@ class TestPoolWalletRpc:
 
         WAIT_SECS = 200
         try:
-            summaries_response = await client.get_wallets()
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    assert False
+            assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
             async def have_chinilla():
                 await farm_blocks(full_node_api, our_ph, 1)
@@ -1037,12 +990,9 @@ class TestPoolWalletRpc:
 
             await time_out_assert(10, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
-            summaries_response = await client.get_wallets()
-            wallet_id: Optional[int] = None
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    wallet_id = summary["id"]
-            assert wallet_id is not None
+            summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+            assert len(summaries_response) == 1
+            wallet_id: int = summaries_response[0]["id"]
             status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
 
             assert status.current.state == PoolSingletonState.FARMING_TO_POOL.value
@@ -1091,10 +1041,10 @@ class TestPoolWalletRpc:
             await rpc_cleanup()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("trusted", [True, False])
-    @pytest.mark.parametrize("fee", [0, FEE_AMOUNT])
-    async def test_change_pools_reorg(self, setup, fee, trusted, bt, self_hostname):
+    @pytest.mark.parametrize("trusted_and_fee", [(True, FEE_AMOUNT), (False, 0)])
+    async def test_change_pools_reorg(self, setup, trusted_and_fee, bt, self_hostname):
         """This tests Pool A -> escaping -> reorg -> escaping -> Pool B"""
+        trusted, fee = trusted_and_fee
         full_nodes, wallet_nodes, receive_address, client, rpc_cleanup = setup
         our_ph = receive_address[0]
         pool_a_ph = receive_address[1]
@@ -1114,10 +1064,7 @@ class TestPoolWalletRpc:
         )
 
         try:
-            summaries_response = await client.get_wallets()
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    assert False
+            assert len(await client.get_wallets(WalletType.POOLING_WALLET)) == 0
 
             async def have_chinilla():
                 await farm_blocks(full_node_api, our_ph, 1)
@@ -1142,12 +1089,9 @@ class TestPoolWalletRpc:
 
             await time_out_assert(5, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
-            summaries_response = await client.get_wallets()
-            wallet_id: Optional[int] = None
-            for summary in summaries_response:
-                if WalletType(int(summary["type"])) == WalletType.POOLING_WALLET:
-                    wallet_id = summary["id"]
-            assert wallet_id is not None
+            summaries_response = await client.get_wallets(WalletType.POOLING_WALLET)
+            assert len(summaries_response) == 1
+            wallet_id: int = summaries_response[0]["id"]
             status: PoolWalletInfo = (await client.pw_status(wallet_id))[0]
 
             assert status.current.state == PoolSingletonState.FARMING_TO_POOL.value
