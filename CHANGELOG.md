@@ -8,13 +8,12 @@ for setuptools_scm/PEP 440 reasons.
 
 ## [Unreleased]
 
-
 ## 1.0.0 Chinilla blockchain 2022-04-02
 
 ### Notes
 
 - This is the inital release of the Chinilla blockchain.
-- This release is aligned with Chia version 1.3.1
+- This release is aligned with Chia version 1.3.3
 - Uses port 42444
 
 ### Changed
