@@ -6,7 +6,7 @@ from concurrent.futures import Executor
 from multiprocessing.context import BaseContext
 import time
 from concurrent.futures.process import ProcessPoolExecutor
-from chia.util.inline_executor import InlineExecutor
+from chinilla.util.inline_executor import InlineExecutor
 from typing import Dict, List, Optional, Set, Tuple
 from blspy import GTElement
 from chiabip158 import PyBIP158
