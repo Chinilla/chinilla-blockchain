@@ -68,8 +68,8 @@ dev_dependencies = [
 
 kwargs = dict(
     name="chinilla-blockchain",
-    author="Mariano Sorgente",
-    author_email="mariano@chinilla.com",
+    author="Edward Teach",
+    author_email="edward@chinilla.com",
     description="Chinilla blockchain full node, farmer, timelord, and wallet.",
     url="https://chinilla.com/",
     license="Apache License",
