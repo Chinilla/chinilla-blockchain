@@ -8,7 +8,7 @@ for setuptools_scm/PEP 440 reasons.
 
 ## [Unreleased]
 
-## 1.0.0 Chinilla blockchain 2022-04-02
+## 1.0.0 Chinilla blockchain 2022-04-03
 
 ### Notes
 
