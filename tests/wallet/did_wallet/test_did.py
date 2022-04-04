@@ -1,47 +1,16 @@
 import pytest
-import pytest_asyncio
-from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
-from chinilla.types.peer_info import PeerInfo
-from chinilla.util.ints import uint16, uint32, uint64
-from tests.setup_nodes import setup_simulators_and_wallets
-from chinilla.wallet.did_wallet.did_wallet import DIDWallet
-from chinilla.types.blockchain_format.program import Program
 from blspy import AugSchemeMPL
-from chinilla.types.spend_bundle import SpendBundle
+
 from chinilla.consensus.block_rewards import calculate_pool_reward, calculate_base_farmer_reward
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.peer_info import PeerInfo
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.did_wallet.did_wallet import DIDWallet
 from tests.time_out_assert import time_out_assert, time_out_assert_not_none
 
 pytestmark = pytest.mark.skip("TODO: Fix tests")
-
-
-@pytest_asyncio.fixture(scope="function")
-async def wallet_node():
-    async for _ in setup_simulators_and_wallets(1, 1, {}):
-        yield _
-
-
-@pytest_asyncio.fixture(scope="function")
-async def two_wallet_nodes():
-    async for _ in setup_simulators_and_wallets(1, 2, {}):
-        yield _
-
-
-@pytest_asyncio.fixture(scope="function")
-async def three_wallet_nodes():
-    async for _ in setup_simulators_and_wallets(1, 3, {}):
-        yield _
-
-
-@pytest_asyncio.fixture(scope="function")
-async def two_wallet_nodes_five_freeze():
-    async for _ in setup_simulators_and_wallets(1, 2, {}):
-        yield _
-
-
-@pytest_asyncio.fixture(scope="function")
-async def three_sim_two_wallets():
-    async for _ in setup_simulators_and_wallets(3, 2, {}):
-        yield _
 
 
 class TestDIDWallet:

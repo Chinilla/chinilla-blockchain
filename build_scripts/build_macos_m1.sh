@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -o errexit -o nounset
 
 pip install setuptools_scm
 # The environment variable CHINILLA_INSTALLER_VERSION needs to be defined.

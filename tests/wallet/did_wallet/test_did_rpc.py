@@ -1,6 +1,6 @@
 import logging
+
 import pytest
-import pytest_asyncio
 
 from chinilla.rpc.rpc_server import start_rpc_server
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi
@@ -8,22 +8,14 @@ from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.types.peer_info import PeerInfo
 from chinilla.util.ints import uint16, uint64
-from chinilla.wallet.util.wallet_types import WalletType
-from tests.setup_nodes import setup_simulators_and_wallets
-from tests.time_out_assert import time_out_assert
 from chinilla.wallet.did_wallet.did_wallet import DIDWallet
+from chinilla.wallet.util.wallet_types import WalletType
+from tests.time_out_assert import time_out_assert
 from tests.util.socket import find_available_listen_port
-
 
 log = logging.getLogger(__name__)
 
 pytestmark = pytest.mark.skip("TODO: Fix tests")
-
-
-@pytest_asyncio.fixture(scope="function")
-async def three_wallet_nodes():
-    async for _ in setup_simulators_and_wallets(1, 3, {}):
-        yield _
 
 
 class TestDIDWallet:
