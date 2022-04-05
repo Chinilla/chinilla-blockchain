@@ -88,7 +88,7 @@ class TestPoolPuzzles(TestCase):
 
         # LAUNCHING
         # Create the escaping inner puzzle
-        GENESIS_CHALLENGE = bytes32.fromhex("fbcabee955a75d1f03c756375b7edb481c80a45454cbe8a77fc8a2b893f18d2f")
+        GENESIS_CHALLENGE = bytes32.fromhex("087cb0c81cfe293e85fafa8a87ac1cae14d6afc0339d9ad87c0015755286351d")
         launcher_coin = singleton_top_layer.generate_launcher_coin(
             starting_coin,
             START_AMOUNT,
