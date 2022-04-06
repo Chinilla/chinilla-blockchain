@@ -29,7 +29,7 @@ for setuptools_scm/PEP 440 reasons.
 
 - This is the inital release of the Chinilla blockchain.
 - This release is aligned with Chia version 1.3.3
-- Uses port 42444
+- Uses port 43444
 
 ### Changed
 

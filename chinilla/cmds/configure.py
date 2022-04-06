@@ -133,7 +133,7 @@ def configure(
 
             elif testnet == "false" or testnet == "f":
                 print("Setting Vanillanet")
-                vanillanet_port = "42444"
+                vanillanet_port = "43444"
                 vanillanet_introducer = "introducer.chinilla.net"
                 vanillanet_dns_introducer = "dns-introducer.chinilla.net"
                 bootstrap_peers = ["node.chinilla.net"]

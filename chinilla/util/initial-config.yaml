@@ -4,7 +4,7 @@ min_vanillanet_k_size: 32
 ping_interval: 120
 self_hostname: &self_hostname "localhost"
 prefer_ipv6: False
-daemon_port: 42400
+daemon_port: 43400
 daemon_max_message_size: 50000000 # maximum size of RPC message in bytes
 inbound_rate_limit_percent: 100
 outbound_rate_limit_percent: 30
@@ -37,7 +37,7 @@ network_overrides: &network_overrides
   config:
     vanillanet:
       address_prefix: "hcx"
-      default_full_node_port: 42444
+      default_full_node_port: 43444
     testnet0:
       address_prefix: "thcx"
       default_full_node_port: 40444
@@ -78,9 +78,9 @@ logging: &logging
 
 seeder:
   # The fake full node used for crawling will run on this port.
-  port: 42444
-  # Most full nodes on the network run on this port. (i.e. 42444 for vanillanet, 40444 for testnet).
-  other_peers_port: 42444
+  port: 43444
+  # Most full nodes on the network run on this port. (i.e. 43444 for vanillanet, 40444 for testnet).
+  other_peers_port: 43444
   # This will override the default full_node.peer_connect_timeout for the crawler full node
   peer_connect_timeout: 2
   # Path to crawler DB. Defaults to $CHINILLA_ROOT/crawler.db
@@ -108,21 +108,21 @@ seeder:
   # Crawler is its own standalone service within the seeder component
   crawler:
     start_rpc_server: True
-    rpc_port: 42561
+    rpc_port: 43561
     ssl:
       private_crt: "config/ssl/crawler/private_crawler.crt"
       private_key: "config/ssl/crawler/private_crawler.key"
 
 harvester:
   # The harvester server (if run) will run on this port
-  port: 42448
+  port: 43448
   farmer_peer:
     host: *self_hostname
-    port: 42447
+    port: 43447
 
   # If True, starts an RPC server at the following port
   start_rpc_server: True
-  rpc_port: 42560
+  rpc_port: 43560
   num_threads: 30
   plots_refresh_parameter:
     interval_seconds: 120 # The interval in seconds to refresh the plot file manager
@@ -163,14 +163,14 @@ pool:
 
 farmer:
   # The farmer server (if run) will run on this port
-  port: 42447
+  port: 43447
   # The farmer will attempt to connect to this full node and harvester
   full_node_peer:
     host: *self_hostname
-    port: 42444
+    port: 43444
   harvester_peer:
     host: *self_hostname
-    port: 42448
+    port: 43448
 
   pool_public_keys: []
 
@@ -179,7 +179,7 @@ farmer:
 
   # If True, starts an RPC server at the following port
   start_rpc_server: True
-  rpc_port: 42559
+  rpc_port: 43559
 
   # To send a share to a pool, a proof of space must have required_iters less than this number
   pool_share_threshold: 1000
@@ -197,7 +197,7 @@ farmer:
 timelord_launcher:
   # The server where the VDF clients will connect to.
   host: *self_hostname
-  port: 42000
+  port: 43000
   # Number of VDF client processes to keep alive in the local machine.
   process_count: 3
   logging: *logging
@@ -205,7 +205,7 @@ timelord_launcher:
 
 timelord:
   # The timelord server (if run) will run on this port
-  port: 42446
+  port: 43446
   # Provides a list of VDF clients expected to connect to this timelord.
   # For each client, an IP is provided, together with the estimated iterations per second.
   vdf_clients:
@@ -217,13 +217,13 @@ timelord:
       - 150000
   full_node_peer:
       host: *self_hostname
-      port: 42444
+      port: 43444
   # Maximum number of seconds allowed for a client to reconnect to the server.
   max_connection_time: 60
   # The ip and port where the TCP clients will connect.
   vdf_server:
     host: *self_hostname
-    port: 42000
+    port: 43000
   logging: *logging
   network_overrides: *network_overrides
   selected_network: *selected_network
@@ -253,7 +253,7 @@ timelord:
   multiprocessing_start_method: default
 
   start_rpc_server: True
-  rpc_port: 42557
+  rpc_port: 43557
 
   ssl:
     private_crt:  "config/ssl/timelord/private_timelord.crt"
@@ -263,7 +263,7 @@ timelord:
 
 full_node:
   # The full node server (if run) will run on this port
-  port: 42444
+  port: 43444
 
   # controls the sync-to-disk behavior of the database connection. Can be one of:
   # "on"    enables syncing to disk, minimizes risk of corrupting the DB in
@@ -291,7 +291,7 @@ full_node:
 
   # If True, starts an RPC server at the following port
   start_rpc_server: True
-  rpc_port: 42555
+  rpc_port: 43555
 
   # Use UPnP to attempt to allow other full nodes to reach your node behind a gateway
   enable_upnp: True
@@ -352,16 +352,16 @@ full_node:
     - "dns-introducer.chinilla.com"
   farmer_peer:
       host: *self_hostname
-      port: 42447
+      port: 43447
   timelord_peer:
       host: *self_hostname
-      port: 42446
+      port: 43446
   introducer_peer:
       host: introducer.chinilla.com  # Chinilla AWS introducer IPv4/IPv6
-      port: 42444
+      port: 43444
   wallet_peer:
     host: *self_hostname
-    port: 42449
+    port: 43449
   logging: *logging
   network_overrides: *network_overrides
   selected_network: *selected_network
@@ -374,10 +374,10 @@ full_node:
 
 ui:
    # The ui node server (if run) will run on this port
-  port: 42222
+  port: 43222
 
   # Which port to use to communicate with the full node
-  rpc_port: 42555
+  rpc_port: 43555
 
   # This SSH key is for the ui SSH server
   ssh_filename: config/ssh_host_key
@@ -388,14 +388,14 @@ ui:
   # this is where the electron UI will find its daemon
   # defaults to the one running locally with its private keys
   daemon_host: *self_hostname
-  daemon_port: 42400
+  daemon_port: 43400
   daemon_ssl:
     private_crt: config/ssl/daemon/private_daemon.crt
     private_key: config/ssl/daemon/private_daemon.key
 
 introducer:
   host: *self_hostname
-  port: 42445
+  port: 43445
   max_peers_to_send: 20
   # The introducer will only return peers it has seen in the last
   # recent_peer_threshold seconds
@@ -409,7 +409,7 @@ introducer:
     public_key:  "config/ssl/full_node/public_full_node.key"
 
 wallet:
-  port: 42449
+  port: 43449
   rpc_port: 42256
 
   enable_profiler: False
@@ -431,7 +431,7 @@ wallet:
 
   full_node_peer:
     host: *self_hostname
-    port: 42444
+    port: 43444
 
   multiprocessing_start_method: default
 
@@ -454,7 +454,7 @@ wallet:
 
   introducer_peer:
     host: introducer.chinilla.com # Chinilla AWS introducer IPv4/IPv6
-    port: 42444
+    port: 43444
 
   ssl:
     private_crt:  "config/ssl/wallet/private_wallet.crt"
