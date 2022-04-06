@@ -30,7 +30,7 @@ testnet_kwargs = {
     # Default used for tests is std_hash(b'')
     "GENESIS_CHALLENGE": bytes.fromhex("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
     # Forks of chinilla should change this value to provide replay attack protection. This is set to vanillanet genesis
-    "AGG_SIG_ME_ADDITIONAL_DATA": bytes.fromhex("087cb0c81cfe293e85fafa8a87ac1cae14d6afc0339d9ad87c0015755286351d"),
+    "AGG_SIG_ME_ADDITIONAL_DATA": bytes.fromhex("53f4690da000fe21fff9c7b84dcff4263bd2c0c5886f2f7bf486940b206cd558"),
     "GENESIS_PRE_FARM_POOL_PUZZLE_HASH": bytes.fromhex(
         "63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12"
     ),
