@@ -486,7 +486,7 @@ respond_compact_vdf = full_node_protocol.RespondCompactVDF(
 
 request_peers = full_node_protocol.RequestPeers()
 
-timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(42444), uint64(10796))
+timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(43444), uint64(10796))
 
 respond_peers = full_node_protocol.RespondPeers([timestamped_peer_info])
 
@@ -880,7 +880,7 @@ new_peak_timelord = timelord_protocol.NewPeakTimelord(
     [
         (
             bytes32(bytes.fromhex("5bb65d8662d561ed2fc17e4177ba61c43017ee7e5418091d38968e36ce380d11")),
-            uint128(134240022887890669757150210097251845335),
+            uint128(134340022887890669757150210097251845335),
         )
     ],
     uint128(42058411995615810488183751196800190575),

@@ -9,27 +9,15 @@ for setuptools_scm/PEP 440 reasons.
 ## [Unreleased]
 
 
-## 1.1.0 Chinilla Blockchain 2022-04-04
-
-### WARNING
-
-- This is a hard fork from last release with a completely new genesis challenge.
-- There was an issue with the previous release as the initial difficulty was set too low and was causing the timelords to overload.  The difficulty is now sreset to initial Chia defaults.
-- ***NOTE You will have to delete your Chinilla data folders and re initialize with this version if you downloaded the blockchain before 9:00pm PST.  This was determined as the best course of action to fix the issue.***
-- Chinilla folders usually located at `~/.chinilla`
-
-### Changed
-
-- Changed genesis challenge
-
-
 ## 1.0.0 Chinilla Blockchain 2022-04-03
 
 ### Notes
 
+- Due to a side-chain attack on the initial launch and the difficulty also being too low we have changed the ports and are relaunching fresh with 1.0.0 again.
+- Somehow the Chia certs also ended up in the final release which was not intended.
 - This is the inital release of the Chinilla blockchain.
 - This release is aligned with Chia version 1.3.3
-- Uses port 42444
+- Uses port 43444
 
 ### Changed
 
