@@ -9,7 +9,23 @@ for setuptools_scm/PEP 440 reasons.
 ## [Unreleased]
 
 
-## 1.0.0 Chinilla Blockchain 2022-04-03
+## 1.0.1 Chinilla Blockchain 2022-04-08
+
+### Notes
+
+- This release contains some minor fixes and adjustments that were noted during the launch.
+- If you generated a seed on the inital release that contained the mispelled word `ehcxange` you will need to keep a note of that in the future as the spelling has been corrected to `exchange`.
+
+### Added
+
+- added discord and Github Discussions links in menu in GUI.
+
+### Changed
+
+- fixed spelling error in `english.txt` file
+- updated chinilla explorer links
+
+## 1.0.0 Chinilla Blockchain 2022-04-06
 
 ### Notes
 
