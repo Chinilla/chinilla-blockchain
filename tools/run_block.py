@@ -42,22 +42,29 @@ from typing import List, Tuple, Dict
 
 import click
 
-from clvm_rs import COND_CANON_INTS, NO_NEG_DIV
+from chia_rs import COND_CANON_INTS, NO_NEG_DIV
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.full_node.generator import create_generator_args
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
 from chinilla.types.generator_types import BlockGenerator
-from chinilla.types.name_puzzle_condition import NPC
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint32, uint64
 from chinilla.wallet.cat_wallet.cat_utils import match_cat_puzzle
 from clvm.casts import int_from_bytes
+
+
+@dataclass
+class NPC:
+    coin_name: bytes32
+    puzzle_hash: bytes32
+    conditions: List[Tuple[ConditionOpcode, List[ConditionWithArgs]]]
 
 
 @dataclass

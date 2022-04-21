@@ -189,6 +189,9 @@ add_binary("daemon", f"{ROOT}/chinilla/daemon/server.py", COLLECT_ARGS)
 for server in SERVERS:
     add_binary(f"start_{server}", f"{ROOT}/chinilla/server/start_{server}.py", COLLECT_ARGS)
 
+add_binary("start_crawler", f"{ROOT}/chinilla/seeder/start_crawler.py", COLLECT_ARGS)
+add_binary("start_seeder", f"{ROOT}/chinilla/seeder/dns_server.py", COLLECT_ARGS)
+
 COLLECT_KWARGS = dict(
     strip=False,
     upx_exclude=[],

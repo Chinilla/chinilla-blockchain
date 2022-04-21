@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o errexit
+
 if [ ! "$1" ]; then
   echo "This script requires either amd64 of arm64 as an argument"
 	exit 1
@@ -10,18 +12,17 @@ else
 	PLATFORM="$1"
 	DIR_NAME="chinilla-blockchain-linux-arm64"
 fi
+export PLATFORM
 
-pip install setuptools_scm
-# The environment variable CHINILLA_INSTALLER_VERSION needs to be defined
 # If the env variable NOTARIZE and the username and password variables are
 # set, this will attempt to Notarize the signed DMG
-CHINILLA_INSTALLER_VERSION=$(python installer-version.py)
 
 if [ ! "$CHINILLA_INSTALLER_VERSION" ]; then
 	echo "WARNING: No environment variable CHINILLA_INSTALLER_VERSION set. Using 0.0.0."
 	CHINILLA_INSTALLER_VERSION="0.0.0"
 fi
 echo "Chinilla Installer Version is: $CHINILLA_INSTALLER_VERSION"
+export CHINILLA_INSTALLER_VERSION
 
 echo "Installing npm and electron packagers"
 cd npm_linux_deb || exit
@@ -42,6 +43,19 @@ if [ "$LAST_EXIT_CODE" -ne 0 ]; then
 	echo >&2 "pyinstaller failed!"
 	exit $LAST_EXIT_CODE
 fi
+
+# Builds CLI only .deb
+# need j2 for templating the control file
+pip install j2cli
+CLI_DEB_BASE="chinilla-blockchain-cli_$CHINILLA_INSTALLER_VERSION-1_$PLATFORM"
+mkdir -p "dist/$CLI_DEB_BASE/opt/chinilla"
+mkdir -p "dist/$CLI_DEB_BASE/usr/bin"
+mkdir -p "dist/$CLI_DEB_BASE/DEBIAN"
+j2 -o "dist/$CLI_DEB_BASE/DEBIAN/control" assets/deb/control.j2
+cp -r dist/daemon/* "dist/$CLI_DEB_BASE/opt/chinilla/"
+ln -s ../../opt/chinilla/chinilla "dist/$CLI_DEB_BASE/usr/bin/chinilla"
+dpkg-deb --build --root-owner-group "dist/$CLI_DEB_BASE"
+# CLI only .deb done
 
 cp -r dist/daemon ../chinilla-blockchain-gui/packages/gui
 cd .. || exit
@@ -92,5 +106,8 @@ if [ "$LAST_EXIT_CODE" -ne 0 ]; then
 	echo >&2 "electron-installer-debian failed!"
 	exit $LAST_EXIT_CODE
 fi
+
+# Move the cli only deb into final installers as well, so it gets uploaded as an artifact
+mv "dist/$CLI_DEB_BASE.deb" final_installer/
 
 ls final_installer/

@@ -9,8 +9,8 @@ from chinilla.util.ints import uint64
 from chinilla.util.streamable import Streamable, streamable
 
 
-@dataclass(frozen=True)
 @streamable
+@dataclass(frozen=True)
 class Coin(Streamable):
     """
     This structure is used in the body for the reward and fees genesis coins.

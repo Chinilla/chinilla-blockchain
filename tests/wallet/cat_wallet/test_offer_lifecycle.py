@@ -1,17 +1,15 @@
-import pytest
-import pytest_asyncio
-
 from typing import Dict, Optional, List
+
+import pytest
 from blspy import G2Element
 
-from chinilla.clvm.spend_sim import SpendSim, SimClient
-from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.types.blockchain_format.program import Program
 from chinilla.types.announcement import Announcement
-from chinilla.types.spend_bundle import SpendBundle
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.ints import uint64
 from chinilla.wallet.cat_wallet.cat_utils import (
     CAT_MOD,
@@ -21,7 +19,6 @@ from chinilla.wallet.cat_wallet.cat_utils import (
 )
 from chinilla.wallet.payment import Payment
 from chinilla.wallet.trading.offer import Offer, NotarizedPayment
-
 from tests.clvm.benchmark_costs import cost_of_spend_bundle
 
 acs = Program.to(1)
@@ -39,14 +36,6 @@ def str_to_tail_hash(tail_str: str) -> bytes32:
 
 def str_to_cat_hash(tail_str: str) -> bytes32:
     return construct_cat_puzzle(CAT_MOD, str_to_tail_hash(tail_str), acs).get_tree_hash()
-
-
-@pytest_asyncio.fixture(scope="function")
-async def setup_sim():
-    sim = await SpendSim.create()
-    sim_client = SimClient(sim)
-    await sim.farm_block()
-    return sim, sim_client
 
 
 # This method takes a dictionary of strings mapping to amounts and generates the appropriate CAT/HCX coins

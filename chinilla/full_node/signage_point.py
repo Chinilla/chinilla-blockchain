@@ -5,8 +5,8 @@ from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.util.streamable import Streamable, streamable
 
 
-@dataclass(frozen=True)
 @streamable
+@dataclass(frozen=True)
 class SignagePoint(Streamable):
     cc_vdf: Optional[VDFInfo]
     cc_proof: Optional[VDFProof]
