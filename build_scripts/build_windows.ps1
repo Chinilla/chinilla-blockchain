@@ -34,7 +34,7 @@ pip install pywin32
 pip install pyinstaller==4.9
 
 Write-Output "   ---"
-# The environment variable CHIA_INSTALLER_VERSION needs to be defined
+# The environment variable CHINILLA_INSTALLER_VERSION needs to be defined
 
 if (-not (Test-Path env:CHINILLA_INSTALLER_VERSION)) {
   $env:CHINILLA_INSTALLER_VERSION = '0.0.0'

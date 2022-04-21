@@ -26,7 +26,7 @@ jobs:
       matrix:
         python-version: [ 3.9 ]
     env:
-      CHIA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
+      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
 
     steps:
       - name: Clean workspace

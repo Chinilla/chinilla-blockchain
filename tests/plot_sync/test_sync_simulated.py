@@ -20,7 +20,7 @@ from chinilla.plotting.manager import PlotManager
 from chinilla.plotting.util import PlotInfo
 from chinilla.protocols.harvester_protocol import PlotSyncError, PlotSyncResponse
 from chinilla.server.start_service import Service
-from chinilla.server.ws_connection import ProtocolMessageTypes, WSChiaConnection, make_msg
+from chinilla.server.ws_connection import ProtocolMessageTypes, WSChinillaConnection, make_msg
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.generator_tools import list_to_batches
 from chinilla.util.ints import int16, uint64
@@ -192,7 +192,7 @@ class TestRunner:
             data.validate_plot_sync()
 
 
-async def skip_processing(self: Any, _: WSChiaConnection, message_type: ProtocolMessageTypes, message: Any) -> bool:
+async def skip_processing(self: Any, _: WSChinillaConnection, message_type: ProtocolMessageTypes, message: Any) -> bool:
     self.message_counter += 1
     if self.simulate_error == ErrorSimulation.DropEveryFourthMessage:
         if self.message_counter % 4 == 0:
@@ -226,7 +226,7 @@ async def skip_processing(self: Any, _: WSChiaConnection, message_type: Protocol
 
 
 async def _testable_process(
-    self: Any, peer: WSChiaConnection, message_type: ProtocolMessageTypes, message: Any
+    self: Any, peer: WSChinillaConnection, message_type: ProtocolMessageTypes, message: Any
 ) -> None:
     if await skip_processing(self, peer, message_type, message):
         return

@@ -10,7 +10,7 @@ import zstd
 
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.spend_bundle import SpendBundle
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.ints import uint64
 from chinilla.util.path import mkdir
 from tests.block_tools import create_block_tools
