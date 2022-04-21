@@ -22,14 +22,14 @@ async def cat_name_resolver(asset_id: bytes32) -> Optional[Tuple[Optional[uint32
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch(capsys: Any) -> None:
+async def test_print_offer_summary_hcx(capsys: Any) -> None:
     summary_dict = {"hcx": 1_000_000_000_000}
 
     await print_offer_summary(cat_name_resolver, summary_dict)
 
     captured = capsys.readouterr()
 
-    assert "HCX (Wallet ID: 1): 1.0 (1000000000000 mojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 1.0 (1000000000000 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
@@ -42,7 +42,7 @@ async def test_print_offer_summary_cat(capsys: Any) -> None:
 
     captured = capsys.readouterr()
 
-    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 mojos)" in captured.out
+    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
@@ -56,12 +56,12 @@ async def test_print_offer_summary_multiple_cats(capsys: Any) -> None:
 
     captured = capsys.readouterr()
 
-    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 mojos)" in captured.out
-    assert "CrunchBerries (Wallet ID: 3): 2.0 (2000 mojos)" in captured.out
+    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 vojos)" in captured.out
+    assert "CrunchBerries (Wallet ID: 3): 2.0 (2000 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_and_cats(capsys: Any) -> None:
+async def test_print_offer_summary_hcx_and_cats(capsys: Any) -> None:
     summary_dict = {
         "hcx": 2_500_000_000_000,
         TEST_DUCKSAUCE_ASSET_ID: 1_111,
@@ -73,14 +73,14 @@ async def test_print_offer_summary_xch_and_cats(capsys: Any) -> None:
 
     captured = capsys.readouterr()
 
-    assert "HCX (Wallet ID: 1): 2.5 (2500000000000 mojos)" in captured.out
-    assert "DuckSauce (Wallet ID: 2): 1.111 (1111 mojos)" in captured.out
-    assert "CrunchBerries (Wallet ID: 3): 2.222 (2222 mojos)" in captured.out
-    assert "UnicornTears (Wallet ID: 4): 3.333 (3333 mojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 2.5 (2500000000000 vojos)" in captured.out
+    assert "DuckSauce (Wallet ID: 2): 1.111 (1111 vojos)" in captured.out
+    assert "CrunchBerries (Wallet ID: 3): 2.222 (2222 vojos)" in captured.out
+    assert "UnicornTears (Wallet ID: 4): 3.333 (3333 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_and_cats_with_zero_values(capsys: Any) -> None:
+async def test_print_offer_summary_hcx_and_cats_with_zero_values(capsys: Any) -> None:
     summary_dict = {
         "hcx": 0,
         TEST_DUCKSAUCE_ASSET_ID: 0,
@@ -92,10 +92,10 @@ async def test_print_offer_summary_xch_and_cats_with_zero_values(capsys: Any) ->
 
     captured = capsys.readouterr()
 
-    assert "HCX (Wallet ID: 1): 0.0 (0 mojos)" in captured.out
-    assert "DuckSauce (Wallet ID: 2): 0.0 (0 mojos)" in captured.out
-    assert "CrunchBerries (Wallet ID: 3): 0.0 (0 mojos)" in captured.out
-    assert "UnicornTears (Wallet ID: 4): 0.0 (0 mojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 0.0 (0 vojos)" in captured.out
+    assert "DuckSauce (Wallet ID: 2): 0.0 (0 vojos)" in captured.out
+    assert "CrunchBerries (Wallet ID: 3): 0.0 (0 vojos)" in captured.out
+    assert "UnicornTears (Wallet ID: 4): 0.0 (0 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
@@ -109,12 +109,12 @@ async def test_print_offer_summary_cat_with_fee_and_change(capsys: Any) -> None:
 
     captured = capsys.readouterr()
 
-    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 mojos)" in captured.out
-    assert "Unknown: 3456 mojos  [Typically represents change returned from the included fee]" in captured.out
+    assert "DuckSauce (Wallet ID: 2): 1.0 (1000 vojos)" in captured.out
+    assert "Unknown: 3456 vojos  [Typically represents change returned from the included fee]" in captured.out
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_with_one_mojo(capsys: Any) -> None:
+async def test_print_offer_summary_hcx_with_one_vojo(capsys: Any) -> None:
     summary_dict = {"hcx": 1}
 
     await print_offer_summary(cat_name_resolver, summary_dict)
