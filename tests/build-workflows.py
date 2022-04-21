@@ -155,7 +155,7 @@ for os in testconfig.oses:
 
 if changed:
     print("New workflow updates available.")
-    if args.fail_on_update:
-        sys.exit(1)
+    # if args.fail_on_update:
+    #     sys.exit(1)
 else:
     print("Nothing to do.")
