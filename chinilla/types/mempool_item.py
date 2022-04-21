@@ -10,8 +10,8 @@ from chinilla.util.ints import uint64
 from chinilla.util.streamable import Streamable, streamable
 
 
-@dataclass(frozen=True)
 @streamable
+@dataclass(frozen=True)
 class MempoolItem(Streamable):
     spend_bundle: SpendBundle
     fee: uint64

@@ -6,33 +6,32 @@ import time
 import traceback
 from asyncio import CancelledError
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Set, Tuple, Any, Iterator
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
-from blspy import PrivateKey, AugSchemeMPL
+from blspy import AugSchemeMPL, PrivateKey
 from packaging.version import Version
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.blockchain import ReceiveBlockResult
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.daemon.keychain_proxy import (
+    KeychainProxy,
     KeychainProxyConnectionFailure,
+    KeyringIsEmpty,
     connect_to_keychain_and_validate,
     wrap_local_keychain,
-    KeychainProxy,
-    KeyringIsEmpty,
 )
-from chinilla.util.chunks import chunks
 from chinilla.protocols import wallet_protocol
 from chinilla.protocols.full_node_protocol import RequestProofOfWeight, RespondProofOfWeight
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.protocols.wallet_protocol import (
-    RespondToCoinUpdates,
     CoinState,
-    RespondToPhUpdates,
-    RespondBlockHeader,
-    RequestSESInfo,
-    RespondSESInfo,
     RequestHeaderBlocks,
+    RequestSESInfo,
+    RespondBlockHeader,
+    RespondSESInfo,
+    RespondToCoinUpdates,
+    RespondToPhUpdates,
 )
 from chinilla.server.node_discovery import WalletPeers
 from chinilla.server.outbound_message import Message, NodeType, make_msg
@@ -46,29 +45,30 @@ from chinilla.types.coin_spend import CoinSpend
 from chinilla.types.header_block import HeaderBlock
 from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
 from chinilla.types.peer_info import PeerInfo
-from chinilla.types.weight_proof import WeightProof, SubEpochData
+from chinilla.types.weight_proof import SubEpochData, WeightProof
 from chinilla.util.byte_types import hexstr_to_bytes
+from chinilla.util.chunks import chunks
 from chinilla.util.config import WALLET_PEERS_PATH_KEY_DEPRECATED
 from chinilla.util.default_root import STANDALONE_ROOT_PATH
 from chinilla.util.ints import uint32, uint64
-from chinilla.util.keychain import KeyringIsLocked, Keychain
+from chinilla.util.keychain import Keychain, KeyringIsLocked
 from chinilla.util.path import mkdir, path_from_root
-from chinilla.wallet.util.new_peak_queue import NewPeakQueue, NewPeakQueueTypes, NewPeakItem
+from chinilla.util.profiler import profile_task
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.util.new_peak_queue import NewPeakItem, NewPeakQueue, NewPeakQueueTypes
 from chinilla.wallet.util.peer_request_cache import PeerRequestCache, can_use_peer_request_cache
 from chinilla.wallet.util.wallet_sync_utils import (
-    request_and_validate_removals,
-    request_and_validate_additions,
-    fetch_last_tx_from_peer,
-    subscribe_to_phs,
-    subscribe_to_coin_updates,
-    last_change_height_cs,
     fetch_header_blocks_in_range,
+    fetch_last_tx_from_peer,
+    last_change_height_cs,
+    request_and_validate_additions,
+    request_and_validate_removals,
+    subscribe_to_coin_updates,
+    subscribe_to_phs,
 )
+from chinilla.wallet.wallet_action import WalletAction
 from chinilla.wallet.wallet_coin_record import WalletCoinRecord
 from chinilla.wallet.wallet_state_manager import WalletStateManager
-from chinilla.wallet.transaction_record import TransactionRecord
-from chinilla.wallet.wallet_action import WalletAction
-from chinilla.util.profiler import profile_task
 
 
 class WalletNode:
@@ -143,7 +143,7 @@ class WalletNode:
         self.LONG_SYNC_THRESHOLD = 200
 
     async def ensure_keychain_proxy(self) -> KeychainProxy:
-        if not self.keychain_proxy:
+        if self.keychain_proxy is None:
             if self.local_keychain:
                 self.keychain_proxy = wrap_local_keychain(self.local_keychain, log=self.log)
             else:
@@ -259,7 +259,7 @@ class WalletNode:
         if self._secondary_peer_sync_task is not None:
             self._secondary_peer_sync_task.cancel()
 
-    async def _await_closed(self):
+    async def _await_closed(self, shutting_down: bool = True):
         self.log.info("self._await_closed")
 
         if self.server is not None:
@@ -269,6 +269,11 @@ class WalletNode:
         if self.wallet_state_manager is not None:
             await self.wallet_state_manager._await_closed()
             self.wallet_state_manager = None
+        if shutting_down and self.keychain_proxy is not None:
+            proxy = self.keychain_proxy
+            self.keychain_proxy = None
+            await proxy.close()
+            await asyncio.sleep(0.5)  # https://docs.aiohttp.org/en/stable/client_advanced.html#graceful-shutdown
         self.logged_in = False
         self.wallet_peers = None
 

@@ -9,8 +9,8 @@ from chinilla.wallet.trading.offer import Offer
 from chinilla.wallet.trading.trade_status import TradeStatus
 
 
-@dataclass(frozen=True)
 @streamable
+@dataclass(frozen=True)
 class TradeRecord(Streamable):
     """
     Used for storing transaction data and status in wallets.
