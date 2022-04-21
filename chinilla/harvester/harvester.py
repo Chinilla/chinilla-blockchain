@@ -11,13 +11,13 @@ from chinilla.consensus.constants import ConsensusConstants
 from chinilla.plot_sync.sender import Sender
 from chinilla.plotting.manager import PlotManager
 from chinilla.plotting.util import (
+    PlotRefreshEvents,
+    PlotRefreshResult,
+    PlotsRefreshParameter,
     add_plot_directory,
     get_plot_directories,
-    remove_plot_directory,
     remove_plot,
-    PlotsRefreshParameter,
-    PlotRefreshResult,
-    PlotRefreshEvents,
+    remove_plot_directory,
 )
 from chinilla.util.streamable import dataclass_from_dict
 

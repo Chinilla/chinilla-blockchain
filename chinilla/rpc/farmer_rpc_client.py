@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from chinilla.rpc.rpc_client import RpcClient
 from chinilla.types.blockchain_format.sized_bytes import bytes32

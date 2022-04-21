@@ -26,6 +26,7 @@ from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.cmds.cmds_util import transaction_submitted_msg, transaction_status_msg
 from chinilla.wallet.transaction_record import TransactionRecord
 from chinilla.wallet.util.wallet_types import WalletType
 
@@ -100,8 +101,8 @@ async def create(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -
                 await asyncio.sleep(0.1)
                 tx = await wallet_client.get_transaction(str(1), tx_record.name)
                 if len(tx.sent_to) > 0:
-                    print(f"Transaction submitted to nodes: {tx.sent_to}")
-                    print(f"Do chinilla wallet get_transaction -f {fingerprint} -tx 0x{tx_record.name} to get status")
+                    print(transaction_submitted_msg(tx))
+                    print(transaction_status_msg(fingerprint, tx_record.name))
                     return None
         except Exception as e:
             print(
@@ -288,8 +289,8 @@ async def submit_tx_with_confirmation(
                 await asyncio.sleep(0.1)
                 tx = await wallet_client.get_transaction(str(1), tx_record.name)
                 if len(tx.sent_to) > 0:
-                    print(f"Transaction submitted to nodes: {tx.sent_to}")
-                    print(f"Do chinilla wallet get_transaction -f {fingerprint} -tx 0x{tx_record.name} to get status")
+                    print(transaction_submitted_msg(tx))
+                    print(transaction_status_msg(fingerprint, tx_record.name))
                     return None
         except Exception as e:
             print(f"Error performing operation on Plot NFT -f {fingerprint} wallet id: {wallet_id}: {e}")
