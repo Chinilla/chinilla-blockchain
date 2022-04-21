@@ -65,13 +65,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
 
-    - name: Checkout test blocks and plots
-      uses: actions/checkout@v3
-      with:
-        repository: 'Chinilla/test-cache'
-        path: '.chinilla'
-        ref: '0.28.0'
-        fetch-depth: 1
+# Omitted checking out blocks and plots repo Chinilla/test-cache
 
     - name: Run install script
       env:

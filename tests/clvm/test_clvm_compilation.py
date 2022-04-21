@@ -40,9 +40,6 @@ wallet_program_files = set(
         "chinilla/wallet/puzzles/delegated_tail.clvm",
         "chinilla/wallet/puzzles/settlement_payments.clvm",
         "chinilla/wallet/puzzles/genesis_by_coin_id.clvm",
-        "chinilla/wallet/puzzles/genesis-by-puzzle-hash-with-0.clvm",
-        "chinilla/wallet/puzzles/delegated_genesis_checker.clvm",
-        "chinilla/wallet/puzzles/genesis-by-coin-id-with-0.clvm",
     ]
 )
 

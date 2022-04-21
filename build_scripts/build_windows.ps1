@@ -32,12 +32,9 @@ python -m pip install --upgrade pip
 pip install wheel pep517
 pip install pywin32
 pip install pyinstaller==4.9
-pip install setuptools_scm
 
 Write-Output "   ---"
-Write-Output "Get CHINILLA_INSTALLER_VERSION"
 # The environment variable CHINILLA_INSTALLER_VERSION needs to be defined
-$env:CHINILLA_INSTALLER_VERSION = python .\build_scripts\installer-version.py -win
 
 if (-not (Test-Path env:CHINILLA_INSTALLER_VERSION)) {
   $env:CHINILLA_INSTALLER_VERSION = '0.0.0'

@@ -71,11 +71,11 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         result-encoding: string
         script: |
-          const releases = await github.rest.repos.listReleases({
+          const release = await github.rest.repos.getLatestRelease({
             owner: 'Chia-Network',
             repo: 'chia-plotter-madmax',
           });
-          return releases.data[0].tag_name;
+          return release.data.tag_name;
 
     - name: Get latest madmax plotter
       run: |
@@ -92,11 +92,11 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         result-encoding: string
         script: |
-          const releases = await github.rest.repos.listReleases({
+          const release = await github.rest.repos.getLatestRelease({
             owner: 'Chia-Network',
             repo: 'bladebit',
           });
-          return releases.data[0].tag_name;
+          return release.data.tag_name;
 
     - name: Get latest bladebit plotter
       run: |
@@ -108,17 +108,17 @@ jobs:
     - name: Run install script
       env:
         INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
-        BUILD_VDF_CLIENT: "N"
       run: |
         sh install.sh
 
     - name: Build .rpm package
+      env:
+        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
       run: |
-        . ./activate
         ldd --version
-        cd ./chinilla-blockchain-gui
-        git status
-        cd ../build_scripts
+        git -C ./chinilla-blockchain-gui status
+        . ./activate
+        cd ./build_scripts
         sh build_linux_rpm.sh amd64
         cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm
         cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
@@ -126,7 +126,7 @@ jobs:
     - name: Upload Linux artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Linux-Installers
+        name: chinilla-installers-linux-rpm-intel
         path: ${{ github.workspace }}/build_scripts/final_installer/
 
     - name: Upload to DO Spaces

@@ -36,7 +36,7 @@ from chinilla.wallet.derivation_record import DerivationRecord
 from chinilla.wallet.cat_wallet.lineage_store import CATLineageStore
 from chinilla.wallet.lineage_proof import LineageProof
 from chinilla.wallet.payment import Payment
-from chinilla.wallet.puzzles.genesis_checkers import ALL_LIMITATIONS_PROGRAMS
+from chinilla.wallet.puzzles.tails import ALL_LIMITATIONS_PROGRAMS
 from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
     DEFAULT_HIDDEN_PUZZLE_HASH,
     calculate_synthetic_secret_key,
