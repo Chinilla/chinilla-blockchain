@@ -3,7 +3,7 @@
 # Run from the current directory.
 
 import argparse
-import sys
+# import sys
 
 import testconfig
 import logging
