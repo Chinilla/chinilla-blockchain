@@ -43,7 +43,7 @@ def transaction_description_from_type(tx: TransactionRecord) -> str:
     return transaction_type_descriptions.get(TransactionType(tx.type), "(unknown reason)")
 
 
-def print_transaction(tx: TransactionRecord, verbose: bool, name, address_prefix: str, mojo_per_unit: int) -> None:
+def print_transaction(tx: TransactionRecord, verbose: bool, name, address_prefix: str, vojo_per_unit: int) -> None:
     if verbose:
         print(tx)
     else:
