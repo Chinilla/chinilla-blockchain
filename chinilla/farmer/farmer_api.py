@@ -1,6 +1,6 @@
 import json
 import time
-from typing import Callable, Optional, List, Any, Dict, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import aiohttp
 from blspy import AugSchemeMPL, G2Element, PrivateKey
@@ -12,17 +12,17 @@ from chinilla.consensus.pot_iterations import calculate_iterations_quality, calc
 from chinilla.farmer.farmer import Farmer
 from chinilla.protocols import farmer_protocol, harvester_protocol
 from chinilla.protocols.harvester_protocol import (
-    PoolDifficulty,
-    PlotSyncStart,
-    PlotSyncPlotList,
-    PlotSyncPathList,
     PlotSyncDone,
+    PlotSyncPathList,
+    PlotSyncPlotList,
+    PlotSyncStart,
+    PoolDifficulty,
 )
 from chinilla.protocols.pool_protocol import (
-    get_current_authentication_token,
     PoolErrorCode,
-    PostPartialRequest,
     PostPartialPayload,
+    PostPartialRequest,
+    get_current_authentication_token,
 )
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.server.outbound_message import NodeType, make_msg

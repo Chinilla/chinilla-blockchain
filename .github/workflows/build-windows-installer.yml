@@ -20,7 +20,7 @@ jobs:
   build:
     name: Installer - Windows 10 (Python 3.9)
     runs-on: [windows-2019]
-    timeout-minutes: 40
+    timeout-minutes: 50
 
     steps:
     - name: Checkout Code
@@ -63,7 +63,7 @@ jobs:
     - uses: actions/setup-python@v2
       name: Install Python 3.9
       with:
-        python-version: "3.9.11"
+        python-version: "3.9"
 
     - name: Setup Node 16.x
       uses: actions/setup-node@v3
@@ -158,13 +158,13 @@ jobs:
 
 
     - name: Upload Windows exe's to artifacts
-      uses: actions/upload-artifact@v2.2.2
+      uses: actions/upload-artifact@v3
       with:
         name: chinilla-installers-windows-exe-intel
         path: ${{ github.workspace }}\chinilla-blockchain-gui\Chinilla-win32-x64\
 
     - name: Upload Installer to artifacts
-      uses: actions/upload-artifact@v2.2.2
+      uses: actions/upload-artifact@v3
       with:
         name: Windows-Installers
         path: ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\
