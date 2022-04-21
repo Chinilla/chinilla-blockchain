@@ -13,13 +13,13 @@ for setuptools_scm/PEP 440 reasons.
 
 ### Notes
 
-- This release aligns Chinilla with Chia v1.3.4
+- This release aligns with Chia 1.3.4
 
 ### Added
 
 - Creating an offer now allows you to edit the exchange between two tokens that will auto calculate either the sending token amount or the receiving token amount
 - When making an offer, makers can now create an offer including a fee to help get the transaction into the mempool when an offer is accepted
-- Implemented `chia rpc` command
+- Implemented `chinilla rpc` command
 - New RPC `get_coin_records_by_hint` - Get coins for a given hint (Thanks @freddiecoleman)
 - Add maker fee to remaining offer RPCs
 - Add healthcheck endpoint to rpc services
