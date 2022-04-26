@@ -6,9 +6,11 @@ if [ ! "$1" ]; then
   echo "This script requires either amd64 of arm64 as an argument"
 	exit 1
 elif [ "$1" = "amd64" ]; then
+	ARCH="x64"
 	PLATFORM="$1"
 	DIR_NAME="chinilla-blockchain-linux-x64"
 else
+	ARCH="arm64"
 	PLATFORM="$1"
 	DIR_NAME="chinilla-blockchain-linux-arm64"
 fi
@@ -79,7 +81,7 @@ cd packages/gui || exit
 cp package.json package.json.orig
 jq --arg VER "$CHINILLA_INSTALLER_VERSION" '.version=$VER' package.json > temp.json && mv temp.json package.json
 
-electron-packager . chinilla-blockchain --asar.unpack="**/daemon/**" --platform=linux --arch=$PLATFORM \
+electron-packager . chinilla-blockchain --asar.unpack="**/daemon/**" --platform=linux --arch=$ARCH \
 --icon=src/assets/img/Chinilla.icns --overwrite --app-bundle-id=com.chinilla.blockchain \
 --appVersion=$CHINILLA_INSTALLER_VERSION --executable-name=chinilla-blockchain
 LAST_EXIT_CODE=$?
