@@ -12,8 +12,8 @@ All notable changes to this project will be documented in this file.
 
 - Added The first two Chinilla Asset Tokens to the GUI:
 
-  *  `Founder Token`: The first 100 farmers who won block will receive 1
-  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100k blocks will receive 2
+  *  `Founder Token`: The first 100 farmers who won block will receive 1 by April 27, 2022
+  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100k blocks will receive 2 by April 27, 2022
 
 ### Fixed
 
