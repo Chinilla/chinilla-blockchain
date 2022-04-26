@@ -2,9 +2,9 @@ import logging
 import threading
 import time
 import traceback
+from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
-from concurrent.futures.thread import ThreadPoolExecutor
 
 from blspy import G1Element
 from chiapos import DiskProver
@@ -13,9 +13,9 @@ from chinilla.consensus.pos_quality import UI_ACTUAL_SPACE_CONSTANT_FACTOR, _exp
 from chinilla.plotting.cache import Cache, CacheEntry
 from chinilla.plotting.util import (
     PlotInfo,
+    PlotRefreshEvents,
     PlotRefreshResult,
     PlotsRefreshParameter,
-    PlotRefreshEvents,
     get_plot_filenames,
 )
 from chinilla.util.generator_tools import list_to_batches

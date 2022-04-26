@@ -98,8 +98,10 @@ cd ../../../build_scripts || exit
 echo "Create chinilla-$CHINILLA_INSTALLER_VERSION.deb"
 rm -rf final_installer
 mkdir final_installer
-electron-installer-debian --src dist/$DIR_NAME/ --dest final_installer/ \
---arch "$PLATFORM" --options.version $CHINILLA_INSTALLER_VERSION --options.bin chinilla-blockchain --options.name chinilla-blockchain
+electron-installer-debian --src "dist/$DIR_NAME/" \
+  --arch "$PLATFORM" \
+  --options.version "$CHINILLA_INSTALLER_VERSION" \
+  --config deb-options.json
 LAST_EXIT_CODE=$?
 if [ "$LAST_EXIT_CODE" -ne 0 ]; then
 	echo >&2 "electron-installer-debian failed!"
