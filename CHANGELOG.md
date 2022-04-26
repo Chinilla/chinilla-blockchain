@@ -2,18 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.0.3 Chinilla Blockchain 2022-04-25
+## 1.0.3 Chinilla Blockchain 2022-04-26
 
 ### Notes
 
-- This is a quick fix release to support the release of our first Chinilla Asset Tokens.
+- This is a minor update to support the release of our first Chinilla Asset Tokens.
 
 ### Added
 
 - Added The first two Chinilla Asset Tokens to the GUI:
 
-  *  `Founder Token`: The first 100 farmers who won block will receive 1 by April 27, 2022
-  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100k blocks will receive 2 by April 27, 2022
+  *  `Founder Token`: The first 100 farmers who won block will receive ONE (1) on April 27, 2022
+  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100k blocks will receive FIVE (5) on April 27, 2022
 
 ### Fixed
 
