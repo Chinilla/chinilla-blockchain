@@ -653,11 +653,11 @@ class TestWalletRpc:
             sk = await wallet_node.get_key_for_fingerprint(pks[0])
             test_ph = create_puzzlehash_for_pk(master_sk_to_wallet_sk_unhardened(sk, uint32(0)).get_g1())
             with lock_and_load_config(wallet_node.root_path, "config.yaml") as test_config:
-                test_config["farmer"]["xch_target_address"] = encode_puzzle_hash(test_ph, "txch")
+                test_config["farmer"]["hcx_target_address"] = encode_puzzle_hash(test_ph, "thcx")
                 # set pool to second private key
                 sk = await wallet_node.get_key_for_fingerprint(pks[1])
                 test_ph = create_puzzlehash_for_pk(master_sk_to_wallet_sk_unhardened(sk, uint32(0)).get_g1())
-                test_config["pool"]["xch_target_address"] = encode_puzzle_hash(test_ph, "txch")
+                test_config["pool"]["hcx_target_address"] = encode_puzzle_hash(test_ph, "thcx")
                 save_config(wallet_node.root_path, "config.yaml", test_config)
 
             # Check first key
