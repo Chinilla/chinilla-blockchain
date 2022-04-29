@@ -50,12 +50,12 @@ jobs:
             python-version: '3.8'
 
     steps:
-    - uses: Chia-Network/actions/clean-workspace@main
+    - uses: Chinilla/actions/clean-workspace@main
 
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chinilla/actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
 
