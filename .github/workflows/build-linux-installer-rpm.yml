@@ -1,10 +1,11 @@
-name: Installer - Linux .rpm (Python 3.9)
+name: Build Installer - Linux RPM AMD64
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - 'release/**'
     tags:
         - '**'
   pull_request:
@@ -18,7 +19,7 @@ concurrency:
 
 jobs:
   build:
-    name: Installer - Linux .rpm (Python 3.9)
+    name: Linux amd64 RPM Installer
     runs-on: ubuntu-latest
     container:
       image: chianetwork/centos7-builder:latest

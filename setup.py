@@ -118,6 +118,7 @@ kwargs = dict(
     entry_points={
         "console_scripts": [
             "chinilla = chinilla.cmds.chinilla:main",
+            "chinilla_daemon = chinilla.daemon.server:main",
             "chinilla_wallet = chinilla.server.start_wallet:main",
             "chinilla_full_node = chinilla.server.start_full_node:main",
             "chinilla_harvester = chinilla.server.start_harvester:main",
