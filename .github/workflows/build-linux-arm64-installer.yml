@@ -103,7 +103,7 @@ jobs:
         tar -xvzf /tmp/bladebit.tar.gz -C $GITHUB_WORKSPACE/bladebit
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
     
-    - name: work around permission issue
+    - name: Fix Git Folder Permission
       run: |
         git config --global --add safe.directory /__w/chinilla-blockchain/chinilla-blockchain
 
