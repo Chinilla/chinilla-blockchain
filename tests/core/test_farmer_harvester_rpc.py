@@ -17,6 +17,7 @@ from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.config import load_config, lock_and_load_config, save_config
 from chinilla.util.hash import std_hash
 from chinilla.util.ints import uint8, uint16, uint32, uint64
+from chinilla.util.misc import get_list_or_len
 from chinilla.wallet.derive_keys import master_sk_to_wallet_sk, master_sk_to_wallet_sk_unhardened
 from tests.setup_nodes import setup_harvester_farmer, test_constants
 from tests.time_out_assert import time_out_assert, time_out_assert_custom_interval
@@ -27,8 +28,8 @@ log = logging.getLogger(__name__)
 
 
 @pytest_asyncio.fixture(scope="function")
-async def harvester_farmer_simulation(bt):
-    async for _ in setup_harvester_farmer(bt, test_constants, start_services=True):
+async def harvester_farmer_simulation(bt, tmp_path):
+    async for _ in setup_harvester_farmer(bt, tmp_path, test_constants, start_services=True):
         yield _
 
 
@@ -102,8 +103,9 @@ async def test_get_routes(harvester_farmer_environment):
     await validate_get_routes(harvester_rpc_client, harvester_rpc_api)
 
 
+@pytest.mark.parametrize("endpoint", ["get_harvesters", "get_harvesters_summary"])
 @pytest.mark.asyncio
-async def test_farmer_get_harvesters(harvester_farmer_environment):
+async def test_farmer_get_harvesters_and_summary(harvester_farmer_environment, endpoint: str):
     (
         farmer_service,
         farmer_rpc_api,
@@ -114,26 +116,42 @@ async def test_farmer_get_harvesters(harvester_farmer_environment):
     ) = harvester_farmer_environment
     harvester = harvester_service._node
 
-    num_plots = 0
+    harvester_plots = []
 
     async def non_zero_plots() -> bool:
         res = await harvester_rpc_client.get_plots()
-        nonlocal num_plots
-        num_plots = len(res["plots"])
-        return num_plots > 0
+        nonlocal harvester_plots
+        harvester_plots = res["plots"]
+        return len(harvester_plots) > 0
 
     await time_out_assert(10, non_zero_plots)
 
     async def test_get_harvesters():
+        nonlocal harvester_plots
         harvester.plot_manager.trigger_refresh()
         await time_out_assert(5, harvester.plot_manager.needs_refresh, value=False)
-        farmer_res = await farmer_rpc_client.get_harvesters()
+        farmer_res = await getattr(farmer_rpc_client, endpoint)()
+
         if len(list(farmer_res["harvesters"])) != 1:
             log.error(f"test_get_harvesters: invalid harvesters {list(farmer_res['harvesters'])}")
             return False
-        if len(list(farmer_res["harvesters"][0]["plots"])) != num_plots:
-            log.error(f"test_get_harvesters: invalid plots {list(farmer_res['harvesters'])}")
+
+        if farmer_res["harvesters"][0]["last_sync_time"] is None:
+            log.error(f"test_get_harvesters: sync not done {list(farmer_res['harvesters'])}")
             return False
+
+        harvester_dict = farmer_res["harvesters"][0]
+        counts_only: bool = endpoint == "get_harvesters_summary"
+
+        if not counts_only:
+            harvester_dict["plots"] = sorted(harvester_dict["plots"], key=lambda item: item["filename"])
+            harvester_plots = sorted(harvester_plots, key=lambda item: item["filename"])
+
+        assert harvester_dict["plots"] == get_list_or_len(harvester_plots, counts_only)
+        assert harvester_dict["failed_to_open_filenames"] == get_list_or_len([], counts_only)
+        assert harvester_dict["no_key_filenames"] == get_list_or_len([], counts_only)
+        assert harvester_dict["duplicates"] == get_list_or_len([], counts_only)
+
         return True
 
     await time_out_assert_custom_interval(30, 1, test_get_harvesters)
@@ -287,3 +305,65 @@ async def test_farmer_get_pool_state(harvester_farmer_environment, self_hostname
     for pool_dict in client_pool_state["pool_state"]:
         for key in ["points_found_24h", "points_acknowledged_24h"]:
             assert pool_dict[key][0] == list(since_24h)
+
+
+@pytest.mark.asyncio
+async def test_farmer_get_pool_state_plot_count(harvester_farmer_environment, self_hostname: str) -> None:
+    (
+        farmer_service,
+        farmer_rpc_api,
+        farmer_rpc_client,
+        harvester_service,
+        harvester_rpc_api,
+        harvester_rpc_client,
+    ) = harvester_farmer_environment
+    farmer_api = farmer_service._api
+
+    async def wait_for_plot_sync() -> bool:
+        try:
+            return (await farmer_rpc_client.get_harvesters_summary())["harvesters"][0]["plots"] > 0
+        except Exception:
+            return False
+
+    await time_out_assert(15, wait_for_plot_sync, True)
+
+    assert len((await farmer_rpc_client.get_pool_state())["pool_state"]) == 0
+
+    pool_contract_puzzle_hash: bytes32 = bytes32.from_hexstr(
+        "1b9d1eaa3c6a9b27cd90ad9070eb012794a74b277446417bc7b904145010c087"
+    )
+    pool_list = [
+        {
+            "launcher_id": "ae4ef3b9bfe68949691281a015a9c16630fc8f66d48c19ca548fb80768791afa",
+            "owner_public_key": "aa11e92274c0f6a2449fd0c7cfab4a38f943289dbe2214c808b36390c34eacfaa1d4c8f3c6ec582ac502ff32228679a0",  # noqa
+            "payout_instructions": "c2b08e41d766da4116e388357ed957d04ad754623a915f3fd65188a8746cf3e8",
+            "pool_url": self_hostname,
+            "p2_singleton_puzzle_hash": pool_contract_puzzle_hash.hex(),
+            "target_puzzle_hash": "344587cf06a39db471d2cc027504e8688a0a67cce961253500c956c73603fd58",
+        }
+    ]
+
+    root_path = farmer_api.farmer._root_path
+    with lock_and_load_config(root_path, "config.yaml") as config:
+        config["pool"]["pool_list"] = pool_list
+        save_config(root_path, "config.yaml", config)
+    await farmer_api.farmer.update_pool_state()
+
+    pool_plot_count = (await farmer_rpc_client.get_pool_state())["pool_state"][0]["plot_count"]
+    assert pool_plot_count == 5
+
+    # TODO: Maybe improve this to not remove from Receiver directly but instead from the harvester and then wait for
+    #       plot sync event.
+    async def remove_all_and_validate() -> bool:
+        nonlocal pool_plot_count
+        receiver = farmer_api.farmer.plot_sync_receivers[harvester_service._server.node_id]
+        for path, plot in receiver.plots().copy().items():
+            if plot.pool_contract_puzzle_hash == pool_contract_puzzle_hash:
+                del receiver.plots()[path]
+                pool_plot_count -= 1
+        plot_count = (await farmer_rpc_client.get_pool_state())["pool_state"][0]["plot_count"]
+        assert plot_count == pool_plot_count
+        return plot_count
+
+    await time_out_assert(15, remove_all_and_validate, False)
+    assert (await farmer_rpc_client.get_pool_state())["pool_state"][0]["plot_count"] == 0

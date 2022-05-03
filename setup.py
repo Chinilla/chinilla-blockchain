@@ -2,7 +2,7 @@ from setuptools import setup
 
 dependencies = [
     "aiofiles==0.7.0",  # Async IO for files
-    "blspy==1.0.11",  # Signature library
+    "blspy==1.0.9",  # Signature library
     "chiavdf==1.0.6",  # timelord and vdf verification
     "chiabip158==1.1",  # bip158-style wallet filters
     "chiapos==1.0.10",  # proof of space
@@ -118,6 +118,7 @@ kwargs = dict(
     entry_points={
         "console_scripts": [
             "chinilla = chinilla.cmds.chinilla:main",
+            "chinilla_daemon = chinilla.daemon.server:main",
             "chinilla_wallet = chinilla.server.start_wallet:main",
             "chinilla_full_node = chinilla.server.start_full_node:main",
             "chinilla_harvester = chinilla.server.start_harvester:main",

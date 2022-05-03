@@ -430,12 +430,9 @@ def chinilla_init(
     protected Keychain. When launching the daemon from the GUI, we want the GUI to
     handle unlocking the keychain.
     """
-    if os.environ.get("CHINILLA_ROOT", None) is not None:
-        print(
-            f"warning, your CHINILLA_ROOT is set to {os.environ['CHINILLA_ROOT']}. "
-            f"Please unset the environment variable and run chinilla init again\n"
-            f"or manually migrate config.yaml"
-        )
+    chinilla_root = os.environ.get("CHINILLA_ROOT", None)
+    if chinilla_root is not None:
+        print(f"CHINILLA_ROOT is set to {chinilla_root}")
 
     print(f"Chinilla directory {root_path}")
     if root_path.is_dir() and Path(root_path / "config" / "config.yaml").exists():
