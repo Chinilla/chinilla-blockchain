@@ -104,7 +104,8 @@ jobs:
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
     
     - name: work around permission issue
-        run: git config --global --add safe.directory /__w/chinilla-blockchain/chinilla-blockchain
+        run: |
+        git config --global --add safe.directory /__w/chinilla-blockchain/chinilla-blockchain
 
     - name: Run install script
       env:
