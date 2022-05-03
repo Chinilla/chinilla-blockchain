@@ -103,6 +103,10 @@ jobs:
         tar -xvzf /tmp/bladebit.tar.gz -C $GITHUB_WORKSPACE/bladebit
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
 
+    - name: Fix Git Folder Permission
+      run: |
+        git config --global --add safe.directory /__w/chinilla-blockchain/chinilla-blockchain
+
     - name: Run install script
       env:
         INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
