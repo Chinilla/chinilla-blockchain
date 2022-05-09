@@ -2,7 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.0.3 Chinilla Blockchain 2022-04-26
+## 1.0.4 Chinilla Blockchain 2022-05-02
+
+### Added
+
+- Added support for sharing offers to the Chinilla.com Offer Trader from the GUI.
+
+### Fixed
+
+- Changed remaining references of `tails` to `tokens`
+
+
+## 1.0.3 Chinilla Blockchain 2022-04-25
 
 ### Notes
 
@@ -12,8 +23,8 @@ All notable changes to this project will be documented in this file.
 
 - Added The first two Chinilla Asset Tokens to the GUI:
 
-  *  `Founder Token`: The first 100 farmers who won block will receive ONE (1) on April 27, 2022
-  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100k blocks will receive FIVE (5) on April 27, 2022
+  *  `Founder Token`: The first 100 farmers who won a block will receive ONE (1) by April 27, 2022
+  *  `Early Farmer Token`: Every farmer who received a block reward in the first 100,000 blocks will receive FIVE (5) by April 27, 2022
 
 ### Fixed
 
@@ -49,7 +60,7 @@ All notable changes to this project will be documented in this file.
 - Token selection has been changed to a permanent column in the GUI instead of the drop down list along
 - Manage token option has been added at the bottom of the Token column to all users to show/hide token wallets
 - Users can show/hide token wallets. If you have auto-discover cats in config.yaml turned off, new tokens will still show up there, but those wallets won’t get created until the token has been toggled on for the first time
-- CATs now have a link to Chinilla.com tail database to look up the Asset ID
+- CATs now have a link to Chinilla.com token database to look up the Asset ID
 - Ongoing improvements to the internal test framework for speed and reliability.
 - Significant harvester protocol update: You will need to update your farmer and all your harvesters as this is a breaking change in the harvester protocol. The new protocol solves many scaling issues. In particular, the protocol supports sending delta changes to the farmer - so for example, adding plots to a farm results in only the new plots being reported. We recommend you update your farmer first.
 - Updated clvm_tools to 0.4.4
