@@ -33,7 +33,7 @@ from chinilla.protocols.wallet_protocol import (
     RespondSESInfo,
 )
 from chinilla.server.outbound_message import Message, make_msg
-from chinilla.types.blockchain_format.coin import Coin, hash_coin_list
+from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -1160,14 +1160,14 @@ class FullNodeAPI:
             # Addition Merkle set contains puzzlehash and hash of all coins with that puzzlehash
             for puzzle, coins in puzzlehash_coins_map.items():
                 addition_merkle_set.add_already_hashed(puzzle)
-                addition_merkle_set.add_already_hashed(hash_coin_list(coins))
+                addition_merkle_set.add_already_hashed(hash_coin_ids([c.name() for c in coins]))
 
             assert addition_merkle_set.get_root() == block.foliage_transaction_block.additions_root
             for puzzle_hash in request.puzzle_hashes:
                 result, proof = addition_merkle_set.is_included_already_hashed(puzzle_hash)
                 if puzzle_hash in puzzlehash_coins_map:
                     coins_map.append((puzzle_hash, puzzlehash_coins_map[puzzle_hash]))
-                    hash_coin_str = hash_coin_list(puzzlehash_coins_map[puzzle_hash])
+                    hash_coin_str = hash_coin_ids([c.name() for c in puzzlehash_coins_map[puzzle_hash]])
                     result_2, proof_2 = addition_merkle_set.is_included_already_hashed(hash_coin_str)
                     assert result
                     assert result_2
