@@ -38,8 +38,6 @@ jobs:
             runs-on:
               intel: windows-latest
         arch:
-          - name: ARM64
-            matrix: arm
           - name: Intel
             matrix: intel
         python-version: ['3.7', '3.8', '3.9', '3.10']
