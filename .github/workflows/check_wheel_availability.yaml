@@ -34,7 +34,6 @@ jobs:
             matrix: macos
             runs-on:
               intel: macos-latest
-              arm: [macos, arm64]
           - name: Windows
             matrix: windows
             runs-on:
