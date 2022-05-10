@@ -29,7 +29,6 @@ jobs:
             matrix: linux
             runs-on:
               intel: ubuntu-latest
-              arm: [linux, arm64]
           - name: macOS
             matrix: macos
             runs-on:
