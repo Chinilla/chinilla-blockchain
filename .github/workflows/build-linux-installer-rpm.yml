@@ -1,10 +1,12 @@
-name: Installer - Linux .rpm (Python 3.9)
+name: Build Installer - Linux RPM AMD64
 
 on:
   workflow_dispatch:
   push:
     branches:
+      - 'long_lived/**'
       - main
+      - 'release/**'
     tags:
         - '**'
   pull_request:
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   build:
-    name: Installer - Linux .rpm (Python 3.9)
+    name: Linux amd64 RPM Installer
     runs-on: ubuntu-latest
     container:
       image: chianetwork/centos7-builder:latest
@@ -109,7 +111,7 @@ jobs:
       env:
         INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
       run: |
-        sh install.sh
+        sh install.sh -d
 
     - name: Build .rpm package
       env:
@@ -119,12 +121,12 @@ jobs:
         git -C ./chinilla-blockchain-gui status
         . ./activate
         cd ./build_scripts
-        sh build_linux_rpm.sh amd64
+        bash build_linux_rpm.sh amd64
         cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1.x86_64.rpm final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm
         cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-x86-64.rpm final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
 
     - name: Upload Linux artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: chinilla-installers-linux-rpm-intel
         path: ${{ github.workspace }}/build_scripts/final_installer/
