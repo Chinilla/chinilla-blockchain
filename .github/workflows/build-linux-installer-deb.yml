@@ -1,10 +1,12 @@
-name: Installer - Linux .deb (Python 3.8)
+name: Build Installer - Linux DEB AMD64
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - dev
+      - 'release/**'
     tags:
         - '**'
   pull_request:
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   build:
-    name:  Installer - Linux .deb (Python 3.8)
+    name: Linux amd64 DEB Installer
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     strategy:
@@ -140,7 +142,7 @@ jobs:
       env:
         INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
       run: |
-        sh install.sh
+        sh install.sh -d
 
     - name: Setup Node 16.x
       uses: actions/setup-node@v3
@@ -161,10 +163,12 @@ jobs:
         cd ./build_scripts
         sh build_linux_deb.sh amd64
         mv final_installer/chinilla-blockchain_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}_amd64.deb final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb
+        mv final_installer/chinilla-blockchain-cli_${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-1_amd64.deb final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb
         cp final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb final_installer/chinilla-blockchain-beta-latest-amd64.deb
+        cp final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb final_installer/chinilla-blockchain-cli-beta-latest-amd64.deb
 
     - name: Upload Linux artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: chinilla-installers-linux-deb-intel
         path: ${{ github.workspace }}/build_scripts/final_installer/
@@ -181,6 +185,18 @@ jobs:
           out_dir: dev
           cdn_domain: download.chinilla.com
 
+    - name: Upload CLI to DO Spaces
+      if: steps.check_secrets.outputs.HAS_SECRET
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb
+          out_dir: dev
+          cdn_domain: download.chinilla.com
+
     - name: Create Beta Checksum
       if: github.ref == 'refs/heads/main'
       env:
@@ -188,6 +204,7 @@ jobs:
       run: |
          ls ${{ github.workspace }}/build_scripts/final_installer/
          sha256sum ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-beta-latest-amd64.deb > ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-beta-latest-amd64.deb.sha256
+         sha256sum ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-cli-beta-latest-amd64.deb > ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-cli-beta-latest-amd64.deb.sha256
          ls ${{ github.workspace }}/build_scripts/final_installer/
 
     - name: Create Release Checksum
@@ -197,19 +214,8 @@ jobs:
       run: |
          ls ${{ github.workspace }}/build_scripts/final_installer/
          sha256sum ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb > ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb.sha256
+         sha256sum ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb > ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb.sha256
          ls ${{ github.workspace }}/build_scripts/final_installer/
-
-    - name: Install py3createtorrent
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        pip3 install py3createtorrent
-    - name: Create .deb torrent
-      env:
-        CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb -o ${{ github.workspace }}/build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb.torrent --webseed https://download.chinilla.com/install/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-amd64.deb
-        ls
 
     - name: Upload Beta Installer
       if: steps.check_secrets.outputs.HAS_SECRET && github.ref == 'refs/heads/main'
@@ -232,6 +238,30 @@ jobs:
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
           source: /build_scripts/final_installer/chinilla-blockchain-beta-latest-amd64.deb.sha256
+          out_dir: beta
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Beta CLI
+      if: steps.check_secrets.outputs.HAS_SECRET && github.ref == 'refs/heads/main'
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/chinilla-blockchain-cli-beta-latest-amd64.deb
+          out_dir: beta
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Beta CLI Sha256
+      if: steps.check_secrets.outputs.HAS_SECRET && github.ref == 'refs/heads/main'
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/chinilla-blockchain-cli-beta-latest-amd64.deb.sha256
           out_dir: beta
           cdn_domain: download.chinilla.com
 
@@ -259,7 +289,7 @@ jobs:
           out_dir: install
           cdn_domain: download.chinilla.com
 
-    - name: Upload Release Installer Torrent
+    - name: Upload Release CLI
       if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags/')
       uses: BetaHuhn/do-spaces-action@v2
       with:
@@ -267,8 +297,21 @@ jobs:
           secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
           space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
-          source: /build_scripts/final_installer/chinilla-blockchain-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb.torrent
-          out_dir: torrents
+          source: /build_scripts/final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb
+          out_dir: install
+          cdn_domain: download.chinilla.com
+
+    - name: Upload Release CLI SHA256
+      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags/')
+      uses: BetaHuhn/do-spaces-action@v2
+      with:
+          access_key: ${{ secrets.INSTALLER_UPLOAD_KEY}}
+          secret_key: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
+          space_name: ${{ secrets.INSTALLER_UPLOAD_SPACE_NAME }}
+          space_region: ${{ secrets.INSTALLER_UPLOAD_SPACE }}
+          source: /build_scripts/final_installer/chinilla-blockchain-cli-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-amd64.deb.sha256
+          out_dir: install
+          cdn_domain: download.chinilla.com
 
     - name: Get tag name
       if: startsWith(github.ref, 'refs/tags/')
