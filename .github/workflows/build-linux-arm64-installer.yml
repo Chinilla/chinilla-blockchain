@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - 'release/**'
+      - dev
     tags:
         - '**'
   pull_request:
