@@ -122,9 +122,9 @@ jobs:
         . ./activate
         cd ./build_scripts
         bash build_linux_rpm.sh amd64
-        cp final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION }-1.x86_64.rpm final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION }-x86-64.rpm
-        cp final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION }-x86-64.rpm final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
-        cp final_installer/chinilla-blockchain-cli-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm final_installer/chinilla-blockchain-cli-${CHINILLA_INSTALLER_VERSION }-x86-64.rpm
+        cp final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm
+        cp final_installer/chinilla-blockchain-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm final_installer/chinilla-blockchain-beta-latest-x86-64.rpm
+        cp final_installer/chinilla-blockchain-cli-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm final_installer/chinilla-blockchain-cli-${CHINILLA_INSTALLER_VERSION}-x86-64.rpm
         cp final_installer/chinilla-blockchain-cli-${CHINILLA_INSTALLER_VERSION}-1.x86_64.rpm final_installer/chinilla-blockchain-cli-beta-latest-x86-64.rpm
 
     - name: Upload Linux artifacts
