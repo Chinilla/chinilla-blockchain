@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.0.5 Chia blockchain 2022-5-11
+## 1.0.5 Chinilla blockchain 2022-5-11
 
 ### Notes
 
