@@ -18,9 +18,10 @@ name: GitHub Super Linter
 on:
   push:
     branches:
-      - 'long_lived/**'
       - main
-      - 'release/**'
+      - latest
+      - dev
+      - 'long_lived/**'
     tags:
         - '**'
   pull_request:

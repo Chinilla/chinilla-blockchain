@@ -4,9 +4,11 @@ on:
   pull_request:
   push:
     branches:
-      - 'long_lived/**'
       - main
+      - latest
+      - dev
       - 'release/**'
+      - 'long_lived/**'
 
 concurrency:
   # SHA is added to the end if on `main` to let all main workflows run

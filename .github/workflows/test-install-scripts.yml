@@ -3,9 +3,11 @@ name: Test Install Scripts
 on:
   push:
     branches:
-      - 'long_lived/**'
       - main
+      - latest
+      - dev
       - 'release/**'
+      - 'long_lived/**'
     tags:
         - '**'
   pull_request:
