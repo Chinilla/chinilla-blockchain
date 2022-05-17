@@ -13,7 +13,7 @@ from blspy import G1Element
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.full_node.full_node_api import FullNodeAPI
 from chinilla.pools.pool_puzzles import SINGLETON_LAUNCHER_HASH
-from chinilla.pools.pool_wallet_info import PoolWalletInfo, PoolSingletonState
+from chinilla.pools.pool_wallet_info import PoolSingletonState, PoolWalletInfo
 from chinilla.protocols import full_node_protocol
 from chinilla.protocols.full_node_protocol import RespondBlock
 from chinilla.rpc.rpc_server import start_rpc_server
@@ -21,17 +21,16 @@ from chinilla.rpc.wallet_rpc_api import WalletRpcApi
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
 from chinilla.types.blockchain_format.sized_bytes import bytes32
-
 from chinilla.types.peer_info import PeerInfo
 from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.byte_types import hexstr_to_bytes
-from chinilla.wallet.derive_keys import find_authentication_sk, find_owner_sk
-from chinilla.wallet.wallet_node import WalletNode
-from tests.block_tools import get_plot_dir, BlockTools
 from chinilla.util.config import load_config
 from chinilla.util.ints import uint16, uint32
+from chinilla.wallet.derive_keys import find_authentication_sk, find_owner_sk
 from chinilla.wallet.transaction_record import TransactionRecord
 from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.wallet.wallet_node import WalletNode
+from tests.block_tools import BlockTools, get_plot_dir
 from tests.setup_nodes import setup_simulators_and_wallets
 from tests.time_out_assert import time_out_assert
 from tests.util.socket import find_available_listen_port
@@ -82,12 +81,11 @@ class TemporaryPoolPlot:
         self._tmpdir.__exit__(None, None, None)
 
 
-async def wallet_is_synced(wallet_node: WalletNode, full_node_api):
+async def wallet_is_synced(wallet_node: WalletNode, full_node_api) -> bool:
     assert wallet_node.wallet_state_manager is not None
-    return (
-        await wallet_node.wallet_state_manager.blockchain.get_finished_sync_up_to()
-        == full_node_api.full_node.blockchain.get_peak_height()
-    )
+    wallet_height = await wallet_node.wallet_state_manager.blockchain.get_finished_sync_up_to()
+    full_node_height = full_node_api.full_node.blockchain.get_peak_height()
+    return wallet_height == full_node_height
 
 
 PREFARMED_BLOCKS = 4
@@ -546,7 +544,7 @@ class TestPoolWalletRpc:
                 await client.pw_absorb_rewards(2, fee)
 
             tx1 = await client.get_transactions(1)
-            assert (250000000000 + fee) in [tx.additions[0].amount for tx in tx1]
+            assert (250000000000 + fee) in [tx.amount for tx in tx1]
             # await time_out_assert(10, wallet_0.get_confirmed_balance, total_block_rewards)
 
     @pytest.mark.asyncio
@@ -781,7 +779,7 @@ class TestPoolWalletRpc:
             # Note: as written, confirmed balance will not reflect on absorbs, because the fee
             # is paid back into the same client's wallet in this test.
             tx1 = await client.get_transactions(1)
-            assert (250000000000 + fee) in [tx.additions[0].amount for tx in tx1]
+            assert (250000000000 + fee) in [tx.amount for tx in tx1]
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("trusted_and_fee", [(True, 0), (False, 0)])

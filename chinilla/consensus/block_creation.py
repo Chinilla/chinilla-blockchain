@@ -5,6 +5,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import blspy
 from blspy import G1Element, G2Element
+from chia_rs import compute_merkle_set_root
 from chiabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
@@ -16,12 +17,7 @@ from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
 from chinilla.full_node.signage_point import SignagePoint
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
-from chinilla.types.blockchain_format.foliage import (
-    Foliage,
-    FoliageBlockData,
-    FoliageTransactionBlock,
-    TransactionsInfo,
-)
+from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock, RewardChainBlockUnfinished
@@ -33,7 +29,6 @@ from chinilla.types.generator_types import BlockGenerator
 from chinilla.types.unfinished_block import UnfinishedBlock
 from chinilla.util.hash import std_hash
 from chinilla.util.ints import uint8, uint32, uint64, uint128
-from chinilla.util.merkle_set import MerkleSet
 from chinilla.util.prev_transaction_block import get_prev_transaction_block
 from chinilla.util.recursive_replace import recursive_replace
 
@@ -203,12 +198,7 @@ def create_foliage(
         bip158: PyBIP158 = PyBIP158(byte_array_tx)
         encoded = bytes(bip158.GetEncoded())
 
-        removal_merkle_set = MerkleSet()
-        addition_merkle_set = MerkleSet()
-
-        # Create removal Merkle set
-        for coin_name in tx_removals:
-            removal_merkle_set.add_already_hashed(coin_name)
+        additions_merkle_items: List[bytes32] = []
 
         # Create addition Merkle set
         puzzlehash_coin_map: Dict[bytes32, List[bytes32]] = {}
@@ -221,11 +211,11 @@ def create_foliage(
 
         # Addition Merkle set contains puzzlehash and hash of all coins with that puzzlehash
         for puzzle, coin_ids in puzzlehash_coin_map.items():
-            addition_merkle_set.add_already_hashed(puzzle)
-            addition_merkle_set.add_already_hashed(hash_coin_ids(coin_ids))
+            additions_merkle_items.append(puzzle)
+            additions_merkle_items.append(hash_coin_ids(coin_ids))
 
-        additions_root = addition_merkle_set.get_root()
-        removals_root = removal_merkle_set.get_root()
+        additions_root = bytes32(compute_merkle_set_root(additions_merkle_items))
+        removals_root = bytes32(compute_merkle_set_root(tx_removals))
 
         generator_hash = bytes32([0] * 32)
         if block_generator is not None:
@@ -308,7 +298,7 @@ def create_unfinished_block(
     additions: Optional[List[Coin]] = None,
     removals: Optional[List[Coin]] = None,
     prev_block: Optional[BlockRecord] = None,
-    finished_sub_slots_input: List[EndOfSubSlotBundle] = None,
+    finished_sub_slots_input: Optional[List[EndOfSubSlotBundle]] = None,
 ) -> UnfinishedBlock:
     """
     Creates a new unfinished block using all the information available at the signage point. This will have to be
@@ -523,8 +513,9 @@ def unfinished_block_to_full_block(
         new_generator,
         new_generator_ref_list,
     )
-    return recursive_replace(
+    ret = recursive_replace(
         ret,
         "foliage.reward_block_hash",
         ret.reward_chain_block.get_hash(),
     )
+    return ret
