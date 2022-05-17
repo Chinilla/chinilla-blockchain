@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.ints import uint32
-from chia.util.streamable import Streamable, recurse_jsonify, streamable
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.util.ints import uint32
+from chinilla.util.streamable import Streamable, recurse_jsonify, streamable
 
 
 def test_primitives() -> None:

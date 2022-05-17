@@ -610,7 +610,7 @@ class TestKeysCommands:
 
     def test_derive_search_wallet_testnet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive search` command, searching for a testnet wallet address
+        Test the `chinilla keys derive search` command, searching for a testnet wallet address
         """
 
         keychain = keyring_with_one_key
@@ -807,7 +807,7 @@ class TestKeysCommands:
 
     def test_derive_wallet_testnet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive wallet-address` command, generating a couple of testnet wallet addresses.
+        Test the `chinilla keys derive wallet-address` command, generating a couple of testnet wallet addresses.
         """
 
         keychain = keyring_with_one_key
