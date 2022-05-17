@@ -18,9 +18,9 @@ from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditio
 from chinilla.full_node.signage_point import SignagePoint
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
 from chinilla.types.blockchain_format.foliage import (
-    Foliage, 
-    FoliageBlockData, 
-    FoliageTransactionBlock, 
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
     TransactionsInfo,
 )
 from chinilla.types.blockchain_format.pool_target import PoolTarget
