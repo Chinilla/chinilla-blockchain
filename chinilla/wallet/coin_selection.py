@@ -90,7 +90,7 @@ async def select_coins(
             coin = select_smallest_coin_over_target(len(smaller_coins), valid_spendable_coins)
             if coin is None or coin.amount < amount:
                 raise ValueError(
-                    f"Transaction of {amount} mojo would use more than "
+                    f"Transaction of {amount} vojo would use more than "
                     f"{max_num_coins} coins. Try sending a smaller amount"
                 )
             coin_set = {coin}
