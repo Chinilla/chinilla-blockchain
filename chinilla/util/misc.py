@@ -1,6 +1,15 @@
+import dataclasses
 from typing import Any, Dict, Sequence, Union
 
-from chinilla.util.streamable import recurse_jsonify
+from chinilla.util.ints import uint16
+from chinilla.util.streamable import Streamable, recurse_jsonify, streamable
+
+
+@streamable
+@dataclasses.dataclass(frozen=True)
+class VersionedBlob(Streamable):
+    version: uint16
+    blob: bytes
 
 
 def format_bytes(bytes: int) -> str:
