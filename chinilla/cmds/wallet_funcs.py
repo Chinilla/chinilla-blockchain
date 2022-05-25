@@ -8,17 +8,16 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 import aiohttp
 
+from chinilla.cmds.cmds_util import transaction_status_msg, transaction_submitted_msg
 from chinilla.cmds.show import print_connections
 from chinilla.cmds.units import units
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
-from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_wallet import SERVICE_NAME
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint16, uint32, uint64
-from chinilla.cmds.cmds_util import transaction_submitted_msg, transaction_status_msg
 from chinilla.wallet.trade_record import TradeRecord
 from chinilla.wallet.trading.offer import Offer
 from chinilla.wallet.trading.trade_status import TradeStatus
@@ -553,7 +552,7 @@ async def print_balances(args: dict, wallet_client: WalletRpcClient, fingerprint
 
     print(" ")
     trusted_peers: Dict = config["wallet"].get("trusted_peers", {})
-    await print_connections(wallet_client, time, NodeType, trusted_peers)
+    await print_connections(wallet_client, trusted_peers)
 
 
 async def get_wallet(wallet_client: WalletRpcClient, fingerprint: int = None) -> Optional[Tuple[WalletRpcClient, int]]:
