@@ -40,6 +40,13 @@ wallet_program_files = set(
         "chinilla/wallet/puzzles/delegated_tail.clvm",
         "chinilla/wallet/puzzles/settlement_payments.clvm",
         "chinilla/wallet/puzzles/genesis_by_coin_id.clvm",
+        "chinilla/wallet/puzzles/singleton_top_layer_v1_1.clvm",
+        "chinilla/wallet/puzzles/nft_innerpuz.clvm",
+        "chinilla/wallet/puzzles/nft_transfer_program.clvm",
+        "chinilla/wallet/puzzles/nft_ownership_transfer_program.clvm",
+        "chinilla/wallet/puzzles/nft_metadata_updater.clvm",
+        "chinilla/wallet/puzzles/nft_metadata_updater_default.clvm",
+        "chinilla/wallet/puzzles/nft_state_layer.clvm",
     ]
 )
 

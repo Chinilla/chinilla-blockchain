@@ -109,6 +109,7 @@ kwargs = dict(
         "chinilla.wallet.rl_wallet",
         "chinilla.wallet.cat_wallet",
         "chinilla.wallet.did_wallet",
+        "chinilla.wallet.nft_wallet",
         "chinilla.wallet.settings",
         "chinilla.wallet.trading",
         "chinilla.wallet.util",
