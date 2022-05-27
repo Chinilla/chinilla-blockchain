@@ -77,7 +77,13 @@ def test_update_metadata() -> None:
     )
 
     metadata = [
-        ("u", ["https://www.chinilla.com/img/branding/chinilla-logo-2.svg", "https://www.chinilla.com/img/branding/chinilla-logo.svg"]),
+        (
+            "u",
+            [
+                "https://www.chinilla.com/img/branding/chinilla-logo-2.svg",
+                "https://www.chinilla.com/img/branding/chinilla-logo.svg",
+            ],
+        ),
         ("h", 0xD4584AD463139FA8C0D9F68F4B59F185),
     ]
 
