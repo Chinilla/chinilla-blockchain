@@ -3,7 +3,7 @@ import json
 import logging
 import traceback
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Coroutine, Dict, List, Optional, Tuple
 
 from aiohttp import ClientConnectorError, ClientSession, ClientWebSocketResponse, WSMsgType, web
 
@@ -54,7 +54,7 @@ class RpcServer:
             await self.client_session.close()
 
     async def _state_changed(self, *args):
-        if self.websocket is None:
+        if self.websocket is None or self.websocket.closed:
             return None
         payloads: List[Dict] = await self.rpc_api._state_changed(*args)
 
@@ -73,7 +73,7 @@ class RpcServer:
         for payload in payloads:
             if "success" not in payload["data"]:
                 payload["data"]["success"] = True
-            if self.websocket is None:
+            if self.websocket is None or self.websocket.closed:
                 return None
             try:
                 await self.websocket.send_str(dict_to_json_str(payload))
@@ -82,7 +82,7 @@ class RpcServer:
                 self.log.warning(f"Sending data failed. Exception {tb}.")
 
     def state_changed(self, *args):
-        if self.websocket is None:
+        if self.websocket is None or self.websocket.closed:
             return None
         asyncio.create_task(self._state_changed(*args))
 
@@ -308,12 +308,16 @@ async def start_rpc_server(
     root_path: Path,
     net_config,
     connect_to_daemon=True,
-):
+    max_request_body_size=None,
+    name: str = "rpc_server",
+) -> Tuple[Callable[[], Coroutine[Any, Any, None]], uint16]:
     """
     Starts an HTTP server with the following RPC methods, to be used by local clients to
     query the node.
     """
-    app = web.Application()
+    if max_request_body_size is None:
+        max_request_body_size = 1024 ** 2
+    app = web.Application(client_max_size=max_request_body_size)
     rpc_server = RpcServer(rpc_api, rpc_api.service_name, stop_cb, root_path, net_config)
     rpc_server.rpc_api.service._set_state_changed_callback(rpc_server.state_changed)
     app.add_routes([web.post(route, wrap_http_handler(func)) for (route, func) in rpc_server.get_routes().items()])
@@ -321,8 +325,10 @@ async def start_rpc_server(
         daemon_connection = asyncio.create_task(rpc_server.connect_to_daemon(self_hostname, daemon_port))
     runner = web.AppRunner(app, access_log=None)
     await runner.setup()
+
     site = web.TCPSite(runner, self_hostname, int(rpc_port), ssl_context=rpc_server.ssl_context)
     await site.start()
+    rpc_port = runner.addresses[0][1]
 
     async def cleanup():
         await rpc_server.stop()
@@ -330,4 +336,4 @@ async def start_rpc_server(
         if connect_to_daemon:
             await daemon_connection
 
-    return cleanup
+    return cleanup, rpc_port

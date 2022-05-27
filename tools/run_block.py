@@ -38,17 +38,17 @@ and in this way they control whether a spend is valid or not.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 import click
-
-from chia_rs import COND_CANON_INTS, NO_NEG_DIV
+from chinilla_rs import COND_CANON_INTS, NO_NEG_DIV
+from clvm.casts import int_from_bytes
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.full_node.generator import create_generator_args
-from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
@@ -57,7 +57,6 @@ from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint32, uint64
 from chinilla.wallet.cat_wallet.cat_utils import match_cat_puzzle
-from clvm.casts import int_from_bytes
 
 
 @dataclass

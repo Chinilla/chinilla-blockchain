@@ -13,7 +13,7 @@ from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.server.outbound_message import NodeType, make_msg
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.types.announcement import Announcement
-from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.coin import Coin, coin_as_list
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
@@ -25,13 +25,14 @@ from chinilla.util.ws_message import WsRpcMessage, create_payload_dict
 from chinilla.wallet.cat_wallet.cat_constants import DEFAULT_CATS
 from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
 from chinilla.wallet.derive_keys import (
-    master_sk_to_singleton_owner_sk,
-    master_sk_to_wallet_sk_unhardened,
     MAX_POOL_WALLETS,
+    master_sk_to_farmer_sk,
+    master_sk_to_pool_sk,
+    master_sk_to_singleton_owner_sk,
+    match_address_to_sk,
 )
-from chinilla.wallet.rl_wallet.rl_wallet import RLWallet
-from chinilla.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
 from chinilla.wallet.did_wallet.did_wallet import DIDWallet
+from chinilla.wallet.rl_wallet.rl_wallet import RLWallet
 from chinilla.wallet.trade_record import TradeRecord
 from chinilla.wallet.trading.offer import Offer
 from chinilla.wallet.transaction_record import TransactionRecord
@@ -40,7 +41,6 @@ from chinilla.wallet.util.wallet_types import AmountWithPuzzlehash, WalletType
 from chinilla.wallet.wallet_info import WalletInfo
 from chinilla.wallet.wallet_node import WalletNode
 from chinilla.util.config import load_config
-from chinilla.consensus.coinbase import create_puzzlehash_for_pk
 
 # Timeout for response from wallet/full node for sending a transaction
 TIMEOUT = 30
@@ -306,25 +306,12 @@ class WalletRpcApi:
         config: Dict = load_config(new_root, "config.yaml")
         farmer_target = config["farmer"].get("hcx_target_address")
         pool_target = config["pool"].get("hcx_target_address")
-        found_farmer = False
-        found_pool = False
-        selected = config["selected_network"]
-        prefix = config["network_overrides"]["config"][selected]["address_prefix"]
-        for i in range(max_ph_to_search):
-            if found_farmer and found_pool:
-                break
+        address_to_check: List[bytes32] = [decode_puzzle_hash(farmer_target), decode_puzzle_hash(pool_target)]
 
-            phs = [
-                encode_puzzle_hash(create_puzzlehash_for_pk(master_sk_to_wallet_sk(sk, uint32(i)).get_g1()), prefix),
-                encode_puzzle_hash(
-                    create_puzzlehash_for_pk(master_sk_to_wallet_sk_unhardened(sk, uint32(i)).get_g1()), prefix
-                ),
-            ]
-            for ph in phs:
-                if ph == farmer_target:
-                    found_farmer = True
-                if ph == pool_target:
-                    found_pool = True
+        found_addresses: Set[bytes32] = match_address_to_sk(sk, address_to_check, max_ph_to_search)
+
+        found_farmer = address_to_check[0] in found_addresses
+        found_pool = address_to_check[1] in found_addresses
 
         return found_farmer, found_pool
 
@@ -338,9 +325,12 @@ class WalletRpcApi:
         walletBalance: bool = False
 
         fingerprint = request["fingerprint"]
+        max_ph_to_search = request.get("max_ph_to_search", 100)
         sk, _ = await self._get_private_key(fingerprint)
         if sk is not None:
-            used_for_farmer, used_for_pool = await self._check_key_used_for_rewards(self.service.root_path, sk, 100)
+            used_for_farmer, used_for_pool = await self._check_key_used_for_rewards(
+                self.service.root_path, sk, max_ph_to_search
+            )
 
             if self.service.logged_in_fingerprint != fingerprint:
                 await self._stop_wallet()
@@ -534,7 +524,7 @@ class WalletRpcApi:
                 assert did_wallet.did_info.temp_pubkey is not None
                 my_did = did_wallet.get_my_DID()
                 coin_name = did_wallet.did_info.temp_coin.name().hex()
-                coin_list = did_wallet.did_info.temp_coin.as_list()
+                coin_list = coin_as_list(did_wallet.did_info.temp_coin)
                 newpuzhash = did_wallet.did_info.temp_puzhash
                 pubkey = did_wallet.did_info.temp_pubkey
                 return {

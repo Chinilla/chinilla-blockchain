@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
+      - latest
       - dev
+      - 'release/**'
+      - 'long_lived/**'
     tags:
         - '**'
   pull_request:
@@ -13,7 +16,7 @@ on:
 
 concurrency:
   # SHA is added to the end if on `main` to let all main workflows run
-  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == 'refs/heads/main' && github.sha || '' }}
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/long_lived/')) && github.sha || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -55,12 +58,12 @@ jobs:
               matrix: arm
 
     steps:
-    - uses: Chia-Network/actions/clean-workspace@main
+    - uses: Chinilla/actions/clean-workspace@main
 
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chinilla/actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
 
