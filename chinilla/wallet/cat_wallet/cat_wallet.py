@@ -37,6 +37,8 @@ from chinilla.wallet.cat_wallet.lineage_store import CATLineageStore
 from chinilla.wallet.coin_selection import select_coins
 from chinilla.wallet.derivation_record import DerivationRecord
 from chinilla.wallet.lineage_proof import LineageProof
+from chinilla.wallet.outer_puzzles import AssetType
+from chinilla.wallet.puzzle_drivers import PuzzleInfo
 from chinilla.wallet.payment import Payment
 from chinilla.wallet.puzzles.tails import ALL_LIMITATIONS_PROGRAMS
 from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
@@ -204,6 +206,23 @@ class CATWallet:
         )
         await self.wallet_state_manager.add_new_wallet(self, self.id(), in_transaction=in_transaction)
         return self
+
+    @classmethod
+    async def create_from_puzzle_info(
+        cls,
+        wallet_state_manager: Any,
+        wallet: Wallet,
+        puzzle_driver: PuzzleInfo,
+        name=None,
+        in_transaction=False,
+    ) -> CATWallet:
+        return await cls.create_wallet_for_cat(
+            wallet_state_manager,
+            wallet,
+            puzzle_driver["tail"].hex(),
+            name,
+            in_transaction,
+        )
 
     @staticmethod
     async def create(
@@ -792,3 +811,19 @@ class CATWallet:
         wallet_info = WalletInfo(current_info.id, current_info.name, current_info.type, data_str)
         self.wallet_info = wallet_info
         await self.wallet_state_manager.user_store.update_wallet(wallet_info, in_transaction)
+
+    def match_puzzle_info(self, puzzle_driver: PuzzleInfo) -> bool:
+        return (
+            AssetType(puzzle_driver.type()) == AssetType.CAT
+            and puzzle_driver["tail"] == bytes.fromhex(self.get_asset_id())
+            and puzzle_driver.also() is None
+        )
+
+    def get_puzzle_info(self, asset_id: bytes32) -> PuzzleInfo:
+        return PuzzleInfo({"type": AssetType.CAT.value, "tail": "0x" + self.get_asset_id()})
+
+    async def get_coins_to_offer(self, asset_id: Optional[bytes32], amount: uint64) -> Set[Coin]:
+        balance = await self.get_confirmed_balance()
+        if balance < amount:
+            raise Exception(f"insufficient funds in wallet {self.id()}")
+        return await self.select_coins(amount)
