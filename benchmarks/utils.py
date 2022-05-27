@@ -14,7 +14,12 @@ from chinilla.consensus.coinbase import create_farmer_coin, create_pool_coin
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+)
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace

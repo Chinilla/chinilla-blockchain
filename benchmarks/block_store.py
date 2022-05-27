@@ -20,7 +20,12 @@ from utils import (
 from benchmarks.utils import clvm_generator
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.full_node.block_store import BlockStore
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+)
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace

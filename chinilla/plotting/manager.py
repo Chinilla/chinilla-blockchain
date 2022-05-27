@@ -11,7 +11,13 @@ from chiapos import DiskProver
 
 from chinilla.consensus.pos_quality import UI_ACTUAL_SPACE_CONSTANT_FACTOR, _expected_plot_size
 from chinilla.plotting.cache import Cache, CacheEntry
-from chinilla.plotting.util import PlotInfo, PlotRefreshEvents, PlotRefreshResult, PlotsRefreshParameter, get_plot_filenames
+from chinilla.plotting.util import (
+    PlotInfo,
+    PlotRefreshEvents,
+    PlotRefreshResult,
+    PlotsRefreshParameter,
+    get_plot_filenames,
+)
 from chinilla.util.generator_tools import list_to_batches
 
 log = logging.getLogger(__name__)
