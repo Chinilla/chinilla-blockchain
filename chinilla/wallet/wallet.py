@@ -489,7 +489,7 @@ class Wallet:
 
     # This is to be aggregated together with a CAT offer to ensure that the trade happens
     async def create_spend_bundle_relative_chinilla(
-        self, chinilla_amount: int, exclude: List[Coin] = []   
+        self, chinilla_amount: int, exclude: List[Coin] = []
     ) -> SpendBundle:
         list_of_solutions = []
         utxos = None
