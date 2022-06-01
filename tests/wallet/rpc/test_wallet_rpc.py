@@ -802,7 +802,7 @@ async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
         await farm_transaction_block(full_node_api, wallet_1_node)
 
     # Transfer DID
-    addr = encode_puzzle_hash(await wallet_2.get_new_puzzlehash(), "txch")
+    addr = encode_puzzle_hash(await wallet_2.get_new_puzzlehash(), "thcx")
     res = await wallet_1_rpc.did_transfer_did(did_wallet_id_0, addr, 0, True)
     assert res["success"]
 
@@ -856,7 +856,7 @@ async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
     nft_info = (await wallet_1_rpc.get_nft_info(nft_id))["nft_info"]
     assert nft_info["nft_coin_id"][2:] == nft_wallet.get_current_nfts()[0].coin.name().hex()
 
-    addr = encode_puzzle_hash(await wallet_2.get_new_puzzlehash(), "txch")
+    addr = encode_puzzle_hash(await wallet_2.get_new_puzzlehash(), "thcx")
     res = await wallet_1_rpc.transfer_nft(nft_wallet_id, nft_id.hex(), addr, 0)
     assert res["success"]
 

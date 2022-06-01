@@ -32,7 +32,7 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10']
         os: [ubuntu-latest]
     env:
-      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/mainnet
+      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
       JOB_FILE_NAME: tests_${{ matrix.os }}_python-${{ matrix.python-version }}_wallet-nft_wallet
 
     steps:

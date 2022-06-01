@@ -412,7 +412,7 @@ def did_cmd():
 @click.option(
     "-a",
     "--amount",
-    help="Set the DID amount in mojos. Value must be an odd number.",
+    help="Set the DID amount in vojos. Value must be an odd number.",
     type=int,
     default=1,
     show_default=True,

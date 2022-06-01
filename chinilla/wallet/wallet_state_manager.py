@@ -568,7 +568,7 @@ class WalletStateManager:
 
         # Check if the coin is a NFT
         #                                                        hint
-        # First spend where 1 mojo coin -> Singleton launcher -> NFT -> NFT
+        # First spend where 1 vojo coin -> Singleton launcher -> NFT -> NFT
         try:
             uncurried_nft = UncurriedNFT.uncurry(Program.from_bytes(bytes(coin_spend.puzzle_reveal)))
         except Exception:
