@@ -681,27 +681,27 @@ async def create_nft_wallet(args: Dict, wallet_client: WalletRpcClient, fingerpr
 
 
 async def mint_nft(args: Dict, wallet_client: WalletRpcClient, fingerprint: int) -> None:
+    wallet_id = args["wallet_id"]
+    royalty_address = args["royalty_address"]
+    target_address = args["target_address"]
+    hash = args["hash"]
+    uris = args["uris"]
+    metadata_hash = args["metadata_hash"]
+    metadata_uris = args["metadata_uris"]
+    license_hash = args["license_hash"]
+    license_uris = args["license_uris"]
+    series_total = args["series_total"]
+    series_number = args["series_number"]
+    fee = args["fee"]
     try:
-        wallet_id = args["wallet_id"]
-        royalty_address = args.get("royalty_address", None)
-        target_address = args.get("target_address", None)
-        hash = args["hash"]
-        uris = args["uris"]
-        meta_hash = args.get("meta_hash", None)
-        meta_uris = args.get("meta_uris", None)
-        license_hash = args.get("license_hash", None)
-        license_uris = args.get("license_uris", None)
-        series_total = args.get("series_total", None)
-        series_number = args.get("series_number", None)
-        fee = args["fee"]
         response = await wallet_client.mint_nft(
             wallet_id,
             royalty_address,
             target_address,
             hash,
             uris,
-            meta_hash,
-            meta_uris,
+            metadata_hash,
+            metadata_uris,
             license_hash,
             license_uris,
             series_total,
@@ -755,13 +755,29 @@ async def list_nfts(args: Dict, wallet_client: WalletRpcClient, fingerprint: int
                 nft = NFTInfo.from_json_dict(n)
                 print()
                 print(f"{'Launcher coin ID:'.ljust(23)} {nft.launcher_id}")
+                print(f"{'Launcher puzhash:'.ljust(23)} {nft.launcher_puzhash}")
                 print(f"{'Current NFT coin ID:'.ljust(23)} {nft.nft_coin_id}")
-                print(f"{'NFT content hash:'.ljust(23)} {nft.data_hash}")
-                print(f"{'Current NFT version:'.ljust(23)} {nft.version}")
+                print(f"{'On-chain data/info:'.ljust(23)} {nft.chain_info}")
+                print(f"{'Owner DID:'.ljust(23)} {nft.did_owner}")
+                print(f"{'Royalty:'.ljust(23)} {nft.royalty}")
+                print(f"{'NFT content hash:'.ljust(23)} {nft.data_hash.hex()}")
+                print(f"{'Metadata hash:'.ljust(23)} {nft.metadata_hash.hex()}")
+                print(f"{'License hash:'.ljust(23)} {nft.license_hash.hex()}")
+                print(f"{'NFT series total:'.ljust(23)} {nft.series_total}")
+                print(f"{'Current NFT number in the series:'.ljust(23)} {nft.series_number}")
+                print(f"{'Metadata updater puzhash:'.ljust(23)} {nft.updater_puzhash}")
                 print()
                 print("URIs:")
                 for uri in nft.data_uris:
                     print(f"{indent}{uri}")
+                print()
+                print("Metadata URIs:")
+                for metadata_uri in nft.metadata_uris:
+                    print(f"{indent}{metadata_uri}")
+                print()
+                print("License URIs:")
+                for license_uri in nft.license_uris:
+                    print(f"{indent}{license_uri}")
         else:
             print(f"No NFTs found for wallet with id {wallet_id} on key {fingerprint}")
     except Exception as e:

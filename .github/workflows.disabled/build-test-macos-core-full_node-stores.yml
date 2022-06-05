@@ -1,5 +1,5 @@
 #
-# THIS FILE IS GENERATED. SEE https://github.com/Chinilla-Network/chinilla-blockchain/tree/main/tests#readme
+# THIS FILE IS GENERATED. SEE https://github.com/Chinilla/chinilla-blockchain/tree/main/tests#readme
 #
 name: MacOS core-full_node-stores Test
 
@@ -113,5 +113,5 @@ jobs:
         path: coverage_reports/*
         if-no-files-found: error
 #
-# THIS FILE IS GENERATED. SEE https://github.com/Chinilla-Network/chinilla-blockchain/tree/main/tests#readme
+# THIS FILE IS GENERATED. SEE https://github.com/Chinilla/chinilla-blockchain/tree/main/tests#readme
 #
