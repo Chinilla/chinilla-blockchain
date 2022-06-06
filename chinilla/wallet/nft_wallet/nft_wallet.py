@@ -723,7 +723,7 @@ class NFTWallet:
             in_transaction,
         )
 
-    async def create_tandem_xch_tx(
+    async def create_tandem_hcx_tx(
         self, fee: uint64, announcement_to_assert: Optional[Announcement] = None
     ) -> TransactionRecord:
         chinilla_coins = await self.standard_wallet.select_coins(fee)
@@ -851,7 +851,7 @@ class NFTWallet:
             if first:
                 first = False
                 if fee > 0:
-                    chinilla_tx = await self.create_tandem_xch_tx(fee)
+                    chinilla_tx = await self.create_tandem_hcx_tx(fee)
                     innersol = self.standard_wallet.make_solution(
                         primaries=primaries,
                         coin_announcements_to_assert=coin_announcements_bytes,
