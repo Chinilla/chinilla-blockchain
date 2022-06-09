@@ -606,7 +606,7 @@ async def test_nft_with_did_wallet_creation(two_wallet_nodes: Any, trusted: Any)
             "wallet_id": nft_wallet_0_id,
             "hash": "0xD4584AD463139FA8C0D9F68F4B59F185",
             "uris": ["https://www.chinilla.com/img/branding/chinilla-logo.svg"],
-            "target_address": encode_puzzle_hash(nft_ph, "txch"),
+            "target_address": encode_puzzle_hash(nft_ph, "thcx"),
         }
     )
     assert resp.get("success")
