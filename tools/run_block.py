@@ -41,7 +41,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import click
-from chinilla_rs import COND_CANON_INTS, NO_NEG_DIV
+from chia_rs import COND_CANON_INTS, NO_NEG_DIV
 from clvm.casts import int_from_bytes
 
 from chinilla.consensus.constants import ConsensusConstants
