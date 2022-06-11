@@ -64,7 +64,10 @@ class NFTWallet:
     nft_wallet_info: NFTWalletInfo
     standard_wallet: Wallet
     wallet_id: int
-    did_id: Optional[bytes32]
+
+    @property
+    def did_id(self):
+        return self.nft_wallet_info.did_id
 
     @classmethod
     async def create_new_nft_wallet(
@@ -72,7 +75,7 @@ class NFTWallet:
         wallet_state_manager: Any,
         wallet: Wallet,
         did_id: Optional[bytes32] = None,
-        name: str = "",
+        name: Optional[str] = None,
         in_transaction: bool = False,
     ) -> _T_NFTWallet:
         """
@@ -80,12 +83,14 @@ class NFTWallet:
         """
         self = cls()
         self.standard_wallet = wallet
+        if name is None:
+            name = "NFT Wallet"
         self.log = logging.getLogger(name if name else __name__)
         self.wallet_state_manager = wallet_state_manager
         self.nft_wallet_info = NFTWalletInfo([], did_id)
         info_as_string = json.dumps(self.nft_wallet_info.to_json_dict())
         wallet_info = await wallet_state_manager.user_store.create_wallet(
-            "NFT Wallet" if not name else name,
+            name,
             uint32(WalletType.NFT.value),
             info_as_string,
             in_transaction=in_transaction,
@@ -99,12 +104,6 @@ class NFTWallet:
 
         await self.wallet_state_manager.add_new_wallet(self, self.wallet_info.id, in_transaction=in_transaction)
         self.log.debug("Generated a new NFT wallet: %s", self.__dict__)
-        if not did_id:
-            # default profile wallet
-            self.log.debug("Standard NFT wallet created")
-            self.did_id = None
-        else:
-            self.did_id = did_id
         return self
 
     @classmethod
