@@ -45,7 +45,6 @@ wallet_program_files = set(
         "chinilla/wallet/puzzles/nft_metadata_updater_updateable.clvm",
         "chinilla/wallet/puzzles/nft_state_layer.clvm",
         "chinilla/wallet/puzzles/nft_ownership_layer.clvm",
-        "chinilla/wallet/puzzles/nft_ownership_transfer_program_one_way_claim_with_royalties_new.clvm",
         "chinilla/wallet/puzzles/nft_ownership_transfer_program_one_way_claim_with_royalties.clvm",
     ]
 )
