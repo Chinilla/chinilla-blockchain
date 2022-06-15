@@ -735,7 +735,7 @@ async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment)
 
 @pytest.mark.asyncio
 async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
-    from chia.wallet.did_wallet.did_info import DID_HRP
+    from chinilla.wallet.did_wallet.did_info import DID_HRP
 
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
@@ -828,7 +828,7 @@ async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 @pytest.mark.asyncio
 async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 
-    from chia.wallet.nft_wallet.nft_info import NFT_HRP
+    from chinilla.wallet.nft_wallet.nft_info import NFT_HRP
 
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     wallet_1_node: WalletNode = env.wallet_1.node
