@@ -457,9 +457,7 @@ async def test_nft_wallet_rpc_update_metadata(two_wallet_nodes: Any, trusted: An
                 ("u", ["https://www.chinilla.com/img/branding/chinilla-logo.svg"]),
                 ("h", hexstr_to_bytes("0xD4584AD463139FA8C0D9F68F4B59F185")),
                 ("mu", []),
-                ("mh", hexstr_to_bytes("00")),
                 ("lu", []),
-                ("lh", hexstr_to_bytes("00")),
                 ("sn", uint64(1)),
                 ("st", uint64(1)),
             ]

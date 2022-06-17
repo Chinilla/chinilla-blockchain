@@ -11,7 +11,6 @@ from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.peer_info import PeerInfo
-from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.ints import uint16, uint32, uint64
 from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
 from chinilla.wallet.nft_wallet.nft_wallet import NFTWallet
@@ -395,9 +394,7 @@ async def test_nft_offer_with_metadata_update(two_wallet_nodes: Any, trusted: An
             ("u", ["https://www.chinilla.com/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
             ("mu", []),
-            ("mh", hexstr_to_bytes("00")),
             ("lu", []),
-            ("lh", hexstr_to_bytes("00")),
             ("sn", uint64(1)),
             ("st", uint64(1)),
         ]
