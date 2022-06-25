@@ -976,7 +976,7 @@ async def test_nft_offer_sell_cancel(two_wallet_nodes: Any, trusted: Any) -> Non
     )
     metadata = Program.to(
         [
-            ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
+            ("u", ["https://www.chinilla.com/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
         ]
     )
@@ -998,7 +998,7 @@ async def test_nft_offer_sell_cancel(two_wallet_nodes: Any, trusted: Any) -> Non
 
     await time_out_assert(10, len, 1, nft_wallet_maker.my_nft_coins)
 
-    # maker create offer: NFT for xch
+    # maker create offer: NFT for hcx
     trade_manager_maker = wallet_maker.wallet_state_manager.trade_manager
 
     coins_maker = nft_wallet_maker.my_nft_coins
@@ -1007,13 +1007,13 @@ async def test_nft_offer_sell_cancel(two_wallet_nodes: Any, trusted: Any) -> Non
     nft_to_offer = coins_maker[0]
     nft_to_offer_info: Optional[PuzzleInfo] = match_puzzle(nft_to_offer.full_puzzle)
     nft_to_offer_asset_id: bytes32 = create_asset_id(nft_to_offer_info)  # type: ignore
-    xch_requested = 1000
+    hcx_requested = 1000
     maker_fee = uint64(433)
 
-    offer_did_nft_for_xch = {nft_to_offer_asset_id: -1, wallet_maker.id(): xch_requested}
+    offer_did_nft_for_hcx = {nft_to_offer_asset_id: -1, wallet_maker.id(): hcx_requested}
 
     success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
-        offer_did_nft_for_xch, {}, fee=maker_fee
+        offer_did_nft_for_hcx, {}, fee=maker_fee
     )
 
     FEE = uint64(2000000000000)

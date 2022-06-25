@@ -331,7 +331,7 @@ async def make_offer(args: dict, wallet_client: WalletRpcClient, fingerprint: in
                 except ValueError:
                     id = uint32(int(name))
                     if id == 1:
-                        name = "XCH"
+                        name = "HCX"
                         unit = units["chinilla"]
                     else:
                         name = await wallet_client.get_cat_name(str(id))
