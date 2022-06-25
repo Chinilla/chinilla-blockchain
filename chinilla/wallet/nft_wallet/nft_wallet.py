@@ -21,7 +21,11 @@ from chinilla.wallet.derivation_record import DerivationRecord
 from chinilla.wallet.lineage_proof import LineageProof
 from chinilla.wallet.nft_wallet import nft_puzzles
 from chinilla.wallet.nft_wallet.nft_info import NFTCoinInfo, NFTWalletInfo
-from chinilla.wallet.nft_wallet.nft_puzzles import NFT_METADATA_UPDATER, create_ownership_layer_puzzle, get_metadata_and_phs
+from chinilla.wallet.nft_wallet.nft_puzzles import (
+    NFT_METADATA_UPDATER,
+    create_ownership_layer_puzzle,
+    get_metadata_and_phs,
+)
 from chinilla.wallet.nft_wallet.uncurry_nft import UncurriedNFT
 from chinilla.wallet.outer_puzzles import AssetType, construct_puzzle, match_puzzle, solve_puzzle
 from chinilla.wallet.payment import Payment
