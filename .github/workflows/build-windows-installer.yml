@@ -5,8 +5,10 @@ on:
   push:
     branches:
       - main
+      - latest
       - dev
       - 'release/**'
+      - 'long_lived/**'
     tags:
         - '**'
   pull_request:
@@ -15,7 +17,7 @@ on:
 
 concurrency:
   # SHA is added to the end if on `main` to let all main workflows run
-  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == 'refs/heads/main' && github.sha || '' }}
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/long_lived/')) && github.sha || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -23,6 +25,10 @@ jobs:
     name: Windows 10 Installer
     runs-on: [windows-2019]
     timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.9]
 
     steps:
     - name: Checkout Code
@@ -34,12 +40,10 @@ jobs:
     - name: Set git urls to https instead of ssh
       run: |
         git config --global url."https://github.com/".insteadOf ssh://git@github.com/
-
     - name: Get npm cache directory
       id: npm-cache
       run: |
         echo "::set-output name=dir::$(npm config get cache)"
-
     - name: Cache npm
       uses: actions/cache@v3
       with:
@@ -47,12 +51,10 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-
     - name: Get pip cache dir
       id: pip-cache
       run: |
         echo "::set-output name=dir::$(pip cache dir)"
-
     - name: Cache pip
       uses: actions/cache@v3
       with:
@@ -60,12 +62,10 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-
-#  We can't upgrade to Python 3.8 until we have a miniupnpc binary
-    - uses: actions/setup-python@v2
-      name: Install Python 3.9
+    - uses: actions/setup-python@v3
+      name: Install Python ${{ matrix.python-version }}
       with:
-        python-version: "3.9"
+        python-version: ${{ matrix.python-version }}
 
     - name: Setup Node 16.x
       uses: actions/setup-node@v3
@@ -78,10 +78,8 @@ jobs:
       run: |
         unset HAS_SIGNING_SECRET
         unset HAS_DO_SECRET
-
         if [ -n "$SIGNING_SECRET" ]; then HAS_SIGNING_SECRET='true' ; fi
         echo "::set-output name=HAS_SIGNING_SECRET::${HAS_SIGNING_SECRET}"
-
         if [ -n "$AWS_SECRET" ]; then HAS_DO_SECRET='true' ; fi
         echo ::set-output name=HAS_DO_SECRET::${HAS_DO_SECRET}
       env:
@@ -106,7 +104,6 @@ jobs:
         echo "$env:CHINILLA_INSTALLER_VERSION"
         echo "::set-output name=CHINILLA_INSTALLER_VERSION::$env:CHINILLA_INSTALLER_VERSION"
         deactivate
-
       # Get the most recent release from chia-plotter-madmax
     - uses: actions/github-script@v6
       id: 'latest-madmax'
@@ -119,13 +116,11 @@ jobs:
             repo: 'chia-plotter-madmax',
           });
           return release.data.tag_name;
-
     - name: Get latest madmax plotter
       run: |
         mkdir "$env:GITHUB_WORKSPACE\madmax"
         Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chia_plot.exe"
         Invoke-WebRequest https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}.exe -OutFile "$env:GITHUB_WORKSPACE\madmax\chia_plot_k34.exe"
-
       # Get the most recent release from bladebit
     - uses: actions/github-script@v6
       id: 'latest-bladebit'
@@ -138,14 +133,17 @@ jobs:
             repo: 'bladebit',
           });
           return release.data.tag_name;
-
     - name: Get latest bladebit plotter
       run: |
         mkdir "$env:GITHUB_WORKSPACE\bladebit"
         Invoke-WebRequest https://github.com/Chia-Network/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-windows-x86-64.zip -OutFile "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip"
         Expand-Archive -Path "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip" -DestinationPath "$env:GITHUB_WORKSPACE\bladebit\"
         rm "$env:GITHUB_WORKSPACE\bladebit\bladebit.zip"
-
+    - name: Run install script
+      env:
+        INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
+      run: |
+        .\Install.ps1 -d
     - name: Build Windows installer with build_scripts\build_windows.ps1
       env:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
@@ -155,19 +153,20 @@ jobs:
         $env:path="C:\Program` Files` (x86)\Microsoft` Visual` Studio\2019\Enterprise\SDK\ScopeCppSDK\vc15\VC\bin\;$env:path"
         $env:path="C:\Program` Files` (x86)\Windows` Kits\10\App` Certification` Kit;$env:path"
         git -C .\chinilla-blockchain-gui status
-        .\build_scripts\build_windows.ps1
+        .\venv\Scripts\Activate.ps1
+        cd .\build_scripts
+        .\build_windows.ps1
         Copy-Item "${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe" -Destination "${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-beta-latest.exe"
-
     - name: Upload Windows exe's to artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: chinilla-installers-windows-exe-intel
+        name: Windows-Exe
         path: ${{ github.workspace }}\chinilla-blockchain-gui\Chinilla-win32-x64\
 
     - name: Upload Installer to artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Windows-Installers
+        name: chinilla-installers-windows-exe-intel
         path: ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\
 
     - name: Upload to DO Spaces
@@ -188,7 +187,6 @@ jobs:
       run: |
          certutil.exe -hashfile ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe SHA256 > ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe.sha256
          ls ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\
-
     - name: Create Beta Checksum
       if: github.ref == 'refs/heads/main'
       env:
@@ -196,7 +194,6 @@ jobs:
       run: |
          certutil.exe -hashfile ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-beta-latest.exe SHA256 > ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-beta-latest.exe.sha256
          ls ${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\
-
     - name: Upload Beta Installer
       if: steps.check_secrets.outputs.HAS_DO_SECRET && github.ref == 'refs/heads/main'
       uses: BetaHuhn/do-spaces-action@v2

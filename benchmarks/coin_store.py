@@ -1,17 +1,18 @@
 import asyncio
-import random
-from time import monotonic
-from pathlib import Path
-from chinilla.full_node.coin_store import CoinStore
-from typing import List, Tuple
 import os
+import random
 import sys
+from pathlib import Path
+from time import monotonic
+from typing import List, Tuple
 
-from chinilla.util.db_wrapper import DBWrapper2
-from chinilla.types.blockchain_format.sized_bytes import bytes32
+from utils import rand_hash, rewards, setup_db
+
+from chinilla.full_node.coin_store import CoinStore
 from chinilla.types.blockchain_format.coin import Coin
-from chinilla.util.ints import uint64, uint32
-from utils import rewards, rand_hash, setup_db
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.ints import uint32, uint64
 
 NUM_ITERS = 200
 

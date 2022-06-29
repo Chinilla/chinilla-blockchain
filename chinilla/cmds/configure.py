@@ -96,9 +96,9 @@ def configure(
             if testnet == "true" or testnet == "t":
                 print("Setting Testnet")
                 testnet_port = "40444"
-                testnet_introducer = "introducer-testnet10.chinilla.net"
-                testnet_dns_introducer = "dns-introducer-testnet10.chinilla.net"
-                bootstrap_peers = ["testnet10-node.chinilla.net"]
+                testnet_introducer = "introducer-testnet10.chinilla.com"
+                testnet_dns_introducer = "dns-introducer-testnet10.chinilla.com"
+                bootstrap_peers = ["testnet10-node.chinilla.com"]
                 testnet = "testnet10"
                 config["full_node"]["port"] = int(testnet_port)
                 config["full_node"]["introducer_peer"]["port"] = int(testnet_port)
@@ -109,6 +109,7 @@ def configure(
                 config["introducer"]["port"] = int(testnet_port)
                 config["full_node"]["introducer_peer"]["host"] = testnet_introducer
                 config["full_node"]["dns_servers"] = [testnet_dns_introducer]
+                config["wallet"]["introducer_peer"]["host"] = testnet_introducer
                 config["wallet"]["dns_servers"] = [testnet_dns_introducer]
                 config["selected_network"] = testnet
                 config["harvester"]["selected_network"] = testnet
@@ -132,9 +133,9 @@ def configure(
             elif testnet == "false" or testnet == "f":
                 print("Setting Vanillanet")
                 vanillanet_port = "43444"
-                vanillanet_introducer = "introducer.chinilla.net"
-                vanillanet_dns_introducer = "dns-introducer.chinilla.net"
-                bootstrap_peers = ["node.chinilla.net"]
+                vanillanet_introducer = "introducer.chinilla.com"
+                vanillanet_dns_introducer = "dns-introducer.chinilla.com"
+                bootstrap_peers = ["node.chinilla.com"]
                 net = "vanillanet"
                 config["full_node"]["port"] = int(vanillanet_port)
                 config["full_node"]["introducer_peer"]["port"] = int(vanillanet_port)
@@ -145,6 +146,8 @@ def configure(
                 config["introducer"]["port"] = int(vanillanet_port)
                 config["full_node"]["introducer_peer"]["host"] = vanillanet_introducer
                 config["full_node"]["dns_servers"] = [vanillanet_dns_introducer]
+                config["wallet"]["introducer_peer"]["host"] = vanillanet_introducer
+                config["wallet"]["dns_servers"] = [vanillanet_dns_introducer]
                 config["selected_network"] = net
                 config["harvester"]["selected_network"] = net
                 config["pool"]["selected_network"] = net

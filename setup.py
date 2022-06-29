@@ -2,14 +2,14 @@ from setuptools import setup
 
 dependencies = [
     "aiofiles==0.7.0",  # Async IO for files
-    "blspy==1.0.9",  # Signature library
-    "chiavdf==1.0.5",  # timelord and vdf verification
+    "blspy==1.0.13",  # Signature library
+    "chiavdf==1.0.6",  # timelord and vdf verification
     "chiabip158==1.1",  # bip158-style wallet filters
-    "chiapos==1.0.9",  # proof of space
+    "chiapos==1.0.10",  # proof of space
     "clvm==0.9.7",
     "clvm_tools==0.4.4",  # Currying, Program.to, other conveniences
-    "chia_rs==0.1.1",
-    "clvm-tools-rs==0.1.7",  # Rust implementation of clvm_tools
+    "chia_rs==0.1.2",
+    "clvm-tools-rs==0.1.9",  # Rust implementation of clvm_tools
     "aiohttp==3.8.1",  # HTTP server for full node rpc
     "aiosqlite==0.17.0",  # asyncio wrapper for sqlite, to store blocks
     "bitstring==3.1.9",  # Binary data management library
@@ -24,7 +24,7 @@ dependencies = [
     #  "keyrings.cryptfile==1.3.8",  # Secure storage for keys on Linux (Will be replaced)
     #  See https://github.com/frispete/keyrings.cryptfile/issues/15
     "PyYAML==6.0",  # Used for config file format
-    "setproctitle==1.2.3",  # Gives the chia processes readable names
+    "setproctitle==1.2.3",  # Gives the chinilla processes readable names
     "sortedcontainers==2.4.0",  # For maintaining sorted mempools
     # TODO: when moving to click 8 remove the pinning of black noted below
     "click==7.1.2",  # For the CLI
@@ -56,7 +56,7 @@ dev_dependencies = [
     "black==21.12b0",
     "aiohttp_cors",  # For blackd
     "ipython",  # For asyncio debugging
-    "pyinstaller==4.9",
+    "pyinstaller==5.0",
     "types-aiofiles",
     "types-click",
     "types-cryptography",
@@ -109,6 +109,7 @@ kwargs = dict(
         "chinilla.wallet.rl_wallet",
         "chinilla.wallet.cat_wallet",
         "chinilla.wallet.did_wallet",
+        "chinilla.wallet.nft_wallet",
         "chinilla.wallet.settings",
         "chinilla.wallet.trading",
         "chinilla.wallet.util",
@@ -118,6 +119,7 @@ kwargs = dict(
     entry_points={
         "console_scripts": [
             "chinilla = chinilla.cmds.chinilla:main",
+            "chinilla_daemon = chinilla.daemon.server:main",
             "chinilla_wallet = chinilla.server.start_wallet:main",
             "chinilla_full_node = chinilla.server.start_full_node:main",
             "chinilla_harvester = chinilla.server.start_harvester:main",

@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - 'long_lived/**'
       - main
       - 'release/**'
       - dev
@@ -15,7 +16,7 @@ on:
 
 concurrency:
   # SHA is added to the end if on `main` to let all main workflows run
-  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == 'refs/heads/main' && github.sha || '' }}
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/long_lived/')) && github.sha || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -34,10 +35,10 @@ jobs:
     - uses: Chinilla/actions/clean-workspace@main
 
     - name: Add safe git directory
-      uses: Chia-Network/actions/git-mark-workspace-safe@main
+      uses: Chinilla/actions/git-mark-workspace-safe@main
 
     - name: Add safe git directory
-      uses: Chia-Network/actions/git-mark-workspace-safe@main
+      uses: Chinilla/actions/git-mark-workspace-safe@main
 
     - name: Checkout Code
       uses: actions/checkout@v3

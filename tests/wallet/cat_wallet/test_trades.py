@@ -1,6 +1,6 @@
 import asyncio
 from secrets import token_bytes
-from typing import List
+from typing import Any, Dict, List
 
 import pytest
 
@@ -8,6 +8,8 @@ from chinilla.full_node.mempool_manager import MempoolManager
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.util.ints import uint64
 from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
+from chinilla.wallet.outer_puzzles import AssetType
+from chinilla.wallet.puzzle_drivers import PuzzleInfo
 from chinilla.wallet.trading.offer import Offer
 from chinilla.wallet.trading.trade_status import TradeStatus
 from chinilla.wallet.transaction_record import TransactionRecord
@@ -75,14 +77,14 @@ class TestCATTrades:
 
         chinilla_for_cat = {
             wallet_maker.id(): -1,
-            new_cat_wallet_maker.id(): 2,  # This is the CAT that the taker made
+            bytes.fromhex(new_cat_wallet_maker.get_asset_id()): 2,  # This is the CAT that the taker made
         }
         cat_for_chinilla = {
             wallet_maker.id(): 3,
             cat_wallet_maker.id(): -4,  # The taker has no knowledge of this CAT yet
         }
         cat_for_cat = {
-            cat_wallet_maker.id(): -5,
+            bytes.fromhex(cat_wallet_maker.get_asset_id()): -5,
             new_cat_wallet_maker.id(): 6,
         }
         chinilla_for_multiple_cat = {
@@ -100,6 +102,16 @@ class TestCATTrades:
             cat_wallet_maker.id(): -14,
             new_cat_wallet_maker.id(): 15,
         }
+
+        driver_dict: Dict[str, Dict[str, Any]] = {}
+        for wallet in (cat_wallet_maker, new_cat_wallet_maker):
+            asset_id: str = wallet.get_asset_id()
+            driver_dict[bytes.fromhex(asset_id)] = PuzzleInfo(
+                {
+                    "type": AssetType.CAT.name,
+                    "tail": "0x" + asset_id,
+                }
+            )
 
         trade_manager_maker = wallet_node_maker.wallet_state_manager.trade_manager
         trade_manager_taker = wallet_node_taker.wallet_state_manager.trade_manager
@@ -230,7 +242,9 @@ class TestCATTrades:
         await time_out_assert(15, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_taker, trade_take)
 
         # chinilla_for_multiple_cat
-        success, trade_make, error = await trade_manager_maker.create_offer_for_ids(chinilla_for_multiple_cat)
+        success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
+            chinilla_for_multiple_cat, driver_dict=driver_dict
+        )
         await asyncio.sleep(1)
         assert error is None
         assert success is True

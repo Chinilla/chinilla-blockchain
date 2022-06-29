@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List
+from typing import Any, Dict, Optional, List
 
 import pytest
 from blspy import G2Element
@@ -17,6 +17,8 @@ from chinilla.wallet.cat_wallet.cat_utils import (
     SpendableCAT,
     unsigned_spend_bundle_for_spendable_cats,
 )
+from chinilla.wallet.outer_puzzles import AssetType
+from chinilla.wallet.puzzle_drivers import PuzzleInfo
 from chinilla.wallet.payment import Payment
 from chinilla.wallet.trading.offer import Offer, NotarizedPayment
 from tests.clvm.benchmark_costs import cost_of_spend_bundle
@@ -178,6 +180,19 @@ class TestOfferLifecycle:
             red_coins: List[Coin] = all_coins["red"]
             blue_coins: List[Coin] = all_coins["blue"]
 
+            driver_dict: Dict[bytes32, PuzzleInfo] = {
+                str_to_tail_hash("red"): PuzzleInfo(
+                    {"type": AssetType.CAT.value, "tail": "0x" + str_to_tail_hash("red").hex()}
+                ),
+                str_to_tail_hash("blue"): PuzzleInfo(
+                    {"type": AssetType.CAT.value, "tail": "0x" + str_to_tail_hash("blue").hex()}
+                ),
+            }
+
+            driver_dict_as_infos: Dict[str, Any] = {}
+            for key, value in driver_dict.items():
+                driver_dict_as_infos[key.hex()] = value.info
+
             # Create an HCX Offer for RED
             chinilla_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
                 str_to_tail_hash("red"): [
@@ -189,29 +204,53 @@ class TestOfferLifecycle:
             chinilla_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
                 chinilla_requested_payments, chinilla_coins
             )
-            chinilla_announcements: List[Announcement] = Offer.calculate_announcements(chinilla_requested_payments)
+            chinilla_announcements: List[Announcement] = Offer.calculate_announcements(
+                chinilla_requested_payments, driver_dict
+            )
             chinilla_secured_bundle: SpendBundle = generate_secure_bundle(chinilla_coins, chinilla_announcements, 1000)
-            chinilla_offer = Offer(chinilla_requested_payments, chinilla_secured_bundle)
+            chinilla_offer = Offer(chinilla_requested_payments, chinilla_secured_bundle, driver_dict)
             assert not chinilla_offer.is_valid()
 
             # Create a RED Offer for HCX
+            red_coins_1 = red_coins[0:1]
+            red_coins_2 = red_coins[1:]
             red_requested_payments: Dict[Optional[bytes32], List[Payment]] = {
                 None: [
                     Payment(acs_ph, 300, [b"red memo"]),
-                    Payment(acs_ph, 400, [b"red memo"]),
+                    Payment(acs_ph, 350, [b"red memo"]),
                 ]
             }
 
             red_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
-                red_requested_payments, red_coins
+                red_requested_payments, red_coins_1
             )
-            red_announcements: List[Announcement] = Offer.calculate_announcements(red_requested_payments)
-            red_secured_bundle: SpendBundle = generate_secure_bundle(red_coins, red_announcements, 350, tail_str="red")
-            red_offer = Offer(red_requested_payments, red_secured_bundle)
+            red_announcements: List[Announcement] = Offer.calculate_announcements(red_requested_payments, driver_dict)
+            red_secured_bundle: SpendBundle = generate_secure_bundle(
+                red_coins_1, red_announcements, sum([c.amount for c in red_coins_1]), tail_str="red"
+            )
+            red_offer = Offer(red_requested_payments, red_secured_bundle, driver_dict)
             assert not red_offer.is_valid()
 
+            red_requested_payments_2: Dict[Optional[bytes32], List[Payment]] = {
+                None: [
+                    Payment(acs_ph, 50, [b"red memo"]),
+                ]
+            }
+
+            red_requested_payments_2: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
+                red_requested_payments_2, red_coins_2
+            )
+            red_announcements_2: List[Announcement] = Offer.calculate_announcements(
+                red_requested_payments_2, driver_dict
+            )
+            red_secured_bundle_2: SpendBundle = generate_secure_bundle(
+                red_coins_2, red_announcements_2, sum([c.amount for c in red_coins_2]), tail_str="red"
+            )
+            red_offer_2 = Offer(red_requested_payments_2, red_secured_bundle_2, driver_dict)
+            assert not red_offer_2.is_valid()
+
             # Test aggregation of offers
-            new_offer = Offer.aggregate([chinilla_offer, red_offer])
+            new_offer = Offer.aggregate([chinilla_offer, red_offer, red_offer_2])
             assert new_offer.get_offered_amounts() == {None: 1000, str_to_tail_hash("red"): 350}
             assert new_offer.get_requested_amounts() == {None: 700, str_to_tail_hash("red"): 300}
             assert new_offer.is_valid()
@@ -229,11 +268,11 @@ class TestOfferLifecycle:
             blue_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
                 blue_requested_payments, blue_coins
             )
-            blue_announcements: List[Announcement] = Offer.calculate_announcements(blue_requested_payments)
+            blue_announcements: List[Announcement] = Offer.calculate_announcements(blue_requested_payments, driver_dict)
             blue_secured_bundle: SpendBundle = generate_secure_bundle(
                 blue_coins, blue_announcements, 2000, tail_str="blue"
             )
-            blue_offer = Offer(blue_requested_payments, blue_secured_bundle)
+            blue_offer = Offer(blue_requested_payments, blue_secured_bundle, driver_dict)
             assert not blue_offer.is_valid()
 
             # Test a re-aggregation
@@ -251,6 +290,7 @@ class TestOfferLifecycle:
                     str_to_tail_hash("blue").hex(): 2000,
                 },
                 {"hcx": 900, str_to_tail_hash("red").hex(): 350},
+                driver_dict_as_infos,
             )
             assert new_offer.get_pending_amounts() == {
                 "hcx": 1200,
