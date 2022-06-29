@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'long_lived/**'
+      - latest
       - main
       - dev
       - 'release/**'
