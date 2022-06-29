@@ -20,12 +20,14 @@ from tests.time_out_assert import time_out_assert
 log = logging.getLogger(__name__)
 
 
-async def disconnect_all_and_reconnect(
-    server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str
-) -> bool:
+async def disconnect_all(server: ChinillaServer) -> None:
     cons = list(server.all_connections.values())[:]
     for con in cons:
         await con.close()
+
+
+async def disconnect_all_and_reconnect(server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str) -> bool:
+    await disconnect_all(server)
     return await server.start_client(PeerInfo(self_hostname, uint16(reconnect_to._port)), None)
 
 
