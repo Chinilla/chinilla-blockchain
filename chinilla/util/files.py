@@ -3,7 +3,7 @@ import logging
 import os
 import shutil
 
-from aiofiles import tempfile  # type: ignore
+from aiofiles import tempfile
 from pathlib import Path
 from typing import Union
 
