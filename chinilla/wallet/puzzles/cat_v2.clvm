@@ -109,31 +109,10 @@
      (include condition_codes.clvm)
      (include curry-and-treehash.clinc)
      (include cat_truths.clib)
+     (include utility_macros.clib)
 
-     (defconstant ANNOUNCEMENT_MORPH_BYTE 0xca)
      (defconstant RING_MORPH_BYTE 0xcb)
 
-     (defmacro assert items
-         (if (r items)
-             (list if (f items) (c assert (r items)) (q . (x)))
-             (f items)
-         )
-     )
-
-     (defmacro and ARGS
-      (if ARGS
-          (qq (if (unquote (f ARGS))
-              (unquote (c and (r ARGS)))
-              ()
-              ))
-          1)
-      )
-
-     ; takes a lisp tree and returns the hash of it
-     (defun sha256tree1 (TREE)
-           (if (l TREE)
-               (sha256 2 (sha256tree1 (f TREE)) (sha256tree1 (r TREE)))
-               (sha256 ONE TREE)))
 
     ; take two lists and merge them into one
     (defun merge_list (list_a list_b)
@@ -160,8 +139,7 @@
        )
      )
 
-     ;; tweak `CREATE_COIN` condition by wrapping the puzzle hash, forcing it to be a cat
-     ;; prepend `CREATE_COIN_ANNOUNCEMENT` with 0xca as bytes so it cannot be used to cheat the coin ring
+     ;; assert `CREATE_COIN_ANNOUNCEMENT` doesn't contain the RING_MORPH_BYTE bytes so it cannot be used to cheat the coin ring
 
      (defun-inline morph_condition (condition cat_mod_struct)
        (if (= (f condition) CREATE_COIN)
@@ -170,10 +148,12 @@
                     (r (r condition)))
          )
          (if (= (f condition) CREATE_COIN_ANNOUNCEMENT)
-           (c CREATE_COIN_ANNOUNCEMENT
-                (c (sha256 ANNOUNCEMENT_MORPH_BYTE (f (r condition)))
-                    (r (r condition))
-                )
+           (assert (not (and
+                     (= 33 (strlen (f (r condition))))
+                     (= (substr (f (r condition)) 0 ONE) RING_MORPH_BYTE)  ; lazy eval
+                   ))
+             ; then
+             condition
            )
            condition
          )
@@ -182,7 +162,7 @@
 
      ;; given a coin's parent, inner_puzzle and amount, and the cat_mod_struct, calculate the id of the coin
      (defun-inline coin_id_for_proof (coin cat_mod_struct)
-       (sha256 (f coin) (cat_puzzle_hash cat_mod_struct (f (r coin))) (f (r (r coin))))
+       (calculate_coin_id (f coin) (cat_puzzle_hash cat_mod_struct (f (r coin))) (f (r (r coin))))
      )
 
      ;; utility to fetch coin amount from coin
@@ -193,7 +173,7 @@
      ;; calculate the hash of an announcement
      ;; we add 0xcb so ring announcements exist in a different namespace to announcements from inner_puzzles
      (defun-inline calculate_annoucement_id (this_coin_id this_subtotal next_coin_id cat_mod_struct)
-       (sha256 next_coin_id (sha256 RING_MORPH_BYTE this_coin_id this_subtotal))
+       (sha256 next_coin_id RING_MORPH_BYTE (sha256tree (list this_coin_id this_subtotal)))
      )
 
      ;; create the `ASSERT_COIN_ANNOUNCEMENT` condition that ensures the next coin's announcement is correct
@@ -211,7 +191,7 @@
      ;; we add 0xcb so ring announcements exist in a different namespace to announcements from inner_puzzles
      (defun-inline create_announcement_condition (prev_coin_id prev_subtotal)
        (list CREATE_COIN_ANNOUNCEMENT
-             (sha256 RING_MORPH_BYTE prev_coin_id prev_subtotal)
+             (concat RING_MORPH_BYTE (sha256tree (list prev_coin_id prev_subtotal)))
        )
       )
 
@@ -297,7 +277,7 @@
        lineage_proof
      )
        (= parent_id
-          (sha256 (f lineage_proof)
+          (calculate_coin_id (f lineage_proof)
                   (cat_puzzle_hash cat_mod_struct (f (r lineage_proof)))
                   (f (r (r lineage_proof)))
           )
@@ -315,7 +295,7 @@
         inner_conditions
       )
       (if tail_reveal_and_solution
-          (assert (= (sha256tree1 (f tail_reveal_and_solution)) (cat_tail_program_hash_truth Truths))
+          (assert (= (sha256tree (f tail_reveal_and_solution)) (cat_tail_program_hash_truth Truths))
             (merge_list
               (a  (f tail_reveal_and_solution)
                   (list
@@ -406,8 +386,8 @@
         (list MOD_HASH (sha256 ONE MOD_HASH) TAIL_PROGRAM_HASH)
         (a INNER_PUZZLE inner_puzzle_solution)
         lineage_proof
-        (sha256tree1 INNER_PUZZLE)
-        (sha256 (f this_coin_info) (f (r this_coin_info)) (f (r (r this_coin_info))))
+        (sha256tree INNER_PUZZLE)
+        (calculate_coin_id (f this_coin_info) (f (r this_coin_info)) (f (r (r this_coin_info))))
         prev_coin_id    ; ID
         this_coin_info  ; (parent_id puzzle_hash amount)
         next_coin_proof ; (parent_id innerpuzhash amount)

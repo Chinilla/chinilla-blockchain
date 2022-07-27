@@ -8,7 +8,7 @@ from chinilla.types.blockchain_format.program import Program, SerializedProgram
 wallet_program_files = set(
     [
         "chinilla/wallet/puzzles/calculate_synthetic_public_key.clvm",
-        "chinilla/wallet/puzzles/cat.clvm",
+        "chinilla/wallet/puzzles/cat_v2.clvm",
         "chinilla/wallet/puzzles/chinillalisp_deserialisation.clvm",
         "chinilla/wallet/puzzles/rom_bootstrap_generator.clvm",
         "chinilla/wallet/puzzles/generator_for_single_coin.clvm",

@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.0 Chinilla blockchain 2022-7-26
+
+### Notes
+
+This release aligns with Chia 1.5.0
+
+### Added
+
+- Added derivation index information to the Wallet UI to show the current derivation index height
+- Added section in Settings to allow the user to manually update the derivation index height in order to ensure the wallet finds all the coins
+- Added a tooltip for users to understand why their CAT balance has changed as new CAT2 tokens get re-issued
+- There is now a `blockchain_wallet_v2_r1_*.sqlite` DB that will be created, which will sync from 0 to look for CAT2 tokens. This preserves a copy of your previous wallet DB so that you are able to look up previous transactions by using an older wallet client
+- Extended `min_coin` to RPC calls, and CLI for coin selection
+- Show DID in the offer preview for NFTs
+- Added wallet RPCs (`get_derivation_index`, `update_derivation_index`) to enable the GUI, and CLI to report what the current derivation index is for scanning wallet addresses, and also allows a user to move that index forward to broaden the set of addresses to scan for coins
+
+### Changed
+
+- Changed the DID Wallet to use the new coin selection algorithm that the Standard Wallet, and the CAT Wallet already use
+- Changed returning the result of send_transaction to happen after the transaction has been added to the queue, rather than it just being added to the mempool.
+- Increased the priority of wallet transactions vs full node broadcasted transactions, so we don't have to wait in line as a wallet user
+- Deprecated the `-st, --series-total` and `-sn, --series-number` RPC and CLI NFT minting options in favor of `-ec, --edition-count` and `-en, --edition-number` to align with NFT industry terms
+- When creating a DID profile, a DID-linked NFT wallet is automatically created
+- Update `chinilla wallet take_offer` to show NFT royalties that will be paid out when an offer is taken
+- Added a parameter to indicate how many additional puzzle hashes `create_more_puzzle_hashes` should create
+
+### Fixed
+
+- Fixed [CVE-2022-36447] where in tokens previously minted on the Chinilla blockchain using the `CAT1` standard can be inflated in arbitrary amounts by any holder of the token. Total amount of the token can be increased as high as the malicious actor pleases. This is true for every `CAT1` on the Chinilla blockchain, regardless of issuance rules. This attack is auditable on-chain, so maliciously altered coins can potentially be "marked" by off-chain observers as malicious.
+- Fixed issue that prevented websockets from being attempted if an earlier websocket failed
+- Fixed issue where `test_smallest_coin_over_amount` did not work properly when all coins were smaller than the amount
+- Fixed a performance issue with knapsack that caused it to keep searching for more coins than could actually be selected. Performance with 200k coins:
+  - Old: 60 seconds
+  - New: 0.78 seconds
+- Fixed offer compression backwards compatibility
+- Fixed royalty percentage check for NFT0 NFTs, and made the check for an offer containing an NFT more generalized
+- Fixed timing with asyncio context switching that could prevent networking layer from responding to ping
+
 ## 1.1.0 Chinilla blockchain 2022-6-29
 
 ### Notes
@@ -257,8 +295,4 @@ There is a known issue where harvesters will not reconnect to the farmer automat
 
 #
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-
-and this project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-
-for setuptools_scm/PEP 440 reasons.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project does not yet adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) for setuptools_scm/PEP 440 reasons.
