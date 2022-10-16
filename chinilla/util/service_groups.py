@@ -1,8 +1,13 @@
 from typing import KeysView, Generator
 
 SERVICES_FOR_GROUP = {
-    "all": "chinilla_harvester chinilla_timelord_launcher chinilla_timelord chinilla_farmer chinilla_full_node "
-    "chinilla_wallet".split(),
+    "all": (
+        "chinilla_harvester chinilla_timelord_launcher chinilla_timelord chinilla_farmer "
+        "chinilla_full_node chinilla_wallet chinilla_data_layer chinilla_data_layer_http"
+    ).split(),
+    # TODO: should this be `data_layer`?
+    "data": "chinilla_wallet chinilla_data_layer".split(),
+    "data_layer_http": "chinilla_data_layer_http".split(),
     "node": "chinilla_full_node".split(),
     "harvester": "chinilla_harvester".split(),
     "farmer": "chinilla_harvester chinilla_farmer chinilla_full_node chinilla_wallet".split(),

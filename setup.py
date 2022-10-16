@@ -59,7 +59,7 @@ dev_dependencies = [
     "ipython",  # For asyncio debugging
     "pyinstaller==5.0",
     "types-aiofiles",
-    "types-click",
+    "types-click~=7.1",
     "types-cryptography",
     "types-pkg_resources",
     "types-pyyaml",
@@ -88,6 +88,7 @@ kwargs = dict(
         "chinilla.clvm",
         "chinilla.consensus",
         "chinilla.daemon",
+        "chinilla.data_layer",
         "chinilla.full_node",
         "chinilla.timelord",
         "chinilla.farmer",
@@ -106,6 +107,7 @@ kwargs = dict(
         "chinilla.types",
         "chinilla.util",
         "chinilla.wallet",
+        "chinilla.wallet.db_wallet",
         "chinilla.wallet.puzzles",
         "chinilla.wallet.rl_wallet",
         "chinilla.wallet.cat_wallet",
@@ -131,6 +133,8 @@ kwargs = dict(
             "chinilla_timelord = chinilla.server.start_timelord:main",
             "chinilla_timelord_launcher = chinilla.timelord.timelord_launcher:main",
             "chinilla_full_node_simulator = chinilla.simulator.start_simulator:main",
+            "chinilla_data_layer = chinilla.server.start_data_layer:main",
+            "chinilla_data_layer_http = chinilla.data_layer.data_layer_server:main",
         ]
     },
     package_data={

@@ -83,6 +83,8 @@ class PlotEvent(str, Enum):
 if getattr(sys, "frozen", False):
     name_map = {
         "chinilla": "chinilla",
+        "chinilla_data_layer": "start_data_layer",
+        "chinilla_data_layer_http": "start_data_layer_http",
         "chinilla_wallet": "start_wallet",
         "chinilla_full_node": "start_full_node",
         "chinilla_harvester": "start_harvester",
@@ -1239,8 +1241,6 @@ def launch_service(root_path: Path, service_command) -> Tuple[subprocess.Popen, 
     # we need to pass on the possibly altered CHINILLA_ROOT
     os.environ["CHINILLA_ROOT"] = str(root_path)
 
-    log.debug(f"Launching service with CHINILLA_ROOT: {os.environ['CHINILLA_ROOT']}")
-
     # Insert proper e
     service_array = service_command.split()
     service_executable = executable_for_service(service_array[0])
@@ -1251,6 +1251,8 @@ def launch_service(root_path: Path, service_command) -> Tuple[subprocess.Popen, 
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
+    log.debug(f"Launching service {service_array} with CHINILLA_ROOT: {os.environ['CHINILLA_ROOT']}")
+
     # CREATE_NEW_PROCESS_GROUP allows graceful shutdown on windows, by CTRL_BREAK_EVENT signal
     if sys.platform == "win32" or sys.platform == "cygwin":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -1260,6 +1262,7 @@ def launch_service(root_path: Path, service_command) -> Tuple[subprocess.Popen, 
     process = subprocess.Popen(
         service_array, shell=False, startupinfo=startupinfo, creationflags=creationflags, env=environ_copy
     )
+
     pid_path = pid_path_for_service(root_path, service_command)
     try:
         pid_path.parent.mkdir(parents=True, exist_ok=True)

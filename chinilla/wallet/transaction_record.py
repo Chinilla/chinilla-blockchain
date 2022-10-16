@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Dict
+from typing import Generic, List, Optional, Tuple, TypeVar, Dict
 
 from chinilla.consensus.coinbase import pool_parent_id, farmer_parent_id
 from chinilla.types.blockchain_format.coin import Coin
@@ -10,6 +10,15 @@ from chinilla.util.bech32m import encode_puzzle_hash, decode_puzzle_hash
 from chinilla.util.ints import uint8, uint32, uint64
 from chinilla.util.streamable import Streamable, streamable
 from chinilla.wallet.util.transaction_type import TransactionType
+
+
+T = TypeVar("T")
+
+
+@dataclass
+class ItemAndTransactionRecords(Generic[T]):
+    item: T
+    transaction_records: List["TransactionRecord"]
 
 
 @streamable

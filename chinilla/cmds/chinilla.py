@@ -4,6 +4,7 @@ import click
 from chinilla import __version__
 from chinilla.cmds.configure import configure_cmd
 from chinilla.cmds.farm import farm_cmd
+from chinilla.cmds.data import data_cmd
 from chinilla.cmds.init import init_cmd
 from chinilla.cmds.keys import keys_cmd
 from chinilla.cmds.netspace import netspace_cmd
@@ -139,6 +140,7 @@ cli.add_command(netspace_cmd)
 cli.add_command(farm_cmd)
 cli.add_command(plotters_cmd)
 cli.add_command(db_cmd)
+cli.add_command(data_cmd)
 cli.add_command(passphrase_cmd)
 
 

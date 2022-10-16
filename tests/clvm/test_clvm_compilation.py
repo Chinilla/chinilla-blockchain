@@ -3,9 +3,13 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest import TestCase
 
+import pytest
 from clvm_tools.clvmc import compile_clvm
 
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
+
+pytestmark = pytest.mark.data_layer
+
 
 wallet_program_files = set(
     [
@@ -48,6 +52,8 @@ wallet_program_files = set(
         "chinilla/wallet/puzzles/nft_state_layer.clvm",
         "chinilla/wallet/puzzles/nft_ownership_layer.clvm",
         "chinilla/wallet/puzzles/nft_ownership_transfer_program_one_way_claim_with_royalties.clvm",
+        "chinilla/wallet/puzzles/graftroot_dl_offers.clvm",
+        "chinilla/wallet/puzzles/p2_parent.clvm",
         "chinilla/wallet/puzzles/decompress_block_spends.clvm",
     ]
 )

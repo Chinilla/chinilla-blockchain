@@ -577,6 +577,8 @@ async def test_cat_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 
     # Creates a CAT wallet with 100 vojos and a CAT with 20 vojos
     await client.create_new_cat_and_wallet(uint64(100))
+    await time_out_assert(20, client.get_synced)
+
     res = await client.create_new_cat_and_wallet(uint64(20))
     assert res["success"]
     cat_0_id = res["wallet_id"]
@@ -706,7 +708,9 @@ async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment)
     assert offer is not None
 
     summary = await wallet_1_rpc.get_offer_summary(offer)
+    advanced_summary = await wallet_1_rpc.get_offer_summary(offer, advanced=True)
     assert summary == {"offered": {"hcx": 5}, "requested": {cat_asset_id.hex(): 1}, "infos": driver_dict, "fees": 1}
+    assert advanced_summary == summary
 
     assert await wallet_1_rpc.check_offer_validity(offer)
 

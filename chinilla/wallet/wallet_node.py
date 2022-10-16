@@ -122,7 +122,7 @@ class WalletNode:
     node_peaks: Dict[bytes32, Tuple[uint32, bytes32]] = dataclasses.field(default_factory=dict)
     validation_semaphore: Optional[asyncio.Semaphore] = None
     local_node_synced: bool = False
-    LONG_SYNC_THRESHOLD: int = 200
+    LONG_SYNC_THRESHOLD: int = 300
     last_wallet_tx_resend_time: int = 0
     # Duration in seconds
     wallet_tx_resend_timeout_secs: int = 1800
@@ -266,7 +266,6 @@ class WalletNode:
             success, _, records = await self._weight_proof_handler.validate_weight_proof(weight_proof, True)
             assert success is True and records is not None and len(records) > 1
             await self._wallet_state_manager.blockchain.new_valid_weight_proof(weight_proof, records)
-        self.config["starting_height"] = 0
 
         if self.wallet_peers is None:
             self.initialize_wallet_peers()
@@ -712,7 +711,14 @@ class WalletNode:
 
         # If there is a fork, we need to ensure that we roll back in trusted mode to properly handle reorgs
         cache: PeerRequestCache = self.get_cache_for_peer(peer)
-        if trusted and fork_height is not None and height is not None and fork_height != height - 1:
+
+        if (
+            trusted
+            and fork_height is not None
+            and height is not None
+            and fork_height != height - 1
+            and peer.peer_node_id in self.synced_peers
+        ):
             # only one peer told us to rollback so only clear for that peer
             await self.perform_atomic_rollback(fork_height, cache=cache)
         else:
@@ -726,7 +732,10 @@ class WalletNode:
         concurrent_tasks_cs_heights: List[uint32] = []
 
         # Ensure the list is sorted
-        items = sorted(items_input, key=last_change_height_cs)
+
+        self.log.info(f"Filtering spam, total items: {len(items_input)}")
+        items = await self.wallet_state_manager.filter_spam(list(sorted(items_input, key=last_change_height_cs)))
+        self.log.info(f"Filtered spam. Total left: {len(items)}")
 
         async def receive_and_validate(inner_states: List[CoinState], inner_idx_start: int, cs_heights: List[uint32]):
             try:
@@ -789,9 +798,10 @@ class WalletNode:
                     try:
                         self.log.info(f"new coin state received ({idx}-" f"{idx + len(states) - 1}/ {len(items)})")
                         await self.wallet_state_manager.new_coin_state(states, peer, fork_height)
-                        await self.wallet_state_manager.blockchain.set_finished_sync_up_to(
-                            last_change_height_cs(states[-1]) - 1
-                        )
+                        if update_finished_height:
+                            await self.wallet_state_manager.blockchain.set_finished_sync_up_to(
+                                last_change_height_cs(states[-1]) - 1
+                            )
                     except Exception as e:
                         tb = traceback.format_exc()
                         self.log.error(f"Error adding states.. {e} {tb}")
@@ -816,12 +826,14 @@ class WalletNode:
         return still_connected and self._server is not None and peer.peer_node_id in self.server.all_connections
 
     async def get_coins_with_puzzle_hash(self, puzzle_hash) -> List[CoinState]:
+        # TODO Use trusted peer, otherwise try untrusted
         all_nodes = self.server.connection_by_type[NodeType.FULL_NODE]
         if len(all_nodes.keys()) == 0:
             raise ValueError("Not connected to the full node")
         first_node = list(all_nodes.values())[0]
         msg = wallet_protocol.RegisterForPhUpdates(puzzle_hash, uint32(0))
         coin_state: Optional[RespondToPhUpdates] = await first_node.register_interest_in_puzzle_hash(msg)
+        # TODO validate state if received from untrusted peer
         assert coin_state is not None
         return coin_state.coin_states
 
@@ -1010,7 +1022,8 @@ class WalletNode:
 
         else:
             far_behind: bool = (
-                new_peak.height - self.wallet_state_manager.blockchain.get_peak_height() > self.LONG_SYNC_THRESHOLD
+                new_peak.height - await self.wallet_state_manager.blockchain.get_finished_sync_up_to()
+                > self.LONG_SYNC_THRESHOLD
             )
 
             # check if claimed peak is heavier or same as our current peak
@@ -1173,7 +1186,7 @@ class WalletNode:
 
         blocks.reverse()
         # Roll back coins and transactions
-        peak_height = self.wallet_state_manager.blockchain.get_peak_height()
+        peak_height = await self.wallet_state_manager.blockchain.get_finished_sync_up_to()
         if fork_height < peak_height:
             self.log.info(f"Rolling back to {fork_height}")
             # we should clear all peers since this is a full rollback
