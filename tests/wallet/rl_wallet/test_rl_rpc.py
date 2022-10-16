@@ -4,6 +4,7 @@ import pytest
 
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.simulator.time_out_assert import time_out_assert
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
@@ -12,7 +13,6 @@ from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.ints import uint16
 from chinilla.wallet.transaction_record import TransactionRecord
 from chinilla.wallet.util.wallet_types import WalletType
-from tests.time_out_assert import time_out_assert
 from tests.wallet.sync.test_wallet_sync import wallet_height_at_least
 
 
@@ -49,7 +49,7 @@ class TestRLWallet:
     @pytest.mark.skip
     async def test_create_rl_coin(self, three_wallet_nodes, self_hostname):
         num_blocks = 4
-        full_nodes, wallets = three_wallet_nodes
+        full_nodes, wallets, _ = three_wallet_nodes
         full_node_api = full_nodes[0]
         full_node_server = full_node_api.server
         wallet_node, server_2 = wallets[0]

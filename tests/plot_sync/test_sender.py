@@ -5,8 +5,8 @@ from chinilla.plot_sync.sender import ExpectedResponse, Sender
 from chinilla.plot_sync.util import Constants
 from chinilla.protocols.harvester_protocol import PlotSyncIdentifier, PlotSyncResponse
 from chinilla.server.ws_connection import NodeType, ProtocolMessageTypes
+from chinilla.simulator.block_tools import BlockTools
 from chinilla.util.ints import int16, uint64
-from tests.block_tools import BlockTools
 from tests.plot_sync.util import get_dummy_connection, plot_sync_identifier
 
 

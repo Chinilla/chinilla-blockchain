@@ -1,4 +1,4 @@
-name: Build Installer - Windows 10
+name: 📦🚀 Build Installer - Windows 10
 
 on:
   workflow_dispatch:
@@ -90,7 +90,7 @@ jobs:
       uses: kitek/decode-base64-into-file-action@1.0
       with:
         encoded-value: ${{ secrets.WIN_CODE_SIGN_CERT }}
-        destination-file: .\chinilla-blockchain-gui\win_code_sign_cert.p12
+        destination-file: .\win_code_sign_cert.p12
 
     # Create our own venv outside of the git directory JUST for getting the ACTUAL version so that install can't break it
     - name: Get version number
@@ -143,7 +143,32 @@ jobs:
         INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
       run: |
         .\Install.ps1 -d
-    - name: Build Windows installer with build_scripts\build_windows.ps1
+
+    - name: Prepare GUI cache
+      id: gui-ref
+      run: |
+        $gui_ref = git submodule status chinilla-blockchain-gui
+        $gui_ref = $gui_ref -replace "^ | chinilla-blockchain-gui.*$",""
+        echo $gui_ref
+        echo "::set-output name=GUI_REF::$gui_ref"
+        echo "Remove-Item -Recurse -Force .\chinilla-blockchain-gui"
+        Remove-Item -Recurse -Force .\chinilla-blockchain-gui
+
+    - name: Cache GUI
+      uses: actions/cache@v3
+      id: cache-gui
+      with:
+        path: .\chinilla-blockchain-gui
+        key: ${{ runner.os }}-chinilla-blockchain-gui-${{ steps.gui-ref.outputs.GUI_REF }}
+
+    - if: steps.cache-gui.outputs.cache-hit != 'true'
+      name: Build GUI
+      continue-on-error: false
+      run: |
+        cd .\build_scripts
+        .\build_windows-1-gui.ps1
+
+    - name: Build Windows installer
       env:
         CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
         WIN_CODE_SIGN_PASS: ${{ secrets.WIN_CODE_SIGN_PASS }}
@@ -151,10 +176,9 @@ jobs:
       run: |
         $env:path="C:\Program` Files` (x86)\Microsoft` Visual` Studio\2019\Enterprise\SDK\ScopeCppSDK\vc15\VC\bin\;$env:path"
         $env:path="C:\Program` Files` (x86)\Windows` Kits\10\App` Certification` Kit;$env:path"
-        git -C .\chinilla-blockchain-gui status
         .\venv\Scripts\Activate.ps1
         cd .\build_scripts
-        .\build_windows.ps1
+        .\build_windows-2-installer.ps1
         Copy-Item "${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}.exe" -Destination "${{ github.workspace }}\chinilla-blockchain-gui\release-builds\windows-installer\ChinillaSetup-beta-latest.exe"
     - name: Upload Windows exe's to artifacts
       uses: actions/upload-artifact@v3
@@ -247,3 +271,14 @@ jobs:
       run: |
         echo "::set-output name=TAG_NAME::$(echo ${{ github.ref }} | cut -d'/' -f 3)"
         echo "::set-output name=REPO_NAME::$(echo ${{ github.repository }} | cut -d'/' -f 2)"
+
+    - name: Remove Windows exe and installer to exclude from cache
+      run: |
+        Remove-Item .\chinilla-blockchain-gui\packages\gui\Chinilla-win32-x64 -Recurse -Force
+        Remove-Item .\chinilla-blockchain-gui\packages\gui\release-builds -Recurse -Force
+        Remove-Item .\chinilla-blockchain-gui\packages\gui\daemon -Recurse -Force
+        If (Test-Path .\chinilla-blockchain-gui\packages\gui\win_code_sign_cert.p12) {
+          Remove-Item .\chinilla-blockchain-gui\packages\gui\win_code_sign_cert.p12 -Force
+        }
+        Remove-Item .\chinilla-blockchain-gui\Chinilla-win32-x64 -Recurse -Force
+        Remove-Item .\chinilla-blockchain-gui\release-builds -Recurse -Force

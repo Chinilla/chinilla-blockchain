@@ -18,7 +18,7 @@ from chinilla.types.unfinished_block import UnfinishedBlock
 from chinilla.util.block_cache import BlockCache
 from chinilla.util.hash import std_hash
 from chinilla.util.ints import uint8, uint32, uint64, uint128
-from tests.block_tools import get_signage_point, create_block_tools_async
+from chinilla.simulator.block_tools import get_signage_point, create_block_tools_async
 from tests.blockchain.blockchain_test_utils import (
     _validate_and_add_block,
     _validate_and_add_block_no_error,

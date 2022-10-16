@@ -1,4 +1,4 @@
-name: Build Installer - MacOS arm64
+name: 📦🚀 Build Installers - MacOS
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - main
       - 'release/**'
     tags:
-      - '**'
+        - '**'
   pull_request:
     branches:
       - '**'
@@ -19,13 +19,25 @@ concurrency:
 
 jobs:
   build:
-    name: MacOS arm64 installer
-    runs-on: [m1]
-    timeout-minutes: 40
+    name: MacOS ${{ matrix.os.name }} Installer
+    runs-on: ${{ matrix.os.runs-on }}
+    timeout-minutes: 90
     strategy:
       fail-fast: false
+      max-parallel: 4
       matrix:
         python-version: [3.9]
+        os:
+          - runs-on: macos-10.14
+            name: intel
+            file-suffix: ""
+            mac-package-name: "Chinilla-darwin-x64"
+            glue-name: "build-macos"
+          - runs-on: [MacOS, ARM64]
+            name: m1
+            file-suffix: "-arm64"
+            mac-package-name: "Chinilla-darwin-arm64"
+            glue-name: "build-mac-m1"
 
     steps:
       - uses: Chinilla/actions/clean-workspace@main
@@ -60,11 +72,22 @@ jobs:
       - name: Create installer version number
         id: version_number
         run: |
-          arch -arm64 python3 -m venv ../venv
+          python3 -m venv ../venv
           . ../venv/bin/activate
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           arch -arm64 pip install setuptools_scm
           echo "::set-output name=CHINILLA_INSTALLER_VERSION::$(arch -arm64 python3 ./build_scripts/installer-version.py)"
+========
+          pip install setuptools_scm
+          echo "::set-output name=CHINILLA_INSTALLER_VERSION::$(python3 ./build_scripts/installer-version.py)"
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
           deactivate
+
+      - name: Setup Python environment
+        uses: Chinilla/actions/setup-python@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          force-pyenv: 'true'
 
       # This will be recreated in the next step
       # Done now and at the end of the workflow in case the last workflow fails, and this is still around
@@ -95,20 +118,50 @@ jobs:
       - name: Get latest madmax plotter
         run: |
           mkdir "$GITHUB_WORKSPACE/madmax"
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           wget -O "$GITHUB_WORKSPACE/madmax/chia_plot" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}-macos-m1
           wget -O "$GITHUB_WORKSPACE/madmax/chia_plot_k34" https://github.com/Chinilla/chinilla-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}-macos-m1
+========
+          wget -O "$GITHUB_WORKSPACE/madmax/chia_plot" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot-${{ steps.latest-madmax.outputs.result }}-macos-${{ matrix.os.name }}
+          wget -O "$GITHUB_WORKSPACE/madmax/chia_plot_k34" https://github.com/Chia-Network/chia-plotter-madmax/releases/download/${{ steps.latest-madmax.outputs.result }}/chia_plot_k34-${{ steps.latest-madmax.outputs.result }}-macos-${{ matrix.os.name }}
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
           chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot"
           chmod +x "$GITHUB_WORKSPACE/madmax/chia_plot_k34"
 
-      - name: Run install script
-        env:
-          INSTALL_PYTHON_VERSION: ${{ matrix.python-version }}
-        run: |
-          arch -arm64 sh install.sh -d
+      - uses: ./.github/actions/install
+        with:
+          python-version: ${{ matrix.python-version }}
+          development: true
 
-      - name: Install node 16.x
+      - uses: chinilla/actions/activate-venv@main
+
+      - name: Setup Node 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+      - name: Prepare GUI cache
+        id: gui-ref
         run: |
-          arch -arm64 brew install node@16
+          gui_ref=$(git submodule status chia-blockchain-gui | sed -e 's/^ //g' -e 's/ chia-blockchain-gui.*$//g')
+          echo "${gui_ref}"
+          echo "::set-output name=GUI_REF::${gui_ref}"
+          echo "rm -rf ./chia-blockchain-gui"
+          rm -rf ./chia-blockchain-gui
+
+      - name: Cache GUI
+        uses: actions/cache@v3
+        id: cache-gui
+        with:
+          path: ./chia-blockchain-gui
+          key: ${{ runner.os }}-${{ matrix.os.name }}-chia-blockchain-gui-${{ steps.gui-ref.outputs.GUI_REF }}
+
+      - if: steps.cache-gui.outputs.cache-hit != 'true'
+        name: Build GUI
+        continue-on-error: false
+        run: |
+          cd ./build_scripts
+          sh build_macos-1-gui.sh
 
       - name: Build MacOS DMG
         env:
@@ -116,28 +169,41 @@ jobs:
           NOTARIZE: ${{ steps.check_secrets.outputs.HAS_APPLE_SECRET }}
           APPLE_NOTARIZE_USERNAME: "${{ secrets.APPLE_NOTARIZE_USERNAME }}"
           APPLE_NOTARIZE_PASSWORD: "${{ secrets.APPLE_NOTARIZE_PASSWORD }}"
+          MAC_PACKAGE_NAME: "${{ matrix.os.mac-package-name }}"
+          MAC_FILE_SUFFIX: "${{ matrix.os.file-suffix }}"
         run: |
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           export PATH=$(brew --prefix node@16)/bin:$PATH
           git -C ./chinilla-blockchain-gui status
           . ./activate
+========
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
           cd ./build_scripts
-          arch -arm64 sh build_macos_m1.sh
+          sh build_macos-2-installer.sh
 
       - name: Upload MacOS artifacts
         uses: actions/upload-artifact@v3
         with:
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           name: chinilla-installers-macos-dmg-arm64
+========
+          name: chia-installers-macos-dmg-${{ matrix.os.name }}
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
           path: ${{ github.workspace }}/build_scripts/final_installer/
 
       - name: Install AWS CLI
         if: steps.check_secrets.outputs.HAS_AWS_SECRET
         run: |
-          arch -arm64 brew install awscli
+          brew install awscli
 
       - name: Create Checksums
         run: |
           ls
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           arch -arm64 shasum -a 256 ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg > ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg.sha256
+========
+          shasum -a 256 ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg > ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg.sha256
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
 
       - name: Upload to s3
         if: steps.check_secrets.outputs.HAS_AWS_SECRET
@@ -148,6 +214,7 @@ jobs:
           CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
         run: |
           GIT_SHORT_HASH=$(echo "${GITHUB_SHA}" | cut -c1-8)
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           CHINILLA_DEV_BUILD=${CHINILLA_INSTALLER_VERSION}-$GIT_SHORT_HASH
           echo "CHINILLA_DEV_BUILD=$CHINILLA_DEV_BUILD" >>$GITHUB_ENV
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${CHINILLA_INSTALLER_VERSION}-arm64.dmg s3://chinilla-downloads/dev/Chinilla-${CHINILLA_DEV_BUILD}-arm64.dmg
@@ -156,14 +223,23 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           arch -arm64 pip install py3createtorrent
+========
+          CHIA_DEV_BUILD=${CHIA_INSTALLER_VERSION}-$GIT_SHORT_HASH
+          echo "CHIA_DEV_BUILD=$CHIA_DEV_BUILD" >>$GITHUB_ENV
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg s3://download.chia.net/dev/Chia-${CHIA_DEV_BUILD}${{ matrix.os.file-suffix }}.dmg
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
 
       - name: Create torrent
         if: startsWith(github.ref, 'refs/tags/')
         run: |
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           arch -arm64 py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg -o ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg.torrent --webseed https://download.chinilla.com/install/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg
+========
+          py3createtorrent -f -t udp://tracker.opentrackr.org:1337/announce ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg -o ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg.torrent --webseed https://download.chia.net/install/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
           ls ${{ github.workspace }}/build_scripts/final_installer/
 
-      - name: Upload Beta Installer
+      - name: Upload Dev Installer
         if: steps.check_secrets.outputs.HAS_AWS_SECRET && github.ref == 'refs/heads/main'
         env:
           CHINILLA_INSTALLER_VERSION: ${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}
@@ -171,8 +247,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           AWS_REGION: us-west-2
         run: |
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg s3://chinilla-downloads/beta/Chinilla-arm64_latest_beta.dmg
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg.sha256 s3://chinilla-downloads/beta/Chinilla-arm64_latest_beta.dmg.sha256
+========
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg s3://download.chia.net/latest-dev/Chia${{ matrix.os.file-suffix }}_latest_dev.dmg
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg.sha256 s3://download.chia.net/latest-dev/Chia${{ matrix.os.file-suffix }}_latest_dev.dmg.sha256
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
 
       - name: Upload Release Files
         if: steps.check_secrets.outputs.HAS_AWS_SECRET && startsWith(github.ref, 'refs/tags/')
@@ -181,9 +262,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.INSTALLER_UPLOAD_SECRET }}
           AWS_REGION: us-west-2
         run: |
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg s3://chinilla-downloads/install/
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg.sha256 s3://chinilla-downloads/install/
           arch -arm64 aws s3 cp --endpoint=https://sfo3.digitaloceanspaces.com ${{ github.workspace }}/build_scripts/final_installer/Chinilla-${{ steps.version_number.outputs.CHINILLA_INSTALLER_VERSION }}-arm64.dmg.torrent s3://chinilla-downloads/torrents/
+========
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg s3://download.chia.net/install/
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg.sha256 s3://download.chia.net/install/
+          aws s3 cp ${{ github.workspace }}/build_scripts/final_installer/Chia-${{ steps.version_number.outputs.CHIA_INSTALLER_VERSION }}${{ matrix.os.file-suffix }}.dmg.torrent s3://download.chia.net/torrents/
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
 
       - name: Get tag name
         if: startsWith(github.ref, 'refs/tags/')
@@ -195,10 +282,18 @@ jobs:
       - name: Mark installer complete
         if: startsWith(github.ref, 'refs/tags/')
         run: |
+<<<<<<<< HEAD:.github/workflows.disabled/build-macos-m1-installer.yml
           curl -s -XPOST -H "Authorization: Bearer ${{ secrets.GLUE_ACCESS_TOKEN }}" --data '{"chinilla_ref": "${{ steps.tag-name.outputs.TAG_NAME }}"}' ${{ secrets.GLUE_API_URL }}/api/v1/${{ steps.tag-name.outputs.REPO_NAME }}/${{ steps.tag-name.outputs.TAG_NAME }}/success/build-mac-m1
+========
+          curl -s -XPOST -H "Authorization: Bearer ${{ secrets.GLUE_ACCESS_TOKEN }}" --data '{"chia_ref": "${{ steps.tag-name.outputs.TAG_NAME }}"}' ${{ secrets.GLUE_API_URL }}/api/v1/${{ steps.tag-name.outputs.REPO_NAME }}/${{ steps.tag-name.outputs.TAG_NAME }}/success/${{ matrix.os.glue-name }}
+>>>>>>>> upstream/release/1.5.1:.github/workflows/build-macos-installers.yml
 
       # We want to delete this no matter what happened in the previous steps (failures, success, etc)
       - name: Delete signing keychain
         if: always()
         run:
           security delete-keychain signing_temp.keychain || true
+
+      - name: Remove working files to exclude from cache
+        run: |
+          rm -rf ./chia-blockchain-gui/packages/gui/daemon

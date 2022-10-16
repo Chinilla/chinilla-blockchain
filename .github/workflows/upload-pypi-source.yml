@@ -1,4 +1,4 @@
-name: Lint and upload source distribution
+name: 🚨🚀 Lint and upload source distribution
 
 on:
   workflow_dispatch:
@@ -59,11 +59,15 @@ jobs:
 
     - name: Lint source with flake8
       run: |
-        flake8 chinilla tests
+        flake8 benchmarks build_scripts chinilla tests tools *.py
 
     - name: Lint source with mypy
       run: |
         mypy
+
+    - name: Lint source with pylint
+      run: |
+        pylint benchmarks build_scripts chinilla tests tools *.py
 
     - name: Build source distribution
       run: |
@@ -74,15 +78,6 @@ jobs:
       with:
         name: dist
         path: ./dist
-
-    - name: Publish distribution to Test PyPI
-      if: steps.check_secrets.outputs.HAS_SECRET
-      env:
-        TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        TWINE_USERNAME: __token__
-        TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.PYPI_TEST_PASSWORD }}
-      run: twine upload --non-interactive --skip-existing --verbose 'dist/*'
 
     - name: Publish distribution to PyPI
       if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.event.ref, 'refs/tags')

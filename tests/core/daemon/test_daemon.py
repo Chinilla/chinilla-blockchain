@@ -7,18 +7,19 @@ import pytest
 from chinilla.daemon.server import WebSocketServer
 from chinilla.server.outbound_message import NodeType
 from chinilla.types.peer_info import PeerInfo
-from tests.block_tools import BlockTools
+from chinilla.simulator.block_tools import BlockTools
 from chinilla.util.ints import uint16
 from chinilla.util.keyring_wrapper import DEFAULT_PASSPHRASE_IF_NO_MASTER_PASSPHRASE
 from chinilla.util.ws_message import create_payload
 from tests.core.node_height import node_height_at_least
-from tests.time_out_assert import time_out_assert_custom_interval, time_out_assert
+from chinilla.simulator.time_out_assert import time_out_assert_custom_interval, time_out_assert
 
 
 class TestDaemon:
     @pytest.mark.asyncio
-    async def test_daemon_simulation(self, self_hostname, daemon_simulation, bt, get_b_tools, get_b_tools_1):
-        node1, node2, _, _, _, _, _, _, _, _, daemon1 = daemon_simulation
+    async def test_daemon_simulation(self, self_hostname, daemon_simulation):
+        deamon_and_nodes, get_b_tools, bt = daemon_simulation
+        node1, node2, _, _, _, _, _, _, _, _, daemon1 = deamon_and_nodes
         server1 = node1.full_node.server
         node2_port = node2.full_node.server.get_port()
         await server1.start_client(PeerInfo(self_hostname, uint16(node2_port)))
@@ -51,19 +52,14 @@ class TestDaemon:
 
         async def reader(ws, queue):
             while True:
+                # ClientWebSocketReponse::receive() internally handles PING, PONG, and CLOSE messages
                 msg = await ws.receive()
                 if msg.type == aiohttp.WSMsgType.TEXT:
                     message = msg.data.strip()
                     message = json.loads(message)
                     await queue.put(message)
-                elif msg.type == aiohttp.WSMsgType.PING:
-                    await ws.pong()
-                elif msg.type == aiohttp.WSMsgType.PONG:
-                    continue
                 else:
-                    if msg.type == aiohttp.WSMsgType.CLOSE:
-                        await ws.close()
-                    elif msg.type == aiohttp.WSMsgType.ERROR:
+                    if msg.type == aiohttp.WSMsgType.ERROR:
                         await ws.close()
                     elif msg.type == aiohttp.WSMsgType.CLOSED:
                         pass

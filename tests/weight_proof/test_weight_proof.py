@@ -11,7 +11,7 @@ from chinilla.full_node.block_store import BlockStore
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.util.block_cache import BlockCache
-from tests.block_tools import test_constants
+from chinilla.simulator.block_tools import test_constants
 from chinilla.util.generator_tools import get_block_header
 
 from chinilla.consensus.pot_iterations import calculate_iterations_quality

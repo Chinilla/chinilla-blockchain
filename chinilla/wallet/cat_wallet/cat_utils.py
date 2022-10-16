@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Tuple, Iterator
+from typing import List, Iterator, Optional
 
 from blspy import G2Element
 
@@ -30,15 +30,15 @@ class SpendableCAT:
     limitations_program_reveal: Program = Program.to([])
 
 
-def match_cat_puzzle(puzzle: Program) -> Tuple[bool, Iterator[Program]]:
+def match_cat_puzzle(mod: Program, curried_args: Program) -> Optional[Iterator[Program]]:
     """
-    Given a puzzle test if it's a CAT and, if it is, return the curried arguments
+    Given the curried puzzle and args, test if it's a CAT and,
+    if it is, return the curried arguments
     """
-    mod, curried_args = puzzle.uncurry()
     if mod == CAT_MOD:
-        return True, curried_args.as_iter()
+        return curried_args.as_iter()
     else:
-        return False, iter(())
+        return None
 
 
 def get_innerpuzzle_from_puzzle(puzzle: Program) -> Program:
@@ -49,11 +49,15 @@ def get_innerpuzzle_from_puzzle(puzzle: Program) -> Program:
         raise ValueError("Not a CAT puzzle")
 
 
-def construct_cat_puzzle(mod_code: Program, limitations_program_hash: bytes32, inner_puzzle: Program) -> Program:
+def construct_cat_puzzle(
+    mod_code: Program, limitations_program_hash: bytes32, inner_puzzle: Program, mod_code_hash: Optional[bytes32] = None
+) -> Program:
     """
     Given an inner puzzle hash and tail hash calculate a puzzle program for a specific cc.
     """
-    return mod_code.curry(mod_code.get_tree_hash(), limitations_program_hash, inner_puzzle)
+    if mod_code_hash is None:
+        mod_code_hash = mod_code.get_tree_hash()
+    return mod_code.curry(mod_code_hash, limitations_program_hash, inner_puzzle)
 
 
 def subtotals_for_deltas(deltas) -> List[int]:

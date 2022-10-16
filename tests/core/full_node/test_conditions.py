@@ -23,7 +23,7 @@ from chinilla.types.full_block import FullBlock
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.errors import Err
 from chinilla.util.ints import uint32
-from tests.block_tools import BlockTools
+from chinilla.simulator.block_tools import BlockTools
 from tests.util.keyring import TempKeyring
 
 from .ram_db import create_ram_blockchain

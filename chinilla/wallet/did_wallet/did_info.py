@@ -8,8 +8,6 @@ from chinilla.wallet.lineage_proof import LineageProof
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.coin import Coin
 
-DID_HRP = "did:chinilla:"
-
 
 @streamable
 @dataclass(frozen=True)

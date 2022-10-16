@@ -9,7 +9,7 @@ from chinilla.types.blockchain_format.program import Program, INFINITE_COST
 from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
 from chinilla.util.ints import uint32
-from tests.wallet_tools import WalletTool
+from chinilla.simulator.wallet_tools import WalletTool
 from chinilla.wallet.derive_keys import master_sk_to_wallet_sk
 from chinilla.wallet.puzzles.p2_delegated_puzzle import puzzle_for_pk
 
