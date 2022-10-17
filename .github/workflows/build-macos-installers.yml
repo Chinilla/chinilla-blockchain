@@ -28,16 +28,11 @@ jobs:
       matrix:
         python-version: [3.9]
         os:
-          - runs-on: macos-10.14
+          - runs-on: macos-latest
             name: intel
             file-suffix: ""
             mac-package-name: "Chinilla-darwin-x64"
             glue-name: "build-macos"
-          - runs-on: [MacOS, ARM64]
-            name: m1
-            file-suffix: "-arm64"
-            mac-package-name: "Chinilla-darwin-arm64"
-            glue-name: "build-mac-m1"
 
     steps:
       - uses: Chinilla/actions/clean-workspace@main
