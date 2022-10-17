@@ -249,7 +249,13 @@ def create_all_ssl(
     chinilla_ca_crt, chinilla_ca_key = get_chinilla_ca_crt_key()
     chinilla_ca_crt_path = ca_dir / "chinilla_ca.crt"
     chinilla_ca_key_path = ca_dir / "chinilla_ca.key"
-    write_ssl_cert_and_key(chinilla_ca_crt_path, chinilla_ca_crt, chinilla_ca_key_path, chinilla_ca_key, overwrite=overwrite)
+    write_ssl_cert_and_key(
+        chinilla_ca_crt_path,
+        chinilla_ca_crt,
+        chinilla_ca_key_path,
+        chinilla_ca_key,
+        overwrite=overwrite,
+    )
 
     # If Private CA crt/key are passed-in, write them out
     if private_ca_crt_and_key is not None:
