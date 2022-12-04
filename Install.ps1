@@ -1,6 +1,8 @@
 param(
     [Parameter(HelpMessage="install development dependencies")]
-    [switch]$d = $False
+    [switch]$d = $False,
+    [Parameter()]
+    [switch]$p = $False
 )
 
 $ErrorActionPreference = "Stop"
@@ -106,10 +108,19 @@ venv\scripts\python -m pip install --upgrade pip setuptools wheel
 venv\scripts\pip install --extra-index-url https://pypi.chia.net/simple/ miniupnpc==2.2.2
 venv\scripts\pip install --editable ".$extras_cli" --extra-index-url https://pypi.chia.net/simple/
 
+if ($p)
+{
+    $PREV_VIRTUAL_ENV = "$env:VIRTUAL_ENV"
+    $env:VIRTUAL_ENV = "venv"
+    .\Install-plotter.ps1 bladebit
+    .\Install-plotter.ps1 madmax
+    $env:VIRTUAL_ENV = "$PREV_VIRTUAL_ENV"
+}
+
 Write-Output ""
 Write-Output "Chinilla blockchain .\Install.ps1 complete."
 Write-Output "For assistance join us on Keybase in the #support chat channel:"
-Write-Output "https://keybase.io/team/chinilla"
+Write-Output "https://keybase.io/team/chinilla_network.public"
 Write-Output ""
 Write-Output "Try the Quick Start Guide to running chinilla-blockchain:"
 Write-Output "https://github.com/Chinilla/chinilla-blockchain/wiki/Quick-Start-Guide"

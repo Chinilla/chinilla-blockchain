@@ -1,16 +1,13 @@
 name: 🚨🚀 Lint and upload source distribution
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
-      - latest
-      - dev
-      - 'release/**'
       - 'long_lived/**'
-    tags:
-        - '**'
+      - main
+      - 'release/**'
+  release:
+    types: [published]
   pull_request:
     branches:
       - '**'
@@ -46,7 +43,7 @@ jobs:
         if [ -n "$SECRET" ]; then HAS_SECRET='true' ; fi
         echo ::set-output name=HAS_SECRET::${HAS_SECRET}
       env:
-        SECRET: "${{ secrets.PYPI_TEST_PASSWORD }}"
+        SECRET: "${{ secrets.test_pypi_password }}"
 
     - name: Install lint requirements
       run: |
@@ -80,9 +77,9 @@ jobs:
         path: ./dist
 
     - name: Publish distribution to PyPI
-      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.event.ref, 'refs/tags')
+      if: steps.check_secrets.outputs.HAS_SECRET && startsWith(github.ref, 'refs/tags')
       env:
         TWINE_USERNAME: __token__
         TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        TWINE_PASSWORD: ${{ secrets.pypi_password }}
       run: twine upload --non-interactive --skip-existing --verbose 'dist/*'

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from chinilla.types.blockchain_format.coin import Coin
@@ -22,4 +24,4 @@ class WalletCoinRecord:
     wallet_id: int
 
     def name(self) -> bytes32:
-        return self.coin.name()  # type: ignore
+        return self.coin.name()

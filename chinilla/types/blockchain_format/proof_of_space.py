@@ -4,7 +4,7 @@ from typing import Optional
 
 from bitstring import BitArray
 from blspy import G1Element, AugSchemeMPL, PrivateKey
-from chiapos import Verifier
+from chinillapos import Verifier
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.types.blockchain_format.sized_bytes import bytes32

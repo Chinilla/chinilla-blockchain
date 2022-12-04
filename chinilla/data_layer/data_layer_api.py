@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
-from typing import Any
 
 from chinilla.data_layer.data_layer import DataLayer
+from chinilla.server.server import ChinillaServer
 
 
 class DataLayerAPI:
@@ -14,7 +16,7 @@ class DataLayerAPI:
     #     self.full_node.state_changed_callback = callback
 
     @property
-    def server(self) -> Any:
+    def server(self) -> ChinillaServer:
         return self.data_layer.server
 
     @property

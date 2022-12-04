@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional
 
@@ -28,7 +30,7 @@ class CoinRecord(Streamable):
 
     @property
     def name(self) -> bytes32:
-        return self.coin.name()  # type: ignore
+        return self.coin.name()
 
     @property
     def coin_state(self) -> CoinState:

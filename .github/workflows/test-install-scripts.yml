@@ -3,13 +3,11 @@ name: 🏗️ Test Install Scripts
 on:
   push:
     branches:
-      - main
-      - latest
-      - dev
-      - 'release/**'
       - 'long_lived/**'
-    tags:
-        - '**'
+      - main
+      - 'release/**'
+  release:
+    types: [published]
   pull_request:
     branches:
       - '**'

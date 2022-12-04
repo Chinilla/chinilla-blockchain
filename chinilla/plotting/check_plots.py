@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import Counter
 from pathlib import Path
@@ -5,7 +7,7 @@ from time import sleep, time
 from typing import List
 
 from blspy import G1Element
-from chiapos import Verifier
+from chinillapos import Verifier
 
 from chinilla.plotting.manager import PlotManager
 from chinilla.plotting.util import (

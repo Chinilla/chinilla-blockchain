@@ -1,8 +1,9 @@
+from __future__ import annotations
 import logging
 import time
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING, Tuple
 
-from blspy import G1Element
+from blspy import G1Element, G2Element, AugSchemeMPL
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.bundle_tools import simple_solution_generator
@@ -22,6 +23,7 @@ from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
     DEFAULT_HIDDEN_PUZZLE_HASH,
     calculate_synthetic_secret_key,
     puzzle_for_pk,
+    puzzle_hash_for_pk,
     solution_for_conditions,
 )
 from chinilla.wallet.puzzles.puzzle_utils import (
@@ -42,6 +44,9 @@ from chinilla.wallet.util.transaction_type import TransactionType
 from chinilla.wallet.util.wallet_types import AmountWithPuzzlehash, WalletType
 from chinilla.wallet.wallet_coin_record import WalletCoinRecord
 from chinilla.wallet.wallet_info import WalletInfo
+
+if TYPE_CHECKING:
+    from chinilla.server.ws_connection import WSChinillaConnection
 
 
 class Wallet:
@@ -65,12 +70,12 @@ class Wallet:
         self.cost_of_single_tx = None
         return self
 
-    async def get_max_send_amount(self, records: Optional[Set[WalletCoinRecord]] = None) -> int:
+    async def get_max_send_amount(self, records: Optional[Set[WalletCoinRecord]] = None) -> uint128:
         spendable: List[WalletCoinRecord] = list(
             await self.wallet_state_manager.get_spendable_coins_for_wallet(self.id(), records)
         )
         if len(spendable) == 0:
-            return 0
+            return uint128(0)
         spendable.sort(reverse=True, key=lambda record: record.coin.amount)
         if self.cost_of_single_tx is None:
             coin = spendable[0].coin
@@ -100,7 +105,7 @@ class Wallet:
             if current_cost + self.cost_of_single_tx > max_cost:
                 break
 
-        return total_amount
+        return uint128(total_amount)
 
     @classmethod
     def type(cls) -> uint8:
@@ -109,13 +114,13 @@ class Wallet:
     def id(self) -> uint32:
         return self.wallet_id
 
-    async def get_confirmed_balance(self, unspent_records=None) -> uint128:
-        return await self.wallet_state_manager.get_confirmed_balance_for_wallet(self.id(), unspent_records)
+    async def get_confirmed_balance(self, record_list: Optional[Set[WalletCoinRecord]] = None) -> uint128:
+        return await self.wallet_state_manager.get_confirmed_balance_for_wallet(self.id(), record_list)
 
-    async def get_unconfirmed_balance(self, unspent_records=None) -> uint128:
+    async def get_unconfirmed_balance(self, unspent_records: Optional[Set[WalletCoinRecord]] = None) -> uint128:
         return await self.wallet_state_manager.get_unconfirmed_balance(self.id(), unspent_records)
 
-    async def get_spendable_balance(self, unspent_records=None) -> uint128:
+    async def get_spendable_balance(self, unspent_records: Optional[Set[WalletCoinRecord]] = None) -> uint128:
         spendable = await self.wallet_state_manager.get_confirmed_spendable_balance_for_wallet(
             self.id(), unspent_records
         )
@@ -147,8 +152,14 @@ class Wallet:
 
         return uint64(addition_amount)
 
+    def require_derivation_paths(self) -> bool:
+        return True
+
     def puzzle_for_pk(self, pubkey: G1Element) -> Program:
         return puzzle_for_pk(pubkey)
+
+    def puzzle_hash_for_pk(self, pubkey: G1Element) -> bytes32:
+        return puzzle_hash_for_pk(pubkey)
 
     async def convert_puzzle_hash(self, puzzle_hash: bytes32) -> bytes32:
         return puzzle_hash  # Looks unimpressive, but it's more complicated in other wallets
@@ -421,6 +432,13 @@ class Wallet:
             self.wallet_state_manager.constants.MAX_BLOCK_COST_CLVM,
         )
 
+    async def sign_message(self, message: str, puzzle_hash: bytes32) -> Tuple[G1Element, G2Element]:
+        pubkey, private = await self.wallet_state_manager.get_keys(puzzle_hash)
+        synthetic_secret_key = calculate_synthetic_secret_key(private, DEFAULT_HIDDEN_PUZZLE_HASH)
+        synthetic_pk = synthetic_secret_key.get_g1()
+        puzzle: Program = Program.to(("Chinilla Signed Message", message))
+        return synthetic_pk, AugSchemeMPL.sign(synthetic_secret_key, puzzle.get_tree_hash())
+
     async def generate_signed_transaction(
         self,
         amount: uint64,
@@ -509,9 +527,7 @@ class Wallet:
         await self.wallet_state_manager.wallet_node.update_ui()
 
     # This is to be aggregated together with a CAT offer to ensure that the trade happens
-    async def create_spend_bundle_relative_chinilla(
-        self, chinilla_amount: int, exclude: List[Coin] = []
-    ) -> SpendBundle:
+    async def create_spend_bundle_relative_chinilla(self, chinilla_amount: int, exclude: List[Coin] = []) -> SpendBundle:
         list_of_solutions = []
         utxos = None
 
@@ -559,3 +575,15 @@ class Wallet:
         if balance < amount:
             raise Exception(f"insufficient funds in wallet {self.id()}")
         return await self.select_coins(amount, min_coin_amount=min_coin_amount)
+
+    # WSChinillaConnection is only imported for type checking
+    async def coin_added(
+        self, coin: Coin, height: uint32, peer: WSChinillaConnection
+    ) -> None:  # pylint: disable=used-before-assignment
+        pass
+
+
+if TYPE_CHECKING:
+    from chinilla.wallet.wallet_protocol import WalletProtocol
+
+    _dummy: WalletProtocol = Wallet()

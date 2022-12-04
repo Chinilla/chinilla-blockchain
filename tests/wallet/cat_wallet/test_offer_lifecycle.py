@@ -12,11 +12,11 @@ from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.ints import uint64
 from chinilla.wallet.cat_wallet.cat_utils import (
-    CAT_MOD,
     construct_cat_puzzle,
     SpendableCAT,
     unsigned_spend_bundle_for_spendable_cats,
 )
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
 from chinilla.wallet.outer_puzzles import AssetType
 from chinilla.wallet.puzzle_drivers import PuzzleInfo
 from chinilla.wallet.payment import Payment
@@ -204,9 +204,7 @@ class TestOfferLifecycle:
             chinilla_requested_payments: Dict[Optional[bytes32], List[NotarizedPayment]] = Offer.notarize_payments(
                 chinilla_requested_payments, chinilla_coins
             )
-            chinilla_announcements: List[Announcement] = Offer.calculate_announcements(
-                chinilla_requested_payments, driver_dict
-            )
+            chinilla_announcements: List[Announcement] = Offer.calculate_announcements(chinilla_requested_payments, driver_dict)
             chinilla_secured_bundle: SpendBundle = generate_secure_bundle(chinilla_coins, chinilla_announcements, 1000)
             chinilla_offer = Offer(chinilla_requested_payments, chinilla_secured_bundle, driver_dict)
             assert not chinilla_offer.is_valid()

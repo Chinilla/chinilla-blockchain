@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.consensus.pos_quality import _expected_plot_size
 from chinilla.types.blockchain_format.sized_bytes import bytes32

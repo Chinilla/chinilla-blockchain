@@ -14,11 +14,11 @@ from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.errors import Err
 from chinilla.util.ints import uint64
 from chinilla.wallet.cat_wallet.cat_utils import (
-    CAT_MOD,
     SpendableCAT,
     construct_cat_puzzle,
     unsigned_spend_bundle_for_spendable_cats,
 )
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
 from chinilla.wallet.lineage_proof import LineageProof
 from chinilla.wallet.puzzles.tails import (
     GenesisById,

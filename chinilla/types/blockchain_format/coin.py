@@ -1,15 +1,18 @@
-from typing import Any, List
+from __future__ import annotations
 
-from chia_rs import Coin
+from typing import List, Union
+
+from chinilla_rs import Coin
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint64
 
 __all__ = ["Coin", "coin_as_list", "hash_coin_ids"]
 
 
-def coin_as_list(c: Coin) -> List[Any]:
-    return [c.parent_coin_info, c.puzzle_hash, c.amount]
+def coin_as_list(c: Coin) -> List[Union[bytes32, uint64]]:
+    return [c.parent_coin_info, c.puzzle_hash, uint64(c.amount)]
 
 
 def hash_coin_ids(coin_ids: List[bytes32]) -> bytes32:

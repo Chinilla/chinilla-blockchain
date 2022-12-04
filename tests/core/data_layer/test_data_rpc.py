@@ -16,9 +16,9 @@ from chinilla.data_layer.data_layer_errors import OfferIntegrityError
 from chinilla.data_layer.data_layer_util import OfferStore, StoreProofs
 from chinilla.data_layer.data_layer_wallet import DataLayerWallet, verify_offer
 from chinilla.rpc.data_layer_rpc_api import DataLayerRpcApi
-from chinilla.rpc.rpc_server import start_rpc_server
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi
 from chinilla.server.start_data_layer import create_data_layer_service
+from chinilla.server.start_service import Service
 from chinilla.simulator.block_tools import BlockTools
 from chinilla.simulator.full_node_simulator import FullNodeSimulator, backoff_times
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
@@ -29,31 +29,32 @@ from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.config import save_config
 from chinilla.util.ints import uint16, uint32
 from chinilla.wallet.trading.offer import Offer as TradingOffer
+from chinilla.wallet.transaction_record import TransactionRecord
 from chinilla.wallet.wallet import Wallet
 from chinilla.wallet.wallet_node import WalletNode
-from tests.setup_nodes import setup_simulators_and_wallets
+from tests.setup_nodes import SimulatorsAndWalletsServices
 from tests.util.wallet_is_synced import wallet_is_synced
-from tests.wallet.rl_wallet.test_rl_rpc import is_transaction_confirmed
 
 pytestmark = pytest.mark.data_layer
 nodes = Tuple[WalletNode, FullNodeSimulator]
-nodes_with_port = Tuple[WalletNode, FullNodeSimulator, uint16, BlockTools]
 nodes_with_port_bt_ph = Tuple[WalletRpcApi, FullNodeSimulator, uint16, bytes32, BlockTools]
-wallet_and_port_tuple = Tuple[WalletNode, int]
+wallet_and_port_tuple = Tuple[WalletNode, uint16]
 two_wallets_with_port = Tuple[Tuple[wallet_and_port_tuple, wallet_and_port_tuple], FullNodeSimulator, BlockTools]
 
 
 @contextlib.asynccontextmanager
-async def init_data_layer(wallet_rpc_port: int, bt: BlockTools, db_path: Path) -> AsyncIterator[DataLayer]:
+async def init_data_layer(
+    wallet_rpc_port: uint16, bt: BlockTools, db_path: Path, wallet_service: Optional[Service[WalletNode]] = None
+) -> AsyncIterator[DataLayer]:
     config = bt.config
-    config["data_layer"]["wallet_peer"]["port"] = wallet_rpc_port
+    config["data_layer"]["wallet_peer"]["port"] = int(wallet_rpc_port)
     # TODO: running the data server causes the RPC tests to hang at the end
     config["data_layer"]["run_server"] = False
     config["data_layer"]["port"] = 0
     config["data_layer"]["rpc_port"] = 0
     config["data_layer"]["database_path"] = str(db_path.joinpath("db.sqlite"))
     save_config(bt.root_path, "config.yaml", config)
-    service = create_data_layer_service(root_path=bt.root_path, config=config)
+    service = create_data_layer_service(root_path=bt.root_path, config=config, wallet_service=wallet_service)
     await service.start()
     try:
         yield service._api.data_layer
@@ -62,84 +63,30 @@ async def init_data_layer(wallet_rpc_port: int, bt: BlockTools, db_path: Path) -
         await service.wait_closed()
 
 
-@pytest_asyncio.fixture(scope="function")
-async def one_wallet_node_and_rpc() -> AsyncIterator[nodes_with_port]:
-    async for nodes in setup_simulators_and_wallets(simulator_count=1, wallet_count=1, dic={}):
-        full_nodes, wallets, bt = nodes
-        [[wallet_node_0, wallet_server_0]] = wallets
-        config = bt.config
-        hostname = config["self_hostname"]
-        daemon_port = config["daemon_port"]
-        rpc_cleanup, rpc_port = await start_rpc_server(
-            WalletRpcApi(wallet_node_0),
-            hostname,
-            daemon_port,
-            wallet_node_0.server._port,
-            lambda: None,
-            bt.root_path,
-            config,
-            connect_to_daemon=False,
-        )
-        yield wallet_node_0, full_nodes[0], rpc_port, bt
-        await rpc_cleanup()
-
-
-@pytest_asyncio.fixture(scope="function")
-async def two_wallet_node_and_rpc() -> AsyncIterator[two_wallets_with_port]:
-    async for nodes in setup_simulators_and_wallets(simulator_count=1, wallet_count=2, dic={}):
-        full_nodes, wallets, bt = nodes
-        [full_node] = full_nodes
-        [[wallet_node_0, wallet_server_0], [wallet_node_1, wallet_server_1]] = wallets
-        config = bt.config
-        hostname = config["self_hostname"]
-        daemon_port = config["daemon_port"]
-        rpc_cleanup_0, rpc_port_0 = await start_rpc_server(
-            WalletRpcApi(wallet_node_0),
-            hostname,
-            daemon_port,
-            wallet_node_0.server._port,
-            lambda: None,
-            bt.root_path,
-            config,
-            connect_to_daemon=False,
-        )
-        rpc_cleanup_1, rpc_port_1 = await start_rpc_server(
-            WalletRpcApi(wallet_node_1),
-            hostname,
-            daemon_port,
-            wallet_node_1.server._port,
-            lambda: None,
-            bt.root_path,
-            config,
-            connect_to_daemon=False,
-        )
-        yield ((wallet_node_0, rpc_port_0), (wallet_node_1, rpc_port_1)), full_node, bt
-        await rpc_cleanup_1()
-        await rpc_cleanup_0()
-
-
 @pytest_asyncio.fixture(name="bare_data_layer_api")
 async def bare_data_layer_api_fixture(tmp_path: Path, bt: BlockTools) -> AsyncIterator[DataLayerRpcApi]:
     # we won't use this port, this fixture is for _just_ a data layer rpc
-    port = 1
+    port = uint16(1)
     async with init_data_layer(wallet_rpc_port=port, bt=bt, db_path=tmp_path.joinpath(str(port))) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         yield data_rpc_api
 
 
-async def init_wallet_and_node(one_wallet_node_and_rpc: nodes_with_port) -> nodes_with_port_bt_ph:
-    wallet_node, full_node_api, wallet_rpc_port, bt = one_wallet_node_and_rpc
-    assert wallet_node.server is not None
+async def init_wallet_and_node(one_wallet_and_one_simulator: SimulatorsAndWalletsServices) -> nodes_with_port_bt_ph:
+    [full_node_service], [wallet_service], bt = one_wallet_and_one_simulator
+    wallet_node = wallet_service._node
+    full_node_api = full_node_service._api
     await wallet_node.server.start_client(PeerInfo("localhost", uint16(full_node_api.server._port)), None)
     ph = await wallet_node.wallet_state_manager.main_wallet.get_new_puzzlehash()
     await full_node_api.farm_new_transaction_block(FarmNewBlockProtocol(ph))
     await full_node_api.farm_new_transaction_block(FarmNewBlockProtocol(ph))
     funds = calculate_pool_reward(uint32(1)) + calculate_base_farmer_reward(uint32(1))
-    await time_out_assert(10, wallet_is_synced, True, wallet_node, full_node_api)
+    await time_out_assert(20, wallet_is_synced, True, wallet_node, full_node_api)
     balance = await wallet_node.wallet_state_manager.main_wallet.get_confirmed_balance()
     assert balance == funds
     wallet_rpc_api = WalletRpcApi(wallet_node)
-    return wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt
+    assert wallet_service.rpc_server is not None
+    return wallet_rpc_api, full_node_api, wallet_service.rpc_server.listen_port, ph, bt
 
 
 async def farm_block_check_singelton(
@@ -148,6 +95,15 @@ async def farm_block_check_singelton(
     await time_out_assert(10, check_mempool_spend_count, True, full_node_api, 1)
     await full_node_api.farm_new_transaction_block(FarmNewBlockProtocol(ph))
     await time_out_assert(10, check_singleton_confirmed, True, data_layer, store_id)
+
+
+async def is_transaction_confirmed(user_wallet_id: uint32, api: WalletRpcApi, tx_id: bytes32) -> bool:
+    try:
+        val = await api.get_transaction({"wallet_id": user_wallet_id, "transaction_id": tx_id.hex()})
+    except ValueError:
+        return False
+
+    return True if TransactionRecord.from_json_dict_convenience(val["transaction"]).confirmed else False  # mypy
 
 
 async def farm_block_with_spend(
@@ -172,8 +128,12 @@ async def process_block_and_check_offer_validity(offer: TradingOffer, offer_setu
 
 
 @pytest.mark.asyncio
-async def test_create_insert_get(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_create_insert_get(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         # test insert
         data_rpc_api = DataLayerRpcApi(data_layer)
@@ -218,8 +178,10 @@ async def test_create_insert_get(one_wallet_node_and_rpc: nodes_with_port, tmp_p
 
 
 @pytest.mark.asyncio
-async def test_upsert(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_upsert(one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         # test insert
         data_rpc_api = DataLayerRpcApi(data_layer)
@@ -244,8 +206,12 @@ async def test_upsert(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) 
 
 
 @pytest.mark.asyncio
-async def test_create_double_insert(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_create_double_insert(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         res = await data_rpc_api.create_data_store({})
@@ -277,8 +243,12 @@ async def test_create_double_insert(one_wallet_node_and_rpc: nodes_with_port, tm
 
 
 @pytest.mark.asyncio
-async def test_keys_values_ancestors(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_keys_values_ancestors(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     # TODO: with this being a pseudo context manager'ish thing it doesn't actually handle shutdown
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
@@ -344,8 +314,10 @@ async def test_keys_values_ancestors(one_wallet_node_and_rpc: nodes_with_port, t
 
 
 @pytest.mark.asyncio
-async def test_get_roots(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_get_roots(one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         res = await data_rpc_api.create_data_store({})
@@ -393,8 +365,12 @@ async def test_get_roots(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Pat
 
 
 @pytest.mark.asyncio
-async def test_get_root_history(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_get_root_history(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         res = await data_rpc_api.create_data_store({})
@@ -443,8 +419,10 @@ async def test_get_root_history(one_wallet_node_and_rpc: nodes_with_port, tmp_pa
 
 
 @pytest.mark.asyncio
-async def test_get_kv_diff(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_get_kv_diff(one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         res = await data_rpc_api.create_data_store({})
@@ -506,8 +484,12 @@ async def test_get_kv_diff(one_wallet_node_and_rpc: nodes_with_port, tmp_path: P
 
 
 @pytest.mark.asyncio
-async def test_batch_update_matches_single_operations(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_batch_update_matches_single_operations(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
         res = await data_rpc_api.create_data_store({})
@@ -574,10 +556,15 @@ async def test_batch_update_matches_single_operations(one_wallet_node_and_rpc: n
 
 
 @pytest.mark.asyncio
-async def test_get_owned_stores(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_node, full_node_api, wallet_rpc_port, bt = one_wallet_node_and_rpc
+async def test_get_owned_stores(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    [full_node_service], [wallet_service], bt = one_wallet_and_one_simulator_services
     num_blocks = 4
-    assert wallet_node.server is not None
+    wallet_node = wallet_service._node
+    assert wallet_service.rpc_server is not None
+    wallet_rpc_port = wallet_service.rpc_server.listen_port
+    full_node_api = full_node_service._api
     await wallet_node.server.start_client(PeerInfo("localhost", uint16(full_node_api.server._port)), None)
     ph = await wallet_node.wallet_state_manager.main_wallet.get_new_puzzlehash()
     for i in range(0, num_blocks):
@@ -597,7 +584,7 @@ async def test_get_owned_stores(one_wallet_node_and_rpc: nodes_with_port, tmp_pa
             launcher_id = bytes32.from_hexstr(res["id"])
             expected_store_ids.append(launcher_id)
 
-        await time_out_assert(2, check_mempool_spend_count, True, full_node_api, 1)
+        await time_out_assert(4, check_mempool_spend_count, True, full_node_api, 1)
         for i in range(0, num_blocks):
             await full_node_api.farm_new_transaction_block(FarmNewBlockProtocol(ph))
             await asyncio.sleep(0.5)
@@ -609,8 +596,12 @@ async def test_get_owned_stores(one_wallet_node_and_rpc: nodes_with_port, tmp_pa
 
 
 @pytest.mark.asyncio
-async def test_subscriptions(one_wallet_node_and_rpc: nodes_with_port, tmp_path: Path) -> None:
-    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(one_wallet_node_and_rpc)
+async def test_subscriptions(
+    one_wallet_and_one_simulator_services: SimulatorsAndWalletsServices, tmp_path: Path
+) -> None:
+    wallet_rpc_api, full_node_api, wallet_rpc_port, ph, bt = await init_wallet_and_node(
+        one_wallet_and_one_simulator_services
+    )
     async with init_data_layer(wallet_rpc_port=wallet_rpc_port, bt=bt, db_path=tmp_path) as data_layer:
         data_rpc_api = DataLayerRpcApi(data_layer)
 
@@ -621,7 +612,7 @@ async def test_subscriptions(one_wallet_node_and_rpc: nodes_with_port, tmp_path:
 
         # This tests subscribe/unsubscribe to your own singletons, which isn't quite
         # the same thing as using a different wallet, but makes the tests much simpler
-        response = await data_rpc_api.subscribe(request={"id": store_id.hex(), "urls": ["http://127.0.0.1/8000"]})
+        response = await data_rpc_api.subscribe(request={"id": store_id.hex(), "urls": ["http://127.0.0.1/43000"]})
         assert response is not None
 
         # test subscriptions
@@ -653,13 +644,14 @@ class OfferSetup:
 
 @pytest_asyncio.fixture(name="offer_setup")
 async def offer_setup_fixture(
-    two_wallet_node_and_rpc: two_wallets_with_port,
+    two_wallet_nodes_services: SimulatorsAndWalletsServices,
     tmp_path: Path,
 ) -> AsyncIterator[OfferSetup]:
-    wallet_nodes_and_ports, full_node_api, bt = two_wallet_node_and_rpc
-
+    [full_node_service], wallet_services, bt = two_wallet_nodes_services
+    full_node_api = full_node_service._api
     wallets: List[Wallet] = []
-    for wallet_node, port in wallet_nodes_and_ports:
+    for wallet_service in wallet_services:
+        wallet_node = wallet_service._node
         assert wallet_node.server is not None
         await wallet_node.server.start_client(PeerInfo("localhost", uint16(full_node_api.server._port)), None)
         assert wallet_node.wallet_state_manager is not None
@@ -670,9 +662,13 @@ async def offer_setup_fixture(
 
     async with contextlib.AsyncExitStack() as exit_stack:
         store_setups: List[StoreSetup] = []
-        for wallet_node, port in wallet_nodes_and_ports:
+        for wallet_service in wallet_services:
+            assert wallet_service.rpc_server is not None
+            port = wallet_service.rpc_server.listen_port
             data_layer = await exit_stack.enter_async_context(
-                init_data_layer(wallet_rpc_port=port, bt=bt, db_path=tmp_path.joinpath(str(port)))
+                init_data_layer(
+                    wallet_rpc_port=port, wallet_service=wallet_service, bt=bt, db_path=tmp_path.joinpath(str(port))
+                )
             )
             data_rpc_api = DataLayerRpcApi(data_layer)
 
@@ -703,8 +699,8 @@ async def offer_setup_fixture(
                 break
             await asyncio.sleep(sleep_time)
 
-        await maker.api.subscribe(request={"id": taker.id.hex(), "urls": ["http://127.0.0.1/8000"]})
-        await taker.api.subscribe(request={"id": maker.id.hex(), "urls": ["http://127.0.0.1/8000"]})
+        await maker.api.subscribe(request={"id": taker.id.hex(), "urls": ["http://127.0.0.1/43000"]})
+        await taker.api.subscribe(request={"id": maker.id.hex(), "urls": ["http://127.0.0.1/43000"]})
 
         maker_original_singleton = await maker.data_layer.get_root(store_id=maker.id)
         assert maker_original_singleton is not None
@@ -876,6 +872,66 @@ make_one_take_one_reference = MakeAndTakeReference(
     taker_root_history=[
         bytes32.from_hexstr("42f08ebc0578f2cec7a9ad1c3038e74e0f30eba5c2f4cb1ee1c8fdb682c19dbb"),
         bytes32.from_hexstr("eeb63ac765065d2ee161e1c059c8188ef809e1c3ed8739bad5bfee2c2ee1c742"),
+    ],
+)
+
+
+make_one_take_one_same_values_reference = MakeAndTakeReference(
+    entries_to_insert=10,
+    make_offer_response={
+        "trade_id": "0ee40f4fb03c6e1c7871ee0084848ceb8ff219d0051060fbffbb995b6ebe3573",
+        "offer": "0000000300000000000000000000000000000000000000000000000000000000000000002a5e6ce75ee92c329c576b5dfe550bd8a9054a7b3da5c5f74b1c2c55417fc05f0000000000000000ff02ffff01ff02ffff01ff02ffff03ffff18ff2fff3480ffff01ff04ffff04ff20ffff04ff2fff808080ffff04ffff02ff3effff04ff02ffff04ff05ffff04ffff02ff2affff04ff02ffff04ff27ffff04ffff02ffff03ff77ffff01ff02ff36ffff04ff02ffff04ff09ffff04ff57ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ffff011d80ff0180ffff04ffff02ffff03ff77ffff0181b7ffff015780ff0180ff808080808080ffff04ff77ff808080808080ffff02ff3affff04ff02ffff04ff05ffff04ffff02ff0bff5f80ffff01ff8080808080808080ffff01ff088080ff0180ffff04ffff01ffffffff4947ff0233ffff0401ff0102ffffff20ff02ffff03ff05ffff01ff02ff32ffff04ff02ffff04ff0dffff04ffff0bff3cffff0bff34ff2480ffff0bff3cffff0bff3cffff0bff34ff2c80ff0980ffff0bff3cff0bffff0bff34ff8080808080ff8080808080ffff010b80ff0180ffff02ffff03ffff22ffff09ffff0dff0580ff2280ffff09ffff0dff0b80ff2280ffff15ff17ffff0181ff8080ffff01ff0bff05ff0bff1780ffff01ff088080ff0180ff02ffff03ff0bffff01ff02ffff03ffff02ff26ffff04ff02ffff04ff13ff80808080ffff01ff02ffff03ffff20ff1780ffff01ff02ffff03ffff09ff81b3ffff01818f80ffff01ff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff808080808080ffff01ff04ffff04ff23ffff04ffff02ff36ffff04ff02ffff04ff09ffff04ff53ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ff738080ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff8080808080808080ff0180ffff01ff088080ff0180ffff01ff04ff13ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff17ff8080808080808080ff0180ffff01ff02ffff03ff17ff80ffff01ff088080ff018080ff0180ffffff02ffff03ffff09ff09ff3880ffff01ff02ffff03ffff18ff2dffff010180ffff01ff0101ff8080ff0180ff8080ff0180ff0bff3cffff0bff34ff2880ffff0bff3cffff0bff3cffff0bff34ff2c80ff0580ffff0bff3cffff02ff32ffff04ff02ffff04ff07ffff04ffff0bff34ff3480ff8080808080ffff0bff34ff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ffff21ff17ffff09ff0bff158080ffff01ff04ff30ffff04ff0bff808080ffff01ff088080ff0180ff018080ffff04ffff01ffa07faa3253bfddd1e0decb0906b2dc6247bbc4cf608f58345d173adb63e8b47c9fffa07acfcbd1ed73bfe2b698508f4ea5ed353c60ace154360272ce91f9ab0c8423c3a0eff07522495060c066f66f32acc2a77e3a3e737aca8baea4d1a64ea4cdc13da9ffff04ffff01ff02ffff01ff02ffff01ff02ff3effff04ff02ffff04ff05ffff04ffff02ff2fff5f80ffff04ff80ffff04ffff04ffff04ff0bffff04ff17ff808080ffff01ff808080ffff01ff8080808080808080ffff04ffff01ffffff0233ff04ff0101ffff02ff02ffff03ff05ffff01ff02ff1affff04ff02ffff04ff0dffff04ffff0bff12ffff0bff2cff1480ffff0bff12ffff0bff12ffff0bff2cff3c80ff0980ffff0bff12ff0bffff0bff2cff8080808080ff8080808080ffff010b80ff0180ffff0bff12ffff0bff2cff1080ffff0bff12ffff0bff12ffff0bff2cff3c80ff0580ffff0bff12ffff02ff1affff04ff02ffff04ff07ffff04ffff0bff2cff2c80ff8080808080ffff0bff2cff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ff0bffff01ff02ffff03ffff09ff23ff1880ffff01ff02ffff03ffff18ff81b3ff2c80ffff01ff02ffff03ffff20ff1780ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff33ffff04ff2fffff04ff5fff8080808080808080ffff01ff088080ff0180ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff0180ffff01ff02ffff03ffff09ff23ffff0181e880ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ffff02ffff03ffff22ffff09ffff02ff2effff04ff02ffff04ff53ff80808080ff82014f80ffff20ff5f8080ffff01ff02ff53ffff04ff818fffff04ff82014fffff04ff81b3ff8080808080ffff01ff088080ff0180ffff04ff2cff8080808080808080ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff018080ff0180ffff01ff04ffff04ff18ffff04ffff02ff16ffff04ff02ffff04ff05ffff04ff27ffff04ffff0bff2cff82014f80ffff04ffff02ff2effff04ff02ffff04ff818fff80808080ffff04ffff0bff2cff0580ff8080808080808080ff378080ff81af8080ff0180ff018080ffff04ffff01a0a04d9f57764f54a43e4030befb4d80026e870519aaa66334aef8304f5d0393c2ffff04ffff01ffa042f08ebc0578f2cec7a9ad1c3038e74e0f30eba5c2f4cb1ee1c8fdb682c19dbb80ffff04ffff01a057bfd1cb0adda3d94315053fda723f2028320faa8338225d99f629e3d46d43a9ffff04ffff01ff02ffff01ff02ff0affff04ff02ffff04ff03ff80808080ffff04ffff01ffff333effff02ffff03ff05ffff01ff04ffff04ff0cffff04ffff02ff1effff04ff02ffff04ff09ff80808080ff808080ffff02ff16ffff04ff02ffff04ff19ffff04ffff02ff0affff04ff02ffff04ff0dff80808080ff808080808080ff8080ff0180ffff02ffff03ff05ffff01ff04ffff04ff08ff0980ffff02ff16ffff04ff02ffff04ff0dffff04ff0bff808080808080ffff010b80ff0180ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff1effff04ff02ffff04ff09ff80808080ffff02ff1effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ff018080808080ff01808080ffffa00000000000000000000000000000000000000000000000000000000000000000ffffa00000000000000000000000000000000000000000000000000000000000000000ff01ff8080808032dbe6d545f24635c7871ea53c623c358d7cea8f5e27a983ba6e5c0bf35fa243aa064e96a86637d8f5ebe153dc8645d29f43bee762d5ec10d06c8617fa60b8c50000000000000001ff02ffff01ff02ffff01ff02ffff03ffff18ff2fff3480ffff01ff04ffff04ff20ffff04ff2fff808080ffff04ffff02ff3effff04ff02ffff04ff05ffff04ffff02ff2affff04ff02ffff04ff27ffff04ffff02ffff03ff77ffff01ff02ff36ffff04ff02ffff04ff09ffff04ff57ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ffff011d80ff0180ffff04ffff02ffff03ff77ffff0181b7ffff015780ff0180ff808080808080ffff04ff77ff808080808080ffff02ff3affff04ff02ffff04ff05ffff04ffff02ff0bff5f80ffff01ff8080808080808080ffff01ff088080ff0180ffff04ffff01ffffffff4947ff0233ffff0401ff0102ffffff20ff02ffff03ff05ffff01ff02ff32ffff04ff02ffff04ff0dffff04ffff0bff3cffff0bff34ff2480ffff0bff3cffff0bff3cffff0bff34ff2c80ff0980ffff0bff3cff0bffff0bff34ff8080808080ff8080808080ffff010b80ff0180ffff02ffff03ffff22ffff09ffff0dff0580ff2280ffff09ffff0dff0b80ff2280ffff15ff17ffff0181ff8080ffff01ff0bff05ff0bff1780ffff01ff088080ff0180ff02ffff03ff0bffff01ff02ffff03ffff02ff26ffff04ff02ffff04ff13ff80808080ffff01ff02ffff03ffff20ff1780ffff01ff02ffff03ffff09ff81b3ffff01818f80ffff01ff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff808080808080ffff01ff04ffff04ff23ffff04ffff02ff36ffff04ff02ffff04ff09ffff04ff53ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ff738080ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff8080808080808080ff0180ffff01ff088080ff0180ffff01ff04ff13ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff17ff8080808080808080ff0180ffff01ff02ffff03ff17ff80ffff01ff088080ff018080ff0180ffffff02ffff03ffff09ff09ff3880ffff01ff02ffff03ffff18ff2dffff010180ffff01ff0101ff8080ff0180ff8080ff0180ff0bff3cffff0bff34ff2880ffff0bff3cffff0bff3cffff0bff34ff2c80ff0580ffff0bff3cffff02ff32ffff04ff02ffff04ff07ffff04ffff0bff34ff3480ff8080808080ffff0bff34ff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ffff21ff17ffff09ff0bff158080ffff01ff04ff30ffff04ff0bff808080ffff01ff088080ff0180ff018080ffff04ffff01ffa07faa3253bfddd1e0decb0906b2dc6247bbc4cf608f58345d173adb63e8b47c9fffa0a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47a0eff07522495060c066f66f32acc2a77e3a3e737aca8baea4d1a64ea4cdc13da9ffff04ffff01ff02ffff01ff02ffff01ff02ff3effff04ff02ffff04ff05ffff04ffff02ff2fff5f80ffff04ff80ffff04ffff04ffff04ff0bffff04ff17ff808080ffff01ff808080ffff01ff8080808080808080ffff04ffff01ffffff0233ff04ff0101ffff02ff02ffff03ff05ffff01ff02ff1affff04ff02ffff04ff0dffff04ffff0bff12ffff0bff2cff1480ffff0bff12ffff0bff12ffff0bff2cff3c80ff0980ffff0bff12ff0bffff0bff2cff8080808080ff8080808080ffff010b80ff0180ffff0bff12ffff0bff2cff1080ffff0bff12ffff0bff12ffff0bff2cff3c80ff0580ffff0bff12ffff02ff1affff04ff02ffff04ff07ffff04ffff0bff2cff2c80ff8080808080ffff0bff2cff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ff0bffff01ff02ffff03ffff09ff23ff1880ffff01ff02ffff03ffff18ff81b3ff2c80ffff01ff02ffff03ffff20ff1780ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff33ffff04ff2fffff04ff5fff8080808080808080ffff01ff088080ff0180ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff0180ffff01ff02ffff03ffff09ff23ffff0181e880ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ffff02ffff03ffff22ffff09ffff02ff2effff04ff02ffff04ff53ff80808080ff82014f80ffff20ff5f8080ffff01ff02ff53ffff04ff818fffff04ff82014fffff04ff81b3ff8080808080ffff01ff088080ff0180ffff04ff2cff8080808080808080ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff018080ff0180ffff01ff04ffff04ff18ffff04ffff02ff16ffff04ff02ffff04ff05ffff04ff27ffff04ffff0bff2cff82014f80ffff04ffff02ff2effff04ff02ffff04ff818fff80808080ffff04ffff0bff2cff0580ff8080808080808080ff378080ff81af8080ff0180ff018080ffff04ffff01a0a04d9f57764f54a43e4030befb4d80026e870519aaa66334aef8304f5d0393c2ffff04ffff01ffa06661ea6604b491118b0f49c932c0f0de2ad815a57b54b6ec8fdbd1b408ae7e2780ffff04ffff01a057bfd1cb0adda3d94315053fda723f2028320faa8338225d99f629e3d46d43a9ffff04ffff01ff02ffff01ff02ffff01ff02ffff03ff0bffff01ff02ffff03ffff09ff05ffff1dff0bffff1effff0bff0bffff02ff06ffff04ff02ffff04ff17ff8080808080808080ffff01ff02ff17ff2f80ffff01ff088080ff0180ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff17ff80808080ff80808080ffff02ff17ff2f808080ff0180ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b0a132fae32c98cbb7d8f5814c49ee3f0ba6ec2172c5e5f6900655a65cd2157a06a1c6eb89c68c8d2cdcee9506c2217978ff018080ff018080808080ff01808080ffffa0a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47ffa01804338c97f989c78d88716206c0f27315f3eb7d59417ab2eacee20f0a7ff60bff0180ff01ffffff80ffff02ffff01ff02ffff01ff02ffff03ff5fffff01ff02ff3affff04ff02ffff04ff0bffff04ff17ffff04ff2fffff04ff5fffff04ff81bfffff04ff82017fffff04ff8202ffffff04ffff02ff05ff8205ff80ff8080808080808080808080ffff01ff04ffff04ff10ffff01ff81ff8080ffff02ff05ff8205ff808080ff0180ffff04ffff01ffffff49ff3f02ff04ff0101ffff02ffff02ffff03ff05ffff01ff02ff2affff04ff02ffff04ff0dffff04ffff0bff12ffff0bff2cff1480ffff0bff12ffff0bff12ffff0bff2cff3c80ff0980ffff0bff12ff0bffff0bff2cff8080808080ff8080808080ffff010b80ff0180ff02ffff03ff05ffff01ff02ffff03ffff02ff3effff04ff02ffff04ff82011fffff04ff27ffff04ff4fff808080808080ffff01ff02ff3affff04ff02ffff04ff0dffff04ff1bffff04ff37ffff04ff6fffff04ff81dfffff04ff8201bfffff04ff82037fffff04ffff04ffff04ff28ffff04ffff0bffff02ff26ffff04ff02ffff04ff11ffff04ffff02ff26ffff04ff02ffff04ff13ffff04ff82027fffff04ffff02ff36ffff04ff02ffff04ff82013fff80808080ffff04ffff02ff36ffff04ff02ffff04ff819fff80808080ffff04ffff02ff36ffff04ff02ffff04ff13ff80808080ff8080808080808080ffff04ffff02ff36ffff04ff02ffff04ff09ff80808080ff808080808080ffff012480ff808080ff8202ff80ff8080808080808080808080ffff01ff088080ff0180ffff018202ff80ff0180ffffff0bff12ffff0bff2cff3880ffff0bff12ffff0bff12ffff0bff2cff3c80ff0580ffff0bff12ffff02ff2affff04ff02ffff04ff07ffff04ffff0bff2cff2c80ff8080808080ffff0bff2cff8080808080ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff36ffff04ff02ffff04ff09ff80808080ffff02ff36ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ffff02ffff03ff1bffff01ff02ff2effff04ff02ffff04ffff02ffff03ffff18ffff0101ff1380ffff01ff0bffff0102ff2bff0580ffff01ff0bffff0102ff05ff2b8080ff0180ffff04ffff04ffff17ff13ffff0181ff80ff3b80ff8080808080ffff010580ff0180ff02ffff03ff17ffff01ff02ffff03ffff09ff05ffff02ff2effff04ff02ffff04ff13ffff04ff27ff808080808080ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff37ff808080808080ffff01ff088080ff0180ffff01ff010180ff0180ff018080ffff04ffff01ff01ffff81e8ff0bffffffffa01d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f9180ffa057bfd1cb0adda3d94315053fda723f2028320faa8338225d99f629e3d46d43a980ff808080ffff33ffa0352ef238e8561d0bfc8f754683b4d23ef9f40f7c4b574e333bb52ec81aa0b868ff01ffffa0a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47ffa01d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f91ffa0352ef238e8561d0bfc8f754683b4d23ef9f40f7c4b574e333bb52ec81aa0b8688080ffff3fffa09502844b542b20256008242b5676246b765d0e4c82714466a1140489e07bf0e88080ffff04ffff01ffffa07faa3253bfddd1e0decb0906b2dc6247bbc4cf608f58345d173adb63e8b47c9fffa07acfcbd1ed73bfe2b698508f4ea5ed353c60ace154360272ce91f9ab0c8423c3a0eff07522495060c066f66f32acc2a77e3a3e737aca8baea4d1a64ea4cdc13da980ffff04ffff01ffa0a04d9f57764f54a43e4030befb4d80026e870519aaa66334aef8304f5d0393c280ffff04ffff01ffffa06cae87c81f9edf8516076a9eb56a354ced636998a9f40b278c7bfddfb655df568080ff018080808080ffff80ff80ff80ff80ff8080808080ca2e21c90d263e63b73d449a3f8d57b9458846f7af27d9a61a515395fa14071ed15ec60900d04972f30df7bde60487bd63d17889f405398376809fc975e3177c0000000000000001ff02ffff01ff02ffff01ff02ffff03ffff18ff2fff3480ffff01ff04ffff04ff20ffff04ff2fff808080ffff04ffff02ff3effff04ff02ffff04ff05ffff04ffff02ff2affff04ff02ffff04ff27ffff04ffff02ffff03ff77ffff01ff02ff36ffff04ff02ffff04ff09ffff04ff57ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ffff011d80ff0180ffff04ffff02ffff03ff77ffff0181b7ffff015780ff0180ff808080808080ffff04ff77ff808080808080ffff02ff3affff04ff02ffff04ff05ffff04ffff02ff0bff5f80ffff01ff8080808080808080ffff01ff088080ff0180ffff04ffff01ffffffff4947ff0233ffff0401ff0102ffffff20ff02ffff03ff05ffff01ff02ff32ffff04ff02ffff04ff0dffff04ffff0bff3cffff0bff34ff2480ffff0bff3cffff0bff3cffff0bff34ff2c80ff0980ffff0bff3cff0bffff0bff34ff8080808080ff8080808080ffff010b80ff0180ffff02ffff03ffff22ffff09ffff0dff0580ff2280ffff09ffff0dff0b80ff2280ffff15ff17ffff0181ff8080ffff01ff0bff05ff0bff1780ffff01ff088080ff0180ff02ffff03ff0bffff01ff02ffff03ffff02ff26ffff04ff02ffff04ff13ff80808080ffff01ff02ffff03ffff20ff1780ffff01ff02ffff03ffff09ff81b3ffff01818f80ffff01ff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff808080808080ffff01ff04ffff04ff23ffff04ffff02ff36ffff04ff02ffff04ff09ffff04ff53ffff04ffff02ff2effff04ff02ffff04ff05ff80808080ff808080808080ff738080ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff34ff8080808080808080ff0180ffff01ff088080ff0180ffff01ff04ff13ffff02ff3affff04ff02ffff04ff05ffff04ff1bffff04ff17ff8080808080808080ff0180ffff01ff02ffff03ff17ff80ffff01ff088080ff018080ff0180ffffff02ffff03ffff09ff09ff3880ffff01ff02ffff03ffff18ff2dffff010180ffff01ff0101ff8080ff0180ff8080ff0180ff0bff3cffff0bff34ff2880ffff0bff3cffff0bff3cffff0bff34ff2c80ff0580ffff0bff3cffff02ff32ffff04ff02ffff04ff07ffff04ffff0bff34ff3480ff8080808080ffff0bff34ff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ffff21ff17ffff09ff0bff158080ffff01ff04ff30ffff04ff0bff808080ffff01ff088080ff0180ff018080ffff04ffff01ffa07faa3253bfddd1e0decb0906b2dc6247bbc4cf608f58345d173adb63e8b47c9fffa0a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47a0eff07522495060c066f66f32acc2a77e3a3e737aca8baea4d1a64ea4cdc13da9ffff04ffff01ff02ffff01ff02ffff01ff02ff3effff04ff02ffff04ff05ffff04ffff02ff2fff5f80ffff04ff80ffff04ffff04ffff04ff0bffff04ff17ff808080ffff01ff808080ffff01ff8080808080808080ffff04ffff01ffffff0233ff04ff0101ffff02ff02ffff03ff05ffff01ff02ff1affff04ff02ffff04ff0dffff04ffff0bff12ffff0bff2cff1480ffff0bff12ffff0bff12ffff0bff2cff3c80ff0980ffff0bff12ff0bffff0bff2cff8080808080ff8080808080ffff010b80ff0180ffff0bff12ffff0bff2cff1080ffff0bff12ffff0bff12ffff0bff2cff3c80ff0580ffff0bff12ffff02ff1affff04ff02ffff04ff07ffff04ffff0bff2cff2c80ff8080808080ffff0bff2cff8080808080ffff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff2effff04ff02ffff04ff09ff80808080ffff02ff2effff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff02ffff03ff0bffff01ff02ffff03ffff09ff23ff1880ffff01ff02ffff03ffff18ff81b3ff2c80ffff01ff02ffff03ffff20ff1780ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff33ffff04ff2fffff04ff5fff8080808080808080ffff01ff088080ff0180ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff0180ffff01ff02ffff03ffff09ff23ffff0181e880ffff01ff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ffff02ffff03ffff22ffff09ffff02ff2effff04ff02ffff04ff53ff80808080ff82014f80ffff20ff5f8080ffff01ff02ff53ffff04ff818fffff04ff82014fffff04ff81b3ff8080808080ffff01ff088080ff0180ffff04ff2cff8080808080808080ffff01ff04ff13ffff02ff3effff04ff02ffff04ff05ffff04ff1bffff04ff17ffff04ff2fffff04ff5fff80808080808080808080ff018080ff0180ffff01ff04ffff04ff18ffff04ffff02ff16ffff04ff02ffff04ff05ffff04ff27ffff04ffff0bff2cff82014f80ffff04ffff02ff2effff04ff02ffff04ff818fff80808080ffff04ffff0bff2cff0580ff8080808080808080ff378080ff81af8080ff0180ff018080ffff04ffff01a0a04d9f57764f54a43e4030befb4d80026e870519aaa66334aef8304f5d0393c2ffff04ffff01ffa01d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f9180ffff04ffff01a057bfd1cb0adda3d94315053fda723f2028320faa8338225d99f629e3d46d43a9ffff04ffff01ff01ffff33ffa0c842b1a384b8633ac25d0f12bd7b614f86a77642ab6426418750f2b0b86bab2aff01ffffa0a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47ffa01d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f91ffa0c842b1a384b8633ac25d0f12bd7b614f86a77642ab6426418750f2b0b86bab2a8080ffff3eff248080ff018080808080ff01808080ffffa032dbe6d545f24635c7871ea53c623c358d7cea8f5e27a983ba6e5c0bf35fa243ffa08c4aebb18e8ce08405083c3d90a29f30239865142e2dcbca5393f40df9e3821dff0180ff01ffff808080a248cc21bf725d203a6b6975e636399e5b237938b225d241383a445eacc3aa6d4d67b18aa77306f072ee50d36e502f780d3208f036addbaa02d69a179974c61eb8409c706b657be2677c6cb318778d6373a1bfd26c24acb02d6ce1ab59ee4ed7",  # noqa: E501
+        "taker": [
+            {
+                "store_id": "7acfcbd1ed73bfe2b698508f4ea5ed353c60ace154360272ce91f9ab0c8423c3",
+                "inclusions": [{"key": "10", "value": "0510"}],
+            }
+        ],
+        "maker": [
+            {
+                "store_id": "a14daf55d41ced6419bcd011fbc1f74ab9567fe55340d88435aa6493d628fa47",
+                "proofs": [
+                    {
+                        "key": "10",
+                        "value": "0510",
+                        "node_hash": "6cae87c81f9edf8516076a9eb56a354ced636998a9f40b278c7bfddfb655df56",
+                        "layers": [
+                            {
+                                "other_hash_side": "right",
+                                "other_hash": "9e4574191777193c145c7e09eb6394501f81dee6eb1b05f0881bb478828cb9ea",
+                                "combined_hash": "fbd72dad09a493adff38e71fb47cf331d4355f2671751392e2b96420cfb7c140",
+                            },
+                            {
+                                "other_hash_side": "left",
+                                "other_hash": "9daec46b6819e836d66144119dd084765cfe7ed9ac3222c0c0f64590a4a43b3a",
+                                "combined_hash": "7419ef13c946053805fff6d5741bfc770ef901dbf6048ca9b6248c12179c1d6c",
+                            },
+                            {
+                                "other_hash_side": "left",
+                                "other_hash": "a624e12b8db06e55dcf520cedf4ff744c3aac35ebeb0b05a0f63bcb41ba8b221",
+                                "combined_hash": "c4f1ff4d8f699320060b294a12c71118e5921b3e8e74b3fbdd410b1abe2a114e",
+                            },
+                            {
+                                "other_hash_side": "right",
+                                "other_hash": "bcff6f16886339a196a2f6c842ad6d350a8579d123eb8602a0a85965ba25d671",
+                                "combined_hash": "1d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f91",
+                            },
+                        ],
+                    }
+                ],
+            }
+        ],
+    },
+    maker_inclusions=[{"key": b"\x10".hex(), "value": b"\x05\x10".hex()}],
+    taker_inclusions=[{"key": b"\x10".hex(), "value": b"\x05\x10".hex()}],
+    trade_id="161d02ae1b62751899cfd6bde248a5e49a524e263010f1f90f6dfede94e2c116",
+    maker_root_history=[
+        bytes32.from_hexstr("6661ea6604b491118b0f49c932c0f0de2ad815a57b54b6ec8fdbd1b408ae7e27"),
+        bytes32.from_hexstr("1d1eb374688e3033cbce2514e4fded10ceffe068e663718b8a20716a65019f91"),
+    ],
+    taker_root_history=[
+        bytes32.from_hexstr("42f08ebc0578f2cec7a9ad1c3038e74e0f30eba5c2f4cb1ee1c8fdb682c19dbb"),
+        bytes32.from_hexstr("87ebc7585e5b291203c318a7be96ca9cdfd5ddfc9cc2a97f55a3eddb49f0c74e"),
     ],
 )
 
@@ -1313,6 +1369,7 @@ make_one_take_one_unpopulated_reference = MakeAndTakeReference(
     argnames="reference",
     argvalues=[
         pytest.param(make_one_take_one_reference, id="one for one"),
+        pytest.param(make_one_take_one_same_values_reference, id="one for one same values"),
         pytest.param(make_two_take_one_reference, id="two for one"),
         pytest.param(make_one_take_two_reference, id="one for two"),
         pytest.param(make_one_existing_take_one_reference, id="one existing for one"),
@@ -1396,6 +1453,7 @@ async def test_make_and_take_offer(offer_setup: OfferSetup, reference: MakeAndTa
     argnames="reference",
     argvalues=[
         pytest.param(make_one_take_one_reference, id="one for one"),
+        pytest.param(make_one_take_one_same_values_reference, id="one for one same values"),
         pytest.param(make_two_take_one_reference, id="two for one"),
         pytest.param(make_one_take_two_reference, id="one for two"),
         pytest.param(make_one_existing_take_one_reference, id="one existing for one"),
@@ -1500,6 +1558,7 @@ async def test_make_offer_failure_rolls_back_db(offer_setup: OfferSetup) -> None
     argnames="reference",
     argvalues=[
         pytest.param(make_one_take_one_reference, id="one for one"),
+        pytest.param(make_one_take_one_same_values_reference, id="one for one same values"),
         pytest.param(make_two_take_one_reference, id="two for one"),
         pytest.param(make_one_take_two_reference, id="one for two"),
         pytest.param(make_one_existing_take_one_reference, id="one existing for one"),
@@ -1563,6 +1622,7 @@ async def test_make_and_cancel_offer(offer_setup: OfferSetup, reference: MakeAnd
     argnames="reference",
     argvalues=[
         pytest.param(make_one_take_one_reference, id="one for one"),
+        pytest.param(make_one_take_one_same_values_reference, id="one for one same values"),
         pytest.param(make_two_take_one_reference, id="two for one"),
         pytest.param(make_one_take_two_reference, id="one for two"),
         pytest.param(make_one_existing_take_one_reference, id="one existing for one"),

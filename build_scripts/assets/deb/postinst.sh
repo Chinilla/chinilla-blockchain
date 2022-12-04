@@ -3,5 +3,4 @@
 
 set -e
 
-ln -s /usr/lib/chinilla-blockchain/resources/app.asar.unpacked/daemon/chinilla /usr/bin/chinilla || true
-ln -s /usr/lib/chinilla-blockchain/resources/app.asar.unpacked/daemon /opt/chinilla || true
+ln -s /opt/chinilla/resources/app.asar.unpacked/daemon/chinilla /usr/bin/chinilla || true

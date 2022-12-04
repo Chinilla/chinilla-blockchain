@@ -14,7 +14,8 @@ from chinilla.wallet.util.puzzle_compression import (
     compress_object_with_puzzles,
     decompress_object_with_puzzles,
 )
-from chinilla.wallet.cat_wallet.cat_utils import CAT_MOD, construct_cat_puzzle
+from chinilla.wallet.cat_wallet.cat_utils import construct_cat_puzzle
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
 from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import puzzle_for_pk
 
 ZERO_32 = bytes32([0] * 32)

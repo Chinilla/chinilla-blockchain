@@ -7,12 +7,12 @@ from typing import Optional, Type, TypeVar
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.ints import uint16
-from chinilla.wallet.puzzles.load_clvm import load_clvm
+from chinilla.wallet.puzzles.load_clvm import load_clvm_maybe_recompile
 
 log = logging.getLogger(__name__)
-SINGLETON_TOP_LAYER_MOD = load_clvm("singleton_top_layer_v1_1.clvm")
-NFT_MOD = load_clvm("nft_state_layer.clvm")
-NFT_OWNERSHIP_LAYER = load_clvm("nft_ownership_layer.clvm")
+SINGLETON_TOP_LAYER_MOD = load_clvm_maybe_recompile("singleton_top_layer_v1_1.clvm")
+NFT_MOD = load_clvm_maybe_recompile("nft_state_layer.clvm")
+NFT_OWNERSHIP_LAYER = load_clvm_maybe_recompile("nft_ownership_layer.clvm")
 
 _T_UncurriedNFT = TypeVar("_T_UncurriedNFT", bound="UncurriedNFT")
 

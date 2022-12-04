@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -28,6 +30,7 @@ from chinilla.protocols.pool_protocol import (
     get_current_authentication_token,
 )
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
+from chinilla.rpc.rpc_server import default_get_connections
 from chinilla.server.outbound_message import NodeType, make_msg
 from chinilla.server.server import ssl_context_for_root
 from chinilla.server.ws_connection import WSChinillaConnection
@@ -113,6 +116,9 @@ class Farmer:
 
         # Last time we updated pool_state based on the config file
         self.last_config_access_time: uint64 = uint64(0)
+
+    def get_connections(self, request_node_type: Optional[NodeType]) -> List[Dict[str, Any]]:
+        return default_get_connections(server=self.server, request_node_type=request_node_type)
 
     async def ensure_keychain_proxy(self) -> KeychainProxy:
         if self.keychain_proxy is None:

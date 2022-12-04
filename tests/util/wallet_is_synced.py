@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List
 
 from chinilla.full_node.full_node_api import FullNodeAPI

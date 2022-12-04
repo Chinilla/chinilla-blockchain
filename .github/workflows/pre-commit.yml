@@ -4,11 +4,9 @@ on:
   pull_request:
   push:
     branches:
-      - main
-      - latest
-      - dev
-      - 'release/**'
       - 'long_lived/**'
+      - main
+      - 'release/**'
 
 concurrency:
   # SHA is added to the end if on `main` to let all main workflows run
@@ -31,7 +29,7 @@ jobs:
           - name: macOS
             matrix: macos
             runs-on:
-              intel: macos-11
+              intel: macos-latest
               arm: [macos, arm64]
           - name: Windows
             matrix: windows
@@ -56,6 +54,10 @@ jobs:
 
     - uses: Chinilla/actions/git-mark-workspace-safe@main
 
+    - name: disable git autocrlf
+      run: |
+        git config --global core.autocrlf false
+
     - uses: actions/checkout@v3
 
     - uses: Chinilla/actions/setup-python@main
@@ -64,8 +66,9 @@ jobs:
 
     - uses: ./.github/actions/install
       with:
+        python-version: ${{ matrix.python.major_dot_minor }}
         development: true
 
-    - uses: pre-commit/action@v2.0.3
-      with:
-        extra_args: --verbose --all-files
+    - uses: chinilla/actions/activate-venv@main
+
+    - run: pre-commit run --all-files --verbose

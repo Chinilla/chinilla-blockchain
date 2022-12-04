@@ -1,12 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import List
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.spend_bundle import SpendBundle
-from chinilla.util.ints import uint64
+from chinilla.util.ints import uint32, uint64
 from chinilla.util.streamable import Streamable, streamable
 
 
@@ -20,9 +21,9 @@ class MempoolItem(Streamable):
     spend_bundle_name: bytes32
     additions: List[Coin]
     removals: List[Coin]
-    program: SerializedProgram
+    height_added_to_mempool: uint32
 
-    def __lt__(self, other):
+    def __lt__(self, other: MempoolItem) -> bool:
         return self.fee_per_cost < other.fee_per_cost
 
     @property

@@ -5,7 +5,7 @@ from enum import IntEnum
 from typing import Optional
 from functools import lru_cache
 
-from chiavdf import create_discriminant, verify_n_wesolowski
+from chinillavdf import create_discriminant, verify_n_wesolowski
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement

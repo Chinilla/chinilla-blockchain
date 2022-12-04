@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 import importlib
+import os
 import pathlib
 import platform
 import sysconfig
@@ -72,18 +73,25 @@ hiddenimports = []
 hiddenimports.extend(entry_points)
 hiddenimports.extend(keyring_imports)
 
-binaries = [
-    (
-        f"{ROOT}/madmax/chia_plot",
-        "madmax"
-    ),
-    (
-        f"{ROOT}/madmax/chia_plot_k34",
-        "madmax"
-    )
-]
+binaries = []
 
-if not THIS_IS_MAC:
+if os.path.exists(f"{ROOT}/madmax/chinilla_plot"):
+    binaries.extend([
+        (
+            f"{ROOT}/madmax/chinilla_plot",
+            "madmax"
+        )
+    ])
+
+if os.path.exists(f"{ROOT}/madmax/chinilla_plot_k34",):
+    binaries.extend([
+        (
+            f"{ROOT}/madmax/chinilla_plot_k34",
+            "madmax"
+        )
+    ])
+
+if os.path.exists(f"{ROOT}/bladebit/bladebit"):
     binaries.extend([
         (
             f"{ROOT}/bladebit/bladebit",
@@ -116,11 +124,11 @@ if THIS_IS_WINDOWS:
             ".",
         ),
         (
-            f"{ROOT}\\madmax\\chia_plot.exe",
+            f"{ROOT}\\madmax\\chinilla_plot.exe",
             "madmax"
         ),
         (
-            f"{ROOT}\\madmax\\chia_plot_k34.exe",
+            f"{ROOT}\\madmax\\chinilla_plot_k34.exe",
             "madmax"
         ),
         (

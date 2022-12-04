@@ -5,7 +5,7 @@ import logging
 import random
 from typing import List, Optional, Tuple, Union, Dict
 
-from chia_rs import compute_merkle_set_root
+from chinilla_rs import compute_merkle_set_root
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.protocols import wallet_protocol
@@ -36,6 +36,10 @@ from chinilla.util.merkle_set import confirm_not_included_already_hashed, confir
 from chinilla.wallet.util.peer_request_cache import PeerRequestCache
 
 log = logging.getLogger(__name__)
+
+
+class PeerRequestException(Exception):
+    pass
 
 
 async def fetch_last_tx_from_peer(height: uint32, peer: WSChinillaConnection) -> Optional[HeaderBlock]:
@@ -296,9 +300,9 @@ def get_block_challenge(
 
 def last_change_height_cs(cs: CoinState) -> uint32:
     if cs.spent_height is not None:
-        return cs.spent_height
+        return uint32(cs.spent_height)
     if cs.created_height is not None:
-        return cs.created_height
+        return uint32(cs.created_height)
 
     # Reorgs should be processed at the beginning
     return uint32(0)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import random
 from dataclasses import replace
@@ -5,8 +7,8 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import blspy
 from blspy import G1Element, G2Element
-from chia_rs import compute_merkle_set_root
-from chiabip158 import PyBIP158
+from chinilla_rs import compute_merkle_set_root
+from chinillabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
@@ -17,12 +19,7 @@ from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
 from chinilla.full_node.signage_point import SignagePoint
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
-from chinilla.types.blockchain_format.foliage import (
-    Foliage,
-    FoliageBlockData,
-    FoliageTransactionBlock,
-    TransactionsInfo,
-)
+from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock, RewardChainBlockUnfinished
@@ -66,7 +63,7 @@ def create_foliage(
         constants: consensus constants being used for this chain
         reward_block_unfinished: the reward block to look at, potentially at the signage point
         block_generator: transactions to add to the foliage block, if created
-        aggregate_sig: aggregate of all transctions (or infinity element)
+        aggregate_sig: aggregate of all transactions (or infinity element)
         prev_block: the previous block at the signage point
         blocks: dict from header hash to blocks, of all ancestor blocks
         total_iters_sp: total iters at the signage point
@@ -326,7 +323,7 @@ def create_unfinished_block(
         timestamp: timestamp to add to the foliage block, if created
         seed: seed to randomize chain
         block_generator: transactions to add to the foliage block, if created
-        aggregate_sig: aggregate of all transctions (or infinity element)
+        aggregate_sig: aggregate of all transactions (or infinity element)
         additions: Coins added in spend_bundle
         removals: Coins removed in spend_bundle
         prev_block: previous block (already in chain) from the signage point

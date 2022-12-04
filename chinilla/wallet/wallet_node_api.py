@@ -26,9 +26,7 @@ class WalletNodeAPI:
     async def respond_removals(self, response: wallet_protocol.RespondRemovals, peer: WSChinillaConnection):
         pass
 
-    async def reject_removals_request(
-        self, response: wallet_protocol.RejectRemovalsRequest, peer: WSChinillaConnection
-    ):
+    async def reject_removals_request(self, response: wallet_protocol.RejectRemovalsRequest, peer: WSChinillaConnection):
         """
         The full node has rejected our request for removals.
         """
@@ -130,12 +128,8 @@ class WalletNodeAPI:
 
     @api_request
     async def respond_puzzle_solution(self, request: wallet_protocol.RespondPuzzleSolution):
-        try:
-            await self.wallet_node.wallet_state_manager.puzzle_solution_received(request)
-        except RuntimeError as e:
-            if "not assigned" in str(e):
-                return None
-            raise
+        self.log.error("Unexpected message `respond_puzzle_solution`. Peer might be slow to respond")
+        return None
 
     @api_request
     async def reject_puzzle_solution(self, request: wallet_protocol.RejectPuzzleSolution):

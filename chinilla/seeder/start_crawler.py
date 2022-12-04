@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import pathlib
 import sys
@@ -11,7 +13,7 @@ from chinilla.seeder.crawler import Crawler
 from chinilla.seeder.crawler_api import CrawlerAPI
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import RpcInfo, Service, async_run
-from chinilla.util.chinilla_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 
@@ -27,7 +29,7 @@ def create_full_node_crawler_service(
     config: Dict,
     consensus_constants: ConsensusConstants,
     connect_to_daemon: bool = True,
-) -> Service:
+) -> Service[Crawler]:
     service_config = config[SERVICE_NAME]
 
     crawler = Crawler(
@@ -41,7 +43,7 @@ def create_full_node_crawler_service(
 
     rpc_info: Optional[RpcInfo] = None
     if service_config.get("start_rpc_server", True):
-        rpc_info = (CrawlerRpcApi, service_config.get("rpc_port", 8561))
+        rpc_info = (CrawlerRpcApi, service_config.get("rpc_port", 43561))
 
     return Service(
         root_path=root_path,
@@ -67,11 +69,7 @@ async def async_main() -> int:
     config[SERVICE_NAME] = service_config
     overrides = service_config["network_overrides"]["constants"][service_config["selected_network"]]
     updated_constants = DEFAULT_CONSTANTS.replace_str_to_bytes(**overrides)
-    initialize_logging(
-        service_name=SERVICE_NAME,
-        logging_config=service_config["logging"],
-        root_path=DEFAULT_ROOT_PATH,
-    )
+    initialize_service_logging(service_name=SERVICE_NAME, config=config)
     service = create_full_node_crawler_service(DEFAULT_ROOT_PATH, config, updated_constants)
     await service.setup_process_global_state()
     await service.run()

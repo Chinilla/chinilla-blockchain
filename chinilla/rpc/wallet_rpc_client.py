@@ -6,7 +6,8 @@ from chinilla.rpc.rpc_client import RpcClient
 from chinilla.types.announcement import Announcement
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.util.ints import uint32, uint64
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.notification_store import Notification
 from chinilla.wallet.trade_record import TradeRecord
 from chinilla.wallet.trading.offer import Offer
 from chinilla.wallet.transaction_record import TransactionRecord
@@ -77,6 +78,11 @@ class WalletRpcClient(RpcClient):
 
     async def push_tx(self, spend_bundle):
         return await self.fetch("push_tx", {"spend_bundle": bytes(spend_bundle).hex()})
+
+    async def push_transactions(self, txs: List[TransactionRecord]):
+        transactions = [bytes(tx).hex() for tx in txs]
+
+        return await self.fetch("push_transactions", {"transactions": transactions})
 
     async def farm_block(self, address: str) -> Dict[str, Any]:
         return await self.fetch("farm_block", {"address": address})
@@ -207,7 +213,7 @@ class WalletRpcClient(RpcClient):
     async def get_farmed_amount(self) -> Dict:
         return await self.fetch("get_farmed_amount", {})
 
-    async def create_signed_transaction(
+    async def create_signed_transactions(
         self,
         additions: List[Dict],
         coins: List[Coin] = None,
@@ -216,7 +222,9 @@ class WalletRpcClient(RpcClient):
         puzzle_announcements: Optional[List[Announcement]] = None,
         min_coin_amount: uint64 = uint64(0),
         exclude_coins: Optional[List[Coin]] = None,
-    ) -> TransactionRecord:
+        wallet_id: Optional[int] = None,
+    ) -> List[TransactionRecord]:
+
         # Converts bytes to hex for puzzle hashes
         additions_hex = []
         for ad in additions:
@@ -258,8 +266,38 @@ class WalletRpcClient(RpcClient):
             exclude_coins_json = [exclude_coin.to_json_dict() for exclude_coin in exclude_coins]
             request["exclude_coins"] = exclude_coins_json
 
+        if wallet_id:
+            request["wallet_id"] = wallet_id
+
         response: Dict = await self.fetch("create_signed_transaction", request)
-        return TransactionRecord.from_json_dict_convenience(response["signed_tx"])
+        return [TransactionRecord.from_json_dict_convenience(tx) for tx in response["signed_txs"]]
+
+    async def create_signed_transaction(
+        self,
+        additions: List[Dict],
+        coins: List[Coin] = None,
+        fee: uint64 = uint64(0),
+        coin_announcements: Optional[List[Announcement]] = None,
+        puzzle_announcements: Optional[List[Announcement]] = None,
+        min_coin_amount: uint64 = uint64(0),
+        exclude_coins: Optional[List[Coin]] = None,
+        wallet_id: Optional[int] = None,
+    ) -> TransactionRecord:
+
+        txs: List[TransactionRecord] = await self.create_signed_transactions(
+            additions=additions,
+            coins=coins,
+            fee=fee,
+            coin_announcements=coin_announcements,
+            puzzle_announcements=puzzle_announcements,
+            min_coin_amount=min_coin_amount,
+            exclude_coins=exclude_coins,
+            wallet_id=wallet_id,
+        )
+        if len(txs) == 0:
+            raise ValueError("`create_signed_transaction` returned empty list!")
+
+        return txs[0]
 
     async def select_coins(
         self,
@@ -682,6 +720,22 @@ class WalletRpcClient(RpcClient):
         response = await self.fetch("nft_add_uri", request)
         return response
 
+    async def nft_calculate_royalties(
+        self,
+        royalty_assets_dict: Dict[Any, Tuple[Any, uint16]],
+        fungible_asset_dict: Dict[Any, uint64],
+    ) -> Dict[Any, List[Dict[str, Any]]]:
+        request: Dict[str, Any] = {
+            "royalty_assets": [
+                {"asset": id, "royalty_address": royalty_info[0], "royalty_percentage": royalty_info[1]}
+                for id, royalty_info in royalty_assets_dict.items()
+            ],
+            "fungible_assets": [{"asset": name, "amount": amount} for name, amount in fungible_asset_dict.items()],
+        }
+        response = await self.fetch("nft_calculate_royalties", request)
+        del response["success"]
+        return response
+
     async def get_nft_info(self, coin_id: str, latest: bool = True):
         request: Dict[str, Any] = {"coin_id": coin_id, "latest": latest}
         response = await self.fetch("nft_get_info", request)
@@ -710,6 +764,42 @@ class WalletRpcClient(RpcClient):
     async def get_nft_wallet_did(self, wallet_id):
         request: Dict[str, Any] = {"wallet_id": wallet_id}
         response = await self.fetch("nft_get_wallet_did", request)
+        return response
+
+    async def nft_mint_bulk(
+        self,
+        wallet_id: int,
+        metadata_list: List[Dict[str, Any]],
+        royalty_percentage: Optional[int],
+        royalty_address: Optional[str],
+        target_list: Optional[List[str]] = None,
+        mint_number_start: Optional[int] = 1,
+        mint_total: Optional[int] = None,
+        hcx_coins: Optional[List[Dict]] = None,
+        hcx_change_target: Optional[str] = None,
+        new_innerpuzhash: Optional[str] = None,
+        did_coin: Optional[Dict] = None,
+        did_lineage_parent: Optional[str] = None,
+        mint_from_did: Optional[bool] = False,
+        fee: Optional[int] = 0,
+    ) -> Dict:
+        request = {
+            "wallet_id": wallet_id,
+            "metadata_list": metadata_list,
+            "target_list": target_list,
+            "royalty_percentage": royalty_percentage,
+            "royalty_address": royalty_address,
+            "mint_number_start": mint_number_start,
+            "mint_total": mint_total,
+            "hcx_coins": hcx_coins,
+            "hcx_change_target": hcx_change_target,
+            "new_innerpuzhash": new_innerpuzhash,
+            "did_coin": did_coin,
+            "did_lineage_parent": did_lineage_parent,
+            "mint_from_did": mint_from_did,
+            "fee": fee,
+        }
+        response = await self.fetch("nft_mint_bulk", request)
         return response
 
     # DataLayer
@@ -807,3 +897,53 @@ class WalletRpcClient(RpcClient):
             },
         )
         return [TransactionRecord.from_json_dict_convenience(tx) for tx in response["transactions"]]
+
+    async def get_notifications(
+        self, ids: Optional[List[bytes32]] = None, pagination: Optional[Tuple[Optional[int], Optional[int]]] = None
+    ) -> List[Notification]:
+        request: Dict[str, Any] = {}
+        if ids is not None:
+            request["ids"] = [id.hex() for id in ids]
+        if pagination is not None:
+            if pagination[0] is not None:
+                request["start"] = pagination[0]
+            if pagination[1] is not None:
+                request["end"] = pagination[1]
+        response = await self.fetch("get_notifications", request)
+        return [
+            Notification(
+                bytes32.from_hexstr(notification["id"]),
+                bytes.fromhex(notification["message"]),
+                uint64(notification["amount"]),
+            )
+            for notification in response["notifications"]
+        ]
+
+    async def delete_notifications(self, ids: Optional[List[bytes32]] = None) -> bool:
+        request: Dict[str, Any] = {}
+        if ids is not None:
+            request["ids"] = [id.hex() for id in ids]
+        response = await self.fetch("delete_notifications", request)
+        return response["success"]
+
+    async def send_notification(
+        self, target: bytes32, msg: bytes, amount: uint64, fee: uint64 = uint64(0)
+    ) -> TransactionRecord:
+        response = await self.fetch(
+            "send_notification",
+            {
+                "target": target.hex(),
+                "message": msg.hex(),
+                "amount": amount,
+                "fee": fee,
+            },
+        )
+        return TransactionRecord.from_json_dict_convenience(response["tx"])
+
+    async def sign_message_by_address(self, address: str, message: str) -> Tuple[str, str]:
+        response = await self.fetch("sign_message_by_address", {"address": address, "message": message})
+        return response["pubkey"], response["signature"]
+
+    async def sign_message_by_id(self, id: str, message: str) -> Tuple[str, str]:
+        response = await self.fetch("sign_message_by_id", {"id": id, "message": message})
+        return response["pubkey"], response["signature"]

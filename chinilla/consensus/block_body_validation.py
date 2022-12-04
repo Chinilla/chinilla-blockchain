@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import collections
 import logging
 from typing import Awaitable, Callable, Dict, List, Optional, Set, Tuple, Union
 
-from chiabip158 import PyBIP158
+from chinillabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward

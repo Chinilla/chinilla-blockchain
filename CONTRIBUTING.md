@@ -5,7 +5,7 @@ We are happy that you are taking a look at the code for Chinilla, a proof of spa
 
 A lot of fascinating new cryptography and blockchain concepts are used and implemented here.
 This repo includes the code for the Chinilla full node, farmer, and timelord (in chinilla folder), which are all written in python.
-It also includes a verifiable delay function implementation that it imports from the [chiavdf repo](https://github.com/Chinilla/chiavdf) (in c/c++), and a proof of space implementation that it imports from the [chiapos repo](https://github.com/Chinilla/chiapos). BLS signatures are imported from the [bls-signatures repo](https://github.com/Chinilla/bls-signatures) as blspy. There is an additional dependency on the [chiabip158 repo](https://github.com/Chinilla/chiabip158). For major platforms, binary and source wheels are shipped to PyPI from each dependent repo. Then chinilla-blockchain can pip install those from PyPI or they can be prepackaged as is done for the Windows installer. On unsupported platforms, pip will fall back to the source distributions, to be compiled locally.
+It also includes a verifiable delay function implementation that it imports from the [chinillavdf repo](https://github.com/Chinilla/chinillavdf) (in c/c++), and a proof of space implementation that it imports from the [chinillapos repo](https://github.com/Chinilla/chinillapos). BLS signatures are imported from the [bls-signatures repo](https://github.com/Chinilla/bls-signatures) as blspy. There is an additional dependency on the [chinillabip158 repo](https://github.com/Chinilla/chinillabip158). For major platforms, binary and source wheels are shipped to PyPI from each dependent repo. Then chinilla-blockchain can pip install those from PyPI or they can be prepackaged as is done for the Windows installer. On unsupported platforms, pip will fall back to the source distributions, to be compiled locally.
 
 If you want to learn more about this project, read the [wiki](https://github.com/Chinilla/chinilla-blockchain/wiki), or check out the [green paper](https://www.chinilla.com/assets/ChinillaGreenPaper.pdf).
 
@@ -19,7 +19,7 @@ You can visit our [Trello project board](https://trello.com/b/ZuNx7sET) to get a
 Generally, things to the left are in progress or done. Some things go through "Coming up soon", but some will come directly out of other columns.
 Usually, the things closer to the top of each column are the ones that will be worked on soonest.
 If you are interested in cryptography, math, or just like hacking in python, there are many interesting problems to work on.
-Contact any of the team members on [Keybase](https://keybase.io/team/chinilla), which we use as the main communication method. You can also comment on any Trello card.
+Contact any of the team members on [Keybase](https://keybase.io/team/chinilla_network.public), which we use as the main communication method. You can also comment on any Trello card.
 
 We ask that external contributors create a fork of the `main` branch for any feature work they wish to take on.
 
@@ -34,7 +34,7 @@ In the event an emergency fix is required for the release version of Chinilla, m
 1. All changes go into the main branch.
 2. Main is stable at all times, all tests pass.
 3. Features (with tests) are developed and fully tested on feature branches, and reviewed before landing in main.
-4. Chinilla's nodes on the public testnet are running the latest version `x.y.z`.
+4. Chinilla Network's nodes on the public testnet are running the latest version `x.y.z`.
 5. The `main` branch will have a long running `beta testnet` to allow previewing of changes.
 6. Pull Request events may require a `beta testnet` review environment. At the moment this is at the discretion of the reviewer.
 7. Hotfixes land in the release branch they fix, and all later versions. (This will be achieved by regularly merging from `1.3.x` to main).

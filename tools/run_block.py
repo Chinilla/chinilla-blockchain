@@ -27,7 +27,7 @@ then be verified by the consensus rules, or used to view some aspects of transac
 
 The information for each spend is an "NPC" (Name, Puzzle, Condition):
         "coin_name": a unique 32 byte identifier
-        "conditions": a list of condition expressions, as in [condition_opcodes.py]
+        "conditions": a list of condition expressions, as in [condition_opcodes.py](../chinilla/types/condition_opcodes.py)
         "puzzle_hash": the sha256 of the CLVM bytecode that controls spending this coin
 
 Condition Opcodes, such as AGG_SIG_ME, or CREATE_COIN are created by running the "puzzle", i.e. the CLVM bytecode
@@ -35,6 +35,8 @@ associated with the coin being spent. Condition Opcodes are verified by every cl
 and in this way they control whether a spend is valid or not.
 
 """
+from __future__ import annotations
+
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -45,7 +47,6 @@ from clvm.casts import int_from_bytes
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
-from chinilla.full_node.generator import create_generator_args
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.program import SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -56,6 +57,12 @@ from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint32, uint64
 from chinilla.wallet.cat_wallet.cat_utils import match_cat_puzzle
+from chinilla.wallet.puzzles.load_clvm import load_serialized_clvm_maybe_recompile
+from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
+
+DESERIALIZE_MOD = load_serialized_clvm_maybe_recompile(
+    "chinillalisp_deserialisation.clvm", package_or_requirement="chinilla.wallet.puzzles"
+)
 
 
 @dataclass
@@ -97,8 +104,8 @@ def npc_to_dict(npc: NPC):
 
 def run_generator(block_generator: BlockGenerator, constants: ConsensusConstants, max_cost: int) -> List[CAT]:
 
-    args = create_generator_args(block_generator.generator_refs).first()
-    _, block_result = block_generator.program.run_with_cost(max_cost, 0, args)
+    block_args = [bytes(a) for a in block_generator.generator_refs]
+    cost, block_result = block_generator.program.run_with_cost(max_cost, DESERIALIZE_MOD, block_args)
 
     coin_spends = block_result.first()
 
@@ -106,7 +113,7 @@ def run_generator(block_generator: BlockGenerator, constants: ConsensusConstants
     for spend in coin_spends.as_iter():
 
         parent, puzzle, amount, solution = spend.as_iter()
-        args = match_cat_puzzle(*puzzle.uncurry())
+        args = match_cat_puzzle(uncurry_puzzle(puzzle))
 
         if args is None:
             continue

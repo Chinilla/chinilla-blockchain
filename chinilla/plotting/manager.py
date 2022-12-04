@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import threading
 import time
@@ -7,17 +9,11 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 from blspy import G1Element
-from chiapos import DiskProver
+from chinillapos import DiskProver
 
 from chinilla.consensus.pos_quality import UI_ACTUAL_SPACE_CONSTANT_FACTOR, _expected_plot_size
 from chinilla.plotting.cache import Cache, CacheEntry
-from chinilla.plotting.util import (
-    PlotInfo,
-    PlotRefreshEvents,
-    PlotRefreshResult,
-    PlotsRefreshParameter,
-    get_plot_filenames,
-)
+from chinilla.plotting.util import PlotInfo, PlotRefreshEvents, PlotRefreshResult, PlotsRefreshParameter, get_plot_filenames
 from chinilla.util.generator_tools import list_to_batches
 
 log = logging.getLogger(__name__)
@@ -345,7 +341,7 @@ class PlotManager:
                 log.error(f"Failed to open file {file_path}. {e} {tb}")
                 self.failed_to_open_filenames[file_path] = int(time.time())
                 return None
-            log.info(f"Found plot {file_path} of size {new_plot_info.prover.get_size()}, cache_hit: {cache_hit}")
+            log.debug(f"Found plot {file_path} of size {new_plot_info.prover.get_size()}, cache_hit: {cache_hit}")
 
             return new_plot_info
 

@@ -3,13 +3,11 @@ name: 🚨 Check Dependency Artifacts
 on:
   push:
     branches:
-      - main
-      - latest
-      - dev
-      - 'release/**'
       - 'long_lived/**'
-    tags:
-        - '**'
+      - main
+      - 'release/**'
+  release:
+    types: [published]
   pull_request:
     branches:
       - '**'
@@ -31,15 +29,19 @@ jobs:
             matrix: linux
             runs-on:
               intel: ubuntu-latest
+              arm: [linux, arm64]
           - name: macOS
             matrix: macos
             runs-on:
               intel: macos-latest
+              arm: [macos, arm64]
           - name: Windows
             matrix: windows
             runs-on:
               intel: windows-latest
         arch:
+          - name: ARM64
+            matrix: arm
           - name: Intel
             matrix: intel
         python-version: ['3.7', '3.8', '3.9', '3.10']

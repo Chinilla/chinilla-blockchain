@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, Optional, Tuple
@@ -25,10 +27,7 @@ class TestStartSimulator:
 
     @pytest_asyncio.fixture(scope="function")
     async def get_chinilla_simulator(
-        self,
-        automated_testing: bool = False,
-        chinilla_root: Optional[Path] = None,
-        config: Optional[Dict[str, Any]] = None,
+        self, automated_testing: bool = False, chinilla_root: Optional[Path] = None, config: Optional[Dict[str, Any]] = None
     ) -> AsyncGenerator[Tuple[FullNodeSimulator, Path, Dict[str, Any], str, int], None]:
         async for simulator_args in get_full_chinilla_simulator(automated_testing, chinilla_root, config):
             yield simulator_args

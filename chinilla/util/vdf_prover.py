@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from typing import Tuple
 
-from chiavdf import prove
+from chinillavdf import prove
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement

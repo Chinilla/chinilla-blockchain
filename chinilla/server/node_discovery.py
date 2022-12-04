@@ -14,7 +14,7 @@ from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.server.address_manager import AddressManager, ExtendedPeerInfo
 from chinilla.server.address_manager_store import AddressManagerStore
 from chinilla.server.address_manager_sqlite_store import create_address_manager_from_db
-from chinilla.server.outbound_message import NodeType, make_msg
+from chinilla.server.outbound_message import NodeType, make_msg, Message
 from chinilla.server.peer_store_resolver import PeerStoreResolver
 from chinilla.server.server import ChinillaServer
 from chinilla.types.peer_info import PeerInfo, TimestampedPeerInfo
@@ -26,7 +26,9 @@ MAX_TOTAL_PEERS_RECEIVED = 3000
 MAX_CONCURRENT_OUTBOUND_CONNECTIONS = 70
 NETWORK_ID_DEFAULT_PORTS = {
     "vanillanet": 43444,
-    "testnet10": 40444,
+    "testnet7": 58444,
+    "testnet10": 58444,
+    "testnet8": 58445,
 }
 
 
@@ -215,7 +217,7 @@ class FullNodeDiscovery:
                 )
                 return
             if self.resolver is None:
-                self.log.warn("Skipping DNS query: asyncresolver not initialized.")
+                self.log.warning("Skipping DNS query: asyncresolver not initialized.")
                 return
             for rdtype in ["A", "AAAA"]:
                 peers: List[TimestampedPeerInfo] = []
@@ -232,7 +234,7 @@ class FullNodeDiscovery:
                 if len(peers) > 0:
                     await self._respond_peers_common(full_node_protocol.RespondPeers(peers), None, False)
         except Exception as e:
-            self.log.warn(f"querying DNS introducer failed: {e}")
+            self.log.warning(f"querying DNS introducer failed: {e}")
 
     async def on_connect_callback(self, peer: ws.WSChinillaConnection):
         if self.server.on_connect is not None:
@@ -454,7 +456,7 @@ class FullNodeDiscovery:
             await asyncio.sleep(cleanup_interval)
 
             # Perform the cleanup only if we have at least 3 connections.
-            full_node_connected = self.server.get_full_node_connections()
+            full_node_connected = self.server.get_connections(NodeType.FULL_NODE)
             connected = [c.get_peer_info() for c in full_node_connected]
             connected = [c for c in connected if c is not None]
             if self.address_manager is not None and len(connected) >= 3:
@@ -536,14 +538,14 @@ class FullNodePeers(FullNodeDiscovery):
         self.neighbour_known_peers: Dict = {}
         self.key = randbits(256)
 
-    async def start(self):
+    async def start(self) -> None:
         await self.migrate_address_manager_if_necessary()
         await self.initialize_address_manager()
         self.self_advertise_task = asyncio.create_task(self._periodically_self_advertise_and_clean_data())
         self.address_relay_task = asyncio.create_task(self._address_relay())
         await self.start_tasks()
 
-    async def close(self):
+    async def close(self) -> None:
         await self._close_common()
         self.cancel_task_safe(self.self_advertise_task)
         self.cancel_task_safe(self.address_relay_task)
@@ -583,7 +585,7 @@ class FullNodePeers(FullNodeDiscovery):
                 self.log.error(f"Exception in self advertise: {e}")
                 self.log.error(f"Traceback: {traceback.format_exc()}")
 
-    async def add_peers_neighbour(self, peers, neighbour_info):
+    async def add_peers_neighbour(self, peers, neighbour_info) -> None:
         neighbour_data = (neighbour_info.host, neighbour_info.port)
         async with self.lock:
             for peer in peers:
@@ -592,7 +594,7 @@ class FullNodePeers(FullNodeDiscovery):
                 if peer.host not in self.neighbour_known_peers[neighbour_data]:
                     self.neighbour_known_peers[neighbour_data].add(peer.host)
 
-    async def request_peers(self, peer_info: PeerInfo):
+    async def request_peers(self, peer_info: PeerInfo) -> Optional[Message]:
         try:
 
             # Prevent a fingerprint attack: do not send peers to inbound connections.
@@ -614,8 +616,9 @@ class FullNodePeers(FullNodeDiscovery):
             return msg
         except Exception as e:
             self.log.error(f"Request peers exception: {e}")
+            return None
 
-    async def respond_peers(self, request, peer_src, is_full_node):
+    async def respond_peers(self, request, peer_src, is_full_node: bool) -> None:
         try:
             await self._respond_peers_common(request, peer_src, is_full_node)
             if is_full_node:
@@ -626,6 +629,7 @@ class FullNodePeers(FullNodeDiscovery):
                         self.relay_queue.put_nowait((peer, 2))
         except Exception as e:
             self.log.error(f"Respond peers exception: {e}. Traceback: {traceback.format_exc()}")
+        return None
 
     async def _address_relay(self):
         while not self.is_closed:
@@ -638,7 +642,7 @@ class FullNodePeers(FullNodeDiscovery):
                 if not relay_peer_info.is_valid():
                     continue
                 # https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery#Address_Relay
-                connections = self.server.get_full_node_connections()
+                connections = self.server.get_connections(NodeType.FULL_NODE)
                 hashes = []
                 cur_day = int(time.time()) // (24 * 60 * 60)
                 for connection in connections:

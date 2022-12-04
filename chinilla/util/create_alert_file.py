@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import List
 
@@ -51,7 +53,7 @@ while True:
 
 print("\n___________ HD PATH ____________")
 while True:
-    hd_path = input("Enter the HD path in the form 'm/12381/43444/n/n', or enter Q to quit: ").lower()
+    hd_path = input("Enter the HD path in the form 'm/12381/8444/n/n', or enter Q to quit: ").lower()
     if hd_path == "q":
         quit()
     verify = input(f"Is this correct path: {hd_path}? (y/n) ").lower()

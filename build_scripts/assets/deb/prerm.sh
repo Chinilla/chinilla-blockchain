@@ -4,4 +4,3 @@
 set -e
 
 unlink /usr/bin/chinilla || true
-unlink /opt/chinilla || true

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Union
 
 from chinilla.consensus.block_record import BlockRecord

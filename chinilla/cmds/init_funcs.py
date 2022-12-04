@@ -249,13 +249,7 @@ def create_all_ssl(
     chinilla_ca_crt, chinilla_ca_key = get_chinilla_ca_crt_key()
     chinilla_ca_crt_path = ca_dir / "chinilla_ca.crt"
     chinilla_ca_key_path = ca_dir / "chinilla_ca.key"
-    write_ssl_cert_and_key(
-        chinilla_ca_crt_path,
-        chinilla_ca_crt,
-        chinilla_ca_key_path,
-        chinilla_ca_key,
-        overwrite=overwrite,
-    )
+    write_ssl_cert_and_key(chinilla_ca_crt_path, chinilla_ca_crt, chinilla_ca_key_path, chinilla_ca_key, overwrite=overwrite)
 
     # If Private CA crt/key are passed-in, write them out
     if private_ca_crt_and_key is not None:
@@ -431,12 +425,6 @@ def chinilla_version_number() -> Tuple[str, str, str, str]:
         install_release_number += dev_release_number
 
     return major_release_number, minor_release_number, patch_release_number, dev_release_number
-
-
-def chinilla_minor_release_number():
-    res = int(chinilla_version_number()[2])
-    print(f"Install release number: {res}")
-    return res
 
 
 def chinilla_full_version_str() -> str:

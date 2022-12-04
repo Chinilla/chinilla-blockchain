@@ -9,13 +9,7 @@ from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
-from chinilla.types.weight_proof import (
-    WeightProof,
-    SubEpochData,
-    SubEpochChallengeSegment,
-    SubSlotData,
-    RecentChainData,
-)
+from chinilla.types.weight_proof import WeightProof, SubEpochData, SubEpochChallengeSegment, SubSlotData, RecentChainData
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from blspy import G1Element, G2Element
@@ -31,12 +25,7 @@ from chinilla.types.blockchain_format.slots import (
 from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
 from chinilla.types.peer_info import TimestampedPeerInfo
 from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
-from chinilla.types.blockchain_format.foliage import (
-    Foliage,
-    FoliageTransactionBlock,
-    FoliageBlockData,
-    TransactionsInfo,
-)
+from chinilla.types.blockchain_format.foliage import Foliage, FoliageTransactionBlock, FoliageBlockData, TransactionsInfo
 
 from chinilla.protocols import (
     farmer_protocol,
@@ -78,7 +67,7 @@ proof_of_space = ProofOfSpace(
 )
 
 pool_target = PoolTarget(
-    bytes32.from_hexstr("63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12"),
+    bytes32.from_hexstr("d23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc"),
     uint32(421941852),
 )
 g2_element = G2Element(
@@ -486,7 +475,7 @@ respond_compact_vdf = full_node_protocol.RespondCompactVDF(
 
 request_peers = full_node_protocol.RequestPeers()
 
-timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(43444), uint64(10796))
+timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(8444), uint64(10796))
 
 respond_peers = full_node_protocol.RespondPeers([timestamped_peer_info])
 
@@ -897,7 +886,7 @@ new_peak_timelord = timelord_protocol.NewPeakTimelord(
     [
         (
             bytes32(bytes.fromhex("5bb65d8662d561ed2fc17e4177ba61c43017ee7e5418091d38968e36ce380d11")),
-            uint128(134340022887890669757150210097251845335),
+            uint128(134240022887890669757150210097251845335),
         )
     ],
     uint128(42058411995615810488183751196800190575),

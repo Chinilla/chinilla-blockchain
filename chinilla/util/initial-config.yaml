@@ -64,13 +64,14 @@ daemon_ssl:
   private_key: "config/ssl/daemon/private_daemon.key"
 
 
-# Controls logging of all servers (harvester, farmer, etc..). Each one can be overriden.
+# Controls logging of all servers (harvester, farmer, etc..). Each one can be overridden.
 logging: &logging
   log_stdout: False  # If True, outputs to stdout instead of a file
   log_filename: "log/debug.log"
   log_level: "WARNING"  # Can be CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
   log_maxfilesrotation: 7 #  Max files in rotation. Default value 7 if the key is not set
   log_maxbytesrotation: 52428800 #  Max bytes logged before rotating logs
+  log_use_gzip: False #  Use gzip to compress rotated logs
   log_syslog: False  # If True, outputs to SysLog host and port specified
   log_syslog_host: "localhost"  # Send logging messages to a remote or local Unix syslog
   log_syslog_port: 514  # UDP port of the remote or local Unix syslog
@@ -78,7 +79,7 @@ logging: &logging
 seeder:
   # The fake full node used for crawling will run on this port.
   port: 43444
-  # Most full nodes on the network run on this port. (i.e. 43444 for vanillanet, 40444 for testnet).
+  # Most full nodes on the network run on this port. (i.e. 43444 for vanillanet, 58444 for testnet).
   other_peers_port: 43444
   # This will override the default full_node.peer_connect_timeout for the crawler full node
   peer_connect_timeout: 2
@@ -130,7 +131,7 @@ harvester:
     batch_sleep_milliseconds: 1 # Milliseconds the harvester sleeps between batch processing
 
 
-  # If True use parallel reads in chiapos
+  # If True use parallel reads in chinillapos
   parallel_read: True
 
   logging: *logging
@@ -154,7 +155,7 @@ harvester:
     key: "config/ssl/ca/chinilla_ca.key"
 
 pool:
-  # Replace this with a real puzzle hash
+  # Replace this with a real receive address
   # hcx_target_address: thcx102gkhhzs60grx7cfnpng5n6rjecr89r86l5s8xux2za8k820cxsq64ssdg
   logging: *logging
   network_overrides: *network_overrides
@@ -174,7 +175,7 @@ farmer:
 
   pool_public_keys: []
 
-  # Replace this with a real puzzle hash
+  # Replace this with a real receive address
   # hcx_target_address: thcx102gkhhzs60grx7cfnpng5n6rjecr89r86l5s8xux2za8k820cxsq64ssdg
 
   # If True, starts an RPC server at the following port
@@ -230,7 +231,7 @@ timelord:
   # fast_algorithm is a faster proof generation algorithm. This speed increase
   # requires much less memory usage and a does not have the risk of OOM that
   # the normal timelord has but requires significantly more cores doing
-  # parrallel proof generation and creates a larger and slower to verify
+  # parallel proof generation and creates a larger and slower to verify
   # resulting proof.
   # An Intel Core i9-10900K can run 2 normal vdf_clients at ~221,000 ips
   # without slowing down but running more than 1 with fast_algorithm will
@@ -345,6 +346,8 @@ full_node:
   # analyze with chinilla/utils/profiler.py
   enable_profiler: False
 
+  enable_memory_profiler: False
+
   # this is a debug and profiling facility that logs all SQLite commands to a
   # separate log file (under logging/sql.log).
   log_sqlite_cmds: False
@@ -420,6 +423,8 @@ wallet:
 
   enable_profiler: False
 
+  enable_memory_profiler: False
+
   # see description for full_node.db_sync
   db_sync: auto
 
@@ -438,7 +443,10 @@ wallet:
   full_node_peer:
     host: *self_hostname
     port: 43444
-
+  # The path of NFT off-chain metadata cache
+  nft_metadata_cache_path: "nft_cache"
+  # The length of NFT ID prefix will be used as hash index
+  nft_metadata_cache_hash_length: 3
   multiprocessing_start_method: default
 
   testing: False
@@ -496,13 +504,17 @@ wallet:
   # coins with very small value. Any standard TX under hcx_spam_amount is filtered
   spam_filter_after_n_txs: 200
   hcx_spam_amount: 1000000
+  # Accept notifications from parties on chain
+  accept_notifications: False
+  # The amount someone has to pay you in vojos for you to see their notification
+  required_notification_amount: 10000000
 
 data_layer:
   # TODO: consider name
   # TODO: organize consistently with other sections
 
   # TODO: shouldn't we not need this since we have no actual public interface (yet)?
-  port: 42561
+  port: 43561
   wallet_peer:
     host: localhost
     port: 42256
@@ -514,14 +526,14 @@ data_layer:
   client_timeout: 15
   # Data for running a data layer server.
   host_ip: 0.0.0.0
-  host_port: 42575
+  host_port: 8575
   # Data for running a data layer client.
   manage_data_interval: 60
   selected_network: *selected_network
   # If True, starts an RPC server at the following port
   start_rpc_server: True
   # TODO: what considerations are there in choosing this?
-  rpc_port: 8562
+  rpc_port: 43562
   rpc_server_max_request_body_size: 26214400
   fee: 1000000000
   logging: *logging

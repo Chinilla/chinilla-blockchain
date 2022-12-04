@@ -13,7 +13,6 @@ from chinilla.util.bech32m import decode_puzzle_hash
 from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.config import load_config_cli, override_config, load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
-from chinilla.util.path import path_from_root
 from chinilla.simulator.block_tools import BlockTools, test_constants
 from chinilla.util.ints import uint16
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
@@ -33,9 +32,8 @@ def create_full_node_simulator_service(
     bt: BlockTools,
     connect_to_daemon: bool = True,
     override_capabilities: List[Tuple[uint16, str]] = None,
-) -> Service:
+) -> Service[FullNode]:
     service_config = config[SERVICE_NAME]
-    path_from_root(root_path, service_config["database_path"]).parent.mkdir(parents=True, exist_ok=True)
     constants = bt.constants
 
     node = FullNode(
@@ -84,7 +82,7 @@ async def async_main(test_mode: bool = False, automated_testing: bool = False, r
             "full_node.selected_network": "testnet0",
             "full_node.database_path": service_config["simulator_database_path"],
             "full_node.peers_file_path": service_config["simulator_peers_file_path"],
-            "full_node.introducer_peer": {"host": "127.0.0.1", "port": 58555},
+            "full_node.introducer_peer": {"host": "127.0.0.1", "port": 543555},
         }
     overrides["simulator.use_current_time"] = True
 
@@ -102,7 +100,7 @@ async def async_main(test_mode: bool = False, automated_testing: bool = False, r
     initialize_logging(
         service_name=SERVICE_NAME,
         logging_config=service_config["logging"],
-        root_path=DEFAULT_ROOT_PATH,
+        root_path=root_path,
     )
     service = create_full_node_simulator_service(root_path, override_config(config, overrides), bt)
     if test_mode:
