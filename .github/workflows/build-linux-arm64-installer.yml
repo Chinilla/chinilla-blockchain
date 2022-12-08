@@ -140,7 +140,7 @@ jobs:
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
 
     - name: Install Rust/Cargo
-        run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      run: curl https://sh.rustup.rs -sSf | sh -s -- -y
 
     - uses: ./.github/actions/install
       with:
