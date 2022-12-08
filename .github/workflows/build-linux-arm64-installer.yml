@@ -44,7 +44,7 @@ jobs:
     - uses: Chinilla/actions/git-ssh-to-https@main
 
     - name: Cleanup any leftovers that exist from previous runs
-      run: bash build_scripts/clean-runner.sh || true
+      run: bash build_scripts/clean-runner.sh || true || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
     - name: Set Env
       if: github.event_name == 'release' && github.event.action == 'published'
