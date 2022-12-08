@@ -44,7 +44,8 @@ jobs:
     - uses: Chinilla/actions/git-ssh-to-https@main
 
     - name: Cleanup any leftovers that exist from previous runs
-      run: bash build_scripts/clean-runner.sh || true || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      run: |
+        bash build_scripts/clean-runner.sh || true
 
     - name: Set Env
       if: github.event_name == 'release' && github.event.action == 'published'
@@ -128,6 +129,7 @@ jobs:
         wget -O /tmp/bladebit.tar.gz https://github.com/Chinilla/bladebit/releases/download/${{ steps.latest-bladebit.outputs.result }}/bladebit-${{ steps.latest-bladebit.outputs.result }}-ubuntu-arm64.tar.gz
         tar -xvzf /tmp/bladebit.tar.gz -C $GITHUB_WORKSPACE/bladebit
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
     - name: Get latest prerelease bladebit plotter
       if: env.PRE_RELEASE == 'true'
