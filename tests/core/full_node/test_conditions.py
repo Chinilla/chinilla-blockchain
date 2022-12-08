@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple
 
 import pytest
 
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from clvm_tools.binutils import assemble
 

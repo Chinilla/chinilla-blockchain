@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import pytest
-from blspy import PrivateKey
+from chinillablspy import PrivateKey
 
 from chinilla.util.config import load_config
 from chinilla.util.keychain import Keychain, generate_mnemonic

@@ -5,7 +5,7 @@ import time
 from typing import Any, Awaitable, Callable, Dict, List
 
 import pytest
-from blspy import AugSchemeMPL, G1Element, G2Element
+from chinillablspy import AugSchemeMPL, G1Element, G2Element
 from clvm_tools.binutils import disassemble
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward

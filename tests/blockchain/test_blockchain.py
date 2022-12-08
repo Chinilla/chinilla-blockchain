@@ -6,7 +6,7 @@ from secrets import token_bytes
 from typing import List
 
 import pytest
-from blspy import AugSchemeMPL, G2Element
+from chinillablspy import AugSchemeMPL, G2Element
 from clvm.casts import int_to_bytes
 
 from chinilla.consensus.block_header_validation import validate_finished_header_block

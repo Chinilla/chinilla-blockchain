@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Dict, List, Tuple
 
 import pytest
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.clvm.spend_sim import SimClient, SpendSim
 from chinilla.types.blockchain_format.coin import Coin

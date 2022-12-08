@@ -3,7 +3,7 @@ import copy
 from typing import List
 from unittest import TestCase
 
-from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32

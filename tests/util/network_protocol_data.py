@@ -12,7 +12,7 @@ from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
 from chinilla.types.weight_proof import WeightProof, SubEpochData, SubEpochChallengeSegment, SubSlotData, RecentChainData
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
-from blspy import G1Element, G2Element
+from chinillablspy import G1Element, G2Element
 from chinilla.types.header_block import HeaderBlock
 from chinilla.types.full_block import FullBlock
 from chinilla.types.unfinished_block import UnfinishedBlock

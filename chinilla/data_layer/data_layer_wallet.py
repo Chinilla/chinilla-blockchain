@@ -6,7 +6,7 @@ import time
 from operator import attrgetter
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Type, TypeVar
 
-from blspy import G1Element, G2Element
+from chinillablspy import G1Element, G2Element
 from clvm.EvalError import EvalError
 
 from chinilla.consensus.block_record import BlockRecord

@@ -1,6 +1,6 @@
 import asyncio
 
-from blspy import G2Element
+from chinillablspy import G2Element
 from clvm_tools import binutils
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward

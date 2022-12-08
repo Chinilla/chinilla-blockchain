@@ -1,7 +1,7 @@
 import dataclasses
 from typing import List, Iterator, Optional
 
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.types.blockchain_format.coin import Coin, coin_as_list
 from chinilla.types.blockchain_format.program import Program, INFINITE_COST

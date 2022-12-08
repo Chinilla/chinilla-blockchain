@@ -1,7 +1,7 @@
 import time
 from secrets import token_bytes
 
-from blspy import AugSchemeMPL, PrivateKey
+from chinillablspy import AugSchemeMPL, PrivateKey
 from clvm_tools import binutils
 
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS

@@ -10,7 +10,7 @@ from shutil import copy, move
 from typing import Callable, Iterator, List, Optional
 
 import pytest
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.plotting.cache import CURRENT_VERSION, CacheDataV1
 from chinilla.plotting.manager import Cache, PlotManager

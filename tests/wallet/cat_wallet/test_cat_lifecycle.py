@@ -1,7 +1,7 @@
 from typing import List, Tuple, Optional, Dict
 
 import pytest
-from blspy import PrivateKey, AugSchemeMPL, G2Element
+from chinillablspy import PrivateKey, AugSchemeMPL, G2Element
 from clvm.casts import int_to_bytes
 
 from chinilla.clvm.spend_sim import SpendSim, SimClient

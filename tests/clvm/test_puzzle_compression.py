@@ -1,4 +1,4 @@
-from blspy import G1Element, G2Element
+from chinillablspy import G1Element, G2Element
 from typing import Dict
 
 from chinilla.types.blockchain_format.program import Program

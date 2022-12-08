@@ -5,7 +5,7 @@ import json
 import re
 
 from typing import Dict, Optional, List, Any, Set, Tuple, TYPE_CHECKING
-from blspy import AugSchemeMPL, G1Element, G2Element
+from chinillablspy import AugSchemeMPL, G1Element, G2Element
 from secrets import token_bytes
 
 from chinilla.protocols import wallet_protocol

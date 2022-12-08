@@ -4,7 +4,7 @@ import ssl
 import traceback
 
 from aiohttp import ClientSession, ClientConnectorError
-from blspy import AugSchemeMPL, PrivateKey
+from chinillablspy import AugSchemeMPL, PrivateKey
 from chinilla.cmds.init_funcs import check_keys
 from chinilla.daemon.client import DaemonProxy
 from chinilla.daemon.keychain_server import (

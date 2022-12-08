@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import pytest
 import pytest_asyncio
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.consensus.coinbase import create_puzzlehash_for_pk

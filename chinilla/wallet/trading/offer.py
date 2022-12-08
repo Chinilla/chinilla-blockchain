@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Set, Tuple, Union, BinaryIO
 
-from blspy import G2Element
+from chinillablspy import G2Element
 from clvm_tools.binutils import disassemble
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32

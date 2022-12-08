@@ -5,7 +5,7 @@ import logging
 import time
 from typing import Optional, Tuple
 
-from blspy import AugSchemeMPL
+from chinillablspy import AugSchemeMPL
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.blockchain_interface import BlockchainInterface

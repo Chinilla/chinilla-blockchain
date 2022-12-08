@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 import pytest
-from blspy import G2Element
+from chinillablspy import G2Element
 from clvm_tools import binutils
 
 from chinilla.types.blockchain_format.program import Program, INFINITE_COST

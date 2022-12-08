@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.sized_bytes import bytes32

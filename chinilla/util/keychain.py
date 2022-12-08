@@ -4,7 +4,7 @@ import sys
 import unicodedata
 
 from bitstring import BitArray  # pyright: reportMissingImports=false
-from blspy import AugSchemeMPL, G1Element, PrivateKey  # pyright: reportMissingImports=false
+from chinillablspy import AugSchemeMPL, G1Element, PrivateKey  # pyright: reportMissingImports=false
 from chinilla.util.errors import (
     KeychainException,
     KeychainNotSet,
@@ -248,7 +248,7 @@ class KeyData(Streamable):
 
 class Keychain:
     """
-    The keychain stores two types of keys: private keys, which are PrivateKeys from blspy,
+    The keychain stores two types of keys: private keys, which are PrivateKeys from chinillablspy,
     and private key seeds, which are bytes objects that are used as a seed to construct
     PrivateKeys. Private key seeds are converted to mnemonics when shown to users.
 

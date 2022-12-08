@@ -5,8 +5,8 @@ import random
 from dataclasses import replace
 from typing import Callable, Dict, List, Optional, Tuple
 
-import blspy
-from blspy import G1Element, G2Element
+import chinillablspy
+from chinillablspy import G1Element, G2Element
 from chinilla_rs import compute_merkle_set_root
 from chinillabip158 import PyBIP158
 
@@ -370,7 +370,7 @@ def create_unfinished_block(
     rc_sp_signature: Optional[G2Element] = get_plot_signature(rc_sp_hash, proof_of_space.plot_public_key)
     assert cc_sp_signature is not None
     assert rc_sp_signature is not None
-    assert blspy.AugSchemeMPL.verify(proof_of_space.plot_public_key, cc_sp_hash, cc_sp_signature)
+    assert chinillablspy.AugSchemeMPL.verify(proof_of_space.plot_public_key, cc_sp_hash, cc_sp_signature)
 
     total_iters = uint128(sub_slot_start_total_iters + ip_iters + (sub_slot_iters if overflow else 0))
 

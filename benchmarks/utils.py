@@ -10,7 +10,7 @@ from typing import Tuple, Union
 
 import aiosqlite
 import click
-from blspy import AugSchemeMPL, G1Element, G2Element
+from chinillablspy import AugSchemeMPL, G1Element, G2Element
 
 from chinilla.consensus.coinbase import create_farmer_coin, create_pool_coin
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS

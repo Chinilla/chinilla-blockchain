@@ -4,7 +4,7 @@ import dataclasses
 import logging
 from typing import Any, Dict, List, Optional, Set
 
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.protocols.wallet_protocol import CoinState
 from chinilla.types.announcement import Announcement

@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple, Set
 
-from blspy import AugSchemeMPL, PrivateKey, G1Element
+from chinillablspy import AugSchemeMPL, PrivateKey, G1Element
 
 from chinilla.consensus.coinbase import create_puzzlehash_for_pk
 from chinilla.types.blockchain_format.sized_bytes import bytes32

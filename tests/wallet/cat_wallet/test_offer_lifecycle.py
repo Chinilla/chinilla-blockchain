@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, List
 
 import pytest
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.types.announcement import Announcement
 from chinilla.types.blockchain_format.coin import Coin

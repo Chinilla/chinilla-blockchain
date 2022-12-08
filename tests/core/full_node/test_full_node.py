@@ -6,7 +6,7 @@ from secrets import token_bytes
 from typing import Dict, Optional, List
 
 import pytest
-from blspy import G2Element, AugSchemeMPL, PrivateKey
+from chinillablspy import G2Element, AugSchemeMPL, PrivateKey
 from clvm.casts import int_to_bytes
 
 from chinilla.consensus.pot_iterations import is_overflow_block

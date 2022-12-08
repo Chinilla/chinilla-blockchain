@@ -1,8 +1,8 @@
 import inspect
 from typing import List, Any
 
-import blspy
-from blspy import AugSchemeMPL
+import chinillablspy
+from chinillablspy import AugSchemeMPL
 
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.types.spend_bundle import SpendBundle
@@ -32,8 +32,8 @@ async def sign_coin_spends(
     derived keys (those returned by master_sk_to_wallet_sk from the ['sk'] member of
     wallet rpc's get_private_key method).
     """
-    signatures: List[blspy.G2Element] = []
-    pk_list: List[blspy.G1Element] = []
+    signatures: List[chinillablspy.G2Element] = []
+    pk_list: List[chinillablspy.G1Element] = []
     msg_list: List[bytes] = []
     for coin_spend in coin_spends:
         # Get AGG_SIG conditions
@@ -46,7 +46,7 @@ async def sign_coin_spends(
 
         # Create signature
         for pk_bytes, msg in pkm_pairs_for_conditions_dict(conditions_dict, coin_spend.coin.name(), additional_data):
-            pk = blspy.G1Element.from_bytes(pk_bytes)
+            pk = chinillablspy.G1Element.from_bytes(pk_bytes)
             pk_list.append(pk)
             msg_list.append(msg)
             if inspect.iscoroutinefunction(secret_key_for_public_key_f):

@@ -1,4 +1,4 @@
-from blspy import AugSchemeMPL, G1Element
+from chinillablspy import AugSchemeMPL, G1Element
 from chinilla.util import cached_bls
 from chinilla.util.hash import std_hash
 from chinilla.util.lru_cache import LRUCache

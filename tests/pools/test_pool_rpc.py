@@ -8,7 +8,7 @@ from typing import Any, Optional, List, Dict, Tuple, AsyncGenerator
 
 import pytest
 import pytest_asyncio
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.full_node.full_node_api import FullNodeAPI

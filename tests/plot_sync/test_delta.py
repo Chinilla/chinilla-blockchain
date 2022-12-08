@@ -4,7 +4,7 @@ import logging
 from typing import List
 
 import pytest
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.plot_sync.delta import Delta, DeltaType, PathListDelta, PlotListDelta
 from chinilla.protocols.harvester_protocol import Plot

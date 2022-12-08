@@ -6,7 +6,7 @@ from setuptools import setup
 
 dependencies = [
     "aiofiles==22.1.0",  # Async IO for files
-    "blspy==1.0.16",  # Signature library
+    "chinillablspy==1.0.16",  # Signature library
     "chinillavdf==1.0.8",  # timelord and vdf verification
     "chinillabip158==1.2",  # bip158-style wallet filters
     "chinillapos==1.0.11",  # proof of space

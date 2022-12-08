@@ -6,7 +6,7 @@ from pathlib import Path
 from time import sleep, time
 from typing import List
 
-from blspy import G1Element
+from chinillablspy import G1Element
 from chinillapos import Verifier
 
 from chinilla.plotting.manager import PlotManager

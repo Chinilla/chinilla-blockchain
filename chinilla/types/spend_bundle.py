@@ -4,7 +4,7 @@ import warnings
 from dataclasses import dataclass
 from typing import List, Dict, Any
 
-from blspy import AugSchemeMPL, G2Element
+from chinillablspy import AugSchemeMPL, G2Element
 
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.types.blockchain_format.coin import Coin

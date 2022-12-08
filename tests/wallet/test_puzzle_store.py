@@ -3,7 +3,7 @@ from __future__ import annotations
 from secrets import token_bytes
 
 import pytest
-from blspy import AugSchemeMPL
+from chinillablspy import AugSchemeMPL
 
 from chinilla.util.ints import uint32
 from chinilla.wallet.derivation_record import DerivationRecord

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.byte_types import hexstr_to_bytes

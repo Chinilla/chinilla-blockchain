@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Set, Tuple, Union
 
 import sqlite3
-from blspy import AugSchemeMPL
+from chinillablspy import AugSchemeMPL
 
 import chinilla.server.ws_connection as ws  # lgtm [py/import-and-import-from]
 from chinilla.consensus.block_creation import unfinished_block_to_full_block

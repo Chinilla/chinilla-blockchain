@@ -1,4 +1,4 @@
-from blspy import PrivateKey  # pyright: reportMissingImports=false
+from chinillablspy import PrivateKey  # pyright: reportMissingImports=false
 from chinilla.util.default_root import DEFAULT_KEYS_ROOT_PATH
 from chinilla.util.file_keyring import FileKeyring
 from chinilla.util.misc import prompt_yes_no

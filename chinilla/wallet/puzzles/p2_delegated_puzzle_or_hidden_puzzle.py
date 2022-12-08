@@ -60,7 +60,7 @@ from __future__ import annotations
 import hashlib
 from typing import Union
 
-from blspy import G1Element, PrivateKey
+from chinillablspy import G1Element, PrivateKey
 from clvm.casts import int_from_bytes
 
 from chinilla.types.blockchain_format.program import Program

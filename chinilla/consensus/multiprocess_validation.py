@@ -7,7 +7,7 @@ from concurrent.futures import Executor
 from dataclasses import dataclass
 from typing import Awaitable, Callable, Dict, List, Optional, Sequence, Tuple
 
-from blspy import AugSchemeMPL, G1Element
+from chinillablspy import AugSchemeMPL, G1Element
 
 from chinilla.consensus.block_header_validation import validate_finished_header_block
 from chinilla.consensus.block_record import BlockRecord

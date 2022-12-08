@@ -7,7 +7,7 @@ import traceback
 from secrets import token_bytes
 from typing import Any, Dict, List, Optional, Set, Tuple, TYPE_CHECKING
 
-from blspy import AugSchemeMPL, G2Element, G1Element
+from chinillablspy import AugSchemeMPL, G2Element, G1Element
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.bundle_tools import simple_solution_generator

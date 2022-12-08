@@ -16,7 +16,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 from chinilla_rs import compute_merkle_set_root
 from chinillabip158 import PyBIP158
 

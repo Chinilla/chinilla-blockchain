@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from blspy import AugSchemeMPL, PublicKeyMPL, SignatureMPL
+from chinillablspy import AugSchemeMPL, PublicKeyMPL, SignatureMPL
 
 from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.hash import std_hash

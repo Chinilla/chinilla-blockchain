@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Iterable, List, Tuple
 from unittest import TestCase
 
-from blspy import AugSchemeMPL, BasicSchemeMPL, G1Element, G2Element
+from chinillablspy import AugSchemeMPL, BasicSchemeMPL, G1Element, G2Element
 
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32

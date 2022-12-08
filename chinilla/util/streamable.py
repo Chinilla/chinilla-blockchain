@@ -22,7 +22,7 @@ from typing import (
     get_type_hints,
 )
 
-from blspy import G1Element, G2Element, PrivateKey
+from chinillablspy import G1Element, G2Element, PrivateKey
 from typing_extensions import Literal, get_args, get_origin
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32

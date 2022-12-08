@@ -8,7 +8,7 @@ from secrets import token_bytes
 from typing import Any, Callable, List, Tuple, Type, Union
 
 import pytest
-from blspy import G1Element
+from chinillablspy import G1Element
 
 from chinilla.plot_sync.delta import Delta
 from chinilla.plot_sync.receiver import Receiver, Sync

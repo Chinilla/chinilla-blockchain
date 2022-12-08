@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from secrets import token_bytes
 from typing import Dict, List, Optional, Tuple, Set
 
-from blspy import AugSchemeMPL, G2Element, G1Element
+from chinillablspy import AugSchemeMPL, G2Element, G1Element
 from chinillabip158 import PyBIP158
 
 import chinilla.server.ws_connection as ws

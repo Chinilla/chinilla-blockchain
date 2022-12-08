@@ -5,7 +5,7 @@ from secrets import token_bytes
 from typing import Callable, List, Optional, Tuple
 
 import pytest
-from blspy import AugSchemeMPL, G1Element, PrivateKey
+from chinillablspy import AugSchemeMPL, G1Element, PrivateKey
 
 from tests.util.keyring import using_temp_file_keyring
 from chinilla.util.errors import (

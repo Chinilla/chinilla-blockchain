@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from bitstring import BitArray
-from blspy import G1Element, AugSchemeMPL, PrivateKey
+from chinillablspy import G1Element, AugSchemeMPL, PrivateKey
 from chinillapos import Verifier
 
 from chinilla.consensus.constants import ConsensusConstants

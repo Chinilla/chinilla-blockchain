@@ -3,7 +3,7 @@ from enum import Enum
 import time
 from typing import Optional
 
-from blspy import G1Element, G2Element
+from chinillablspy import G1Element, G2Element
 
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.sized_bytes import bytes32

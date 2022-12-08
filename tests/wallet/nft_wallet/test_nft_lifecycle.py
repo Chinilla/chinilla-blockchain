@@ -4,7 +4,7 @@ import itertools
 from typing import List, Tuple
 
 import pytest
-from blspy import G2Element
+from chinillablspy import G2Element
 
 from chinilla.clvm.spend_sim import SimClient, SpendSim
 from chinilla.types.announcement import Announcement
