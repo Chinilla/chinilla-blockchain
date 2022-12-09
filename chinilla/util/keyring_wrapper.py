@@ -349,7 +349,8 @@ class KeyringWrapper:
                 "passphrase."
             )
             print(
-                "Would you like to set a master passphrase now? Use 'chinilla passphrase set' to change the passphrase.\n"
+                "Would you like to set a master passphrase now? Use 'chinilla passphrase set' to change the"
+                " passphrase.\n"
             )
 
             response = prompt_yes_no("Set keyring master passphrase?")
@@ -366,7 +367,8 @@ class KeyringWrapper:
                 )
             else:
                 print(
-                    "Will skip setting a master passphrase. Use 'chinilla passphrase set' to set the master passphrase.\n"
+                    "Will skip setting a master passphrase. Use 'chinilla passphrase set' to set the master"
+                    " passphrase.\n"
                 )
         else:
             import colorama
