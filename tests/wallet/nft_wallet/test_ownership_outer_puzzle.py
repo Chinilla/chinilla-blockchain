@@ -9,7 +9,13 @@ from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.ints import uint16
 from chinilla.wallet.nft_wallet.ownership_outer_puzzle import puzzle_for_ownership_layer
 from chinilla.wallet.nft_wallet.transfer_program_puzzle import puzzle_for_transfer_program
-from chinilla.wallet.outer_puzzles import construct_puzzle, get_inner_puzzle, get_inner_solution, match_puzzle, solve_puzzle
+from chinilla.wallet.outer_puzzles import (
+    construct_puzzle,
+    get_inner_puzzle,
+    get_inner_solution,
+    match_puzzle,
+    solve_puzzle,
+)
 from chinilla.wallet.puzzle_drivers import PuzzleInfo, Solver
 from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
 

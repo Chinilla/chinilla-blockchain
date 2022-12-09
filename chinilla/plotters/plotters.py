@@ -435,7 +435,13 @@ def call_plotters(root_path: Path, args):
     plotters = argparse.ArgumentParser("chinilla plotters", description="Available options.")
     subparsers = plotters.add_subparsers(help="Available options", dest="plotter")
 
-    build_parser(subparsers, root_path, chinilla_plotter_options, "chinillapos", "Create a plot with the default chinilla plotter")
+    build_parser(
+        subparsers,
+        root_path,
+        chinilla_plotter_options,
+        "chinillapos",
+        "Create a plot with the default chinilla plotter",
+    )
     build_parser(subparsers, root_path, madmax_plotter_options, "madmax", "Create a plot with madMAx")
     build_parser(subparsers, root_path, bladebit_plotter_options, "bladebit", "Create a plot with bladebit")
     build_parser(subparsers, root_path, bladebit2_plotter_options, "bladebit2", "Create a plot with bladebit2")

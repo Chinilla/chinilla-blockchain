@@ -1,7 +1,12 @@
 import logging
 import pytest
 
-from chinilla.util.errors import KeychainLabelError, KeychainLabelExists, KeychainFingerprintNotFound, KeychainLabelInvalid
+from chinilla.util.errors import (
+    KeychainLabelError,
+    KeychainLabelExists,
+    KeychainFingerprintNotFound,
+    KeychainLabelInvalid,
+)
 from chinilla.util.keyring_wrapper import KeyringWrapper, DEFAULT_PASSPHRASE_IF_NO_MASTER_PASSPHRASE
 from pathlib import Path
 from typing import Type
