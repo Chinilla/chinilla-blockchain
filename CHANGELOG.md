@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.6.1 Chinilla blockchain 2022-12-04
+## 1.3.1 Chinilla blockchain 2022-12-04
 
 This release aligns with Chia 1.6.1.
 
@@ -386,8 +386,8 @@ This release aligns with Chia 1.4.0
 ### Changed
 
 - New coin selection algorithm based on bitcoin knapsack. Previously chinilla selected the largest coin
-- Updated chiapos to 1.0.10
-- Updated chiavdf to 1.0.6
+- Updated chinillapos to 1.0.10
+- Updated chinillavdf to 1.0.6
 - Updated chinillablspy to 1.0.13
 - Updated setproctitle to 1.2.3
 - Updated PyYAML to 6.0
