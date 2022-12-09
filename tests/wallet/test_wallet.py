@@ -552,7 +552,7 @@ class TestWalletSimulator:
                 uint64(0),
             )
         except ValueError:
-            assert ValueError
+            assert ValueError  # type: ignore
 
         assert under_limit_tx is not None
 
@@ -565,7 +565,7 @@ class TestWalletSimulator:
                 uint64(0),
             )
         except ValueError:
-            assert ValueError
+            assert ValueError  # type: ignore
 
         assert at_limit_tx is not None
 

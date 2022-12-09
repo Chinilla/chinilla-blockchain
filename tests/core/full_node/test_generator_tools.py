@@ -12,7 +12,7 @@ from chinilla.util.ints import uint32, uint64
 coin_ids = [std_hash(i.to_bytes(4, "big")) for i in range(10)]
 phs = [std_hash(i.to_bytes(4, "big")) for i in range(10)]
 spends: List[Spend] = [
-    Spend(
+    Spend(  # type: ignore
         coin_ids[0],
         phs[0],
         None,
@@ -24,7 +24,7 @@ spends: List[Spend] = [
         ],
         [],
     ),
-    Spend(
+    Spend(  # type: ignore
         coin_ids[1],
         phs[0],
         None,

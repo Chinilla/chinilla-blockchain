@@ -100,7 +100,9 @@ class DataLayerRpcApi:
             "/cancel_offer": self.cancel_offer,
         }
 
-    async def _state_changed(self, change: str, change_data: Optional[Dict[str, Any]]) -> List[WsRpcMessage]:
+    async def _state_changed(  # type: ignore
+        self, change: str, change_data: Optional[Dict[str, Any]]
+    ) -> List[WsRpcMessage]:
         pass
 
     async def create_data_store(self, request: Dict[str, Any]) -> EndpointResult:

@@ -6,7 +6,7 @@ from chinilla.util.streamable import Streamable, streamable
 
 
 class GeneratorBlockCacheInterface:
-    def get_generator_for_block_height(self, height: uint32) -> SerializedProgram:
+    def get_generator_for_block_height(self, height: uint32) -> SerializedProgram:  # type: ignore
         # Requested block must be a transaction block
         pass
 

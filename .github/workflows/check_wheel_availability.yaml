@@ -51,6 +51,10 @@ jobs:
             arch:
               matrix: arm
           - os:
+              matrix: linux
+            arch:
+              matrix: arm
+          - os:
               matrix: windows
             arch:
               matrix: arm

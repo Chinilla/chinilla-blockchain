@@ -645,7 +645,7 @@ class TestCATWallet:
                 [ph],
             )
         except ValueError:
-            assert ValueError
+            assert ValueError  # type: ignore
 
         assert under_limit_txs is not None
 
@@ -657,7 +657,7 @@ class TestCATWallet:
                 [ph],
             )
         except ValueError:
-            assert ValueError
+            assert ValueError  # type: ignore
 
         assert at_limit_txs is not None
 

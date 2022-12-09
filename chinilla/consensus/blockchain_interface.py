@@ -18,22 +18,22 @@ class BlockchainInterface:
     def get_peak_height(self) -> Optional[uint32]:
         pass
 
-    def block_record(self, header_hash: bytes32) -> BlockRecord:
+    def block_record(self, header_hash: bytes32) -> BlockRecord:  # type: ignore
         pass
 
-    def height_to_block_record(self, height: uint32) -> BlockRecord:
+    def height_to_block_record(self, height: uint32) -> BlockRecord:  # type: ignore
         pass
 
-    def get_ses_heights(self) -> List[uint32]:
+    def get_ses_heights(self) -> List[uint32]:  # type: ignore
         pass
 
-    def get_ses(self, height: uint32) -> SubEpochSummary:
+    def get_ses(self, height: uint32) -> SubEpochSummary:  # type: ignore
         pass
 
     def height_to_hash(self, height: uint32) -> Optional[bytes32]:
         pass
 
-    def contains_block(self, header_hash: bytes32) -> bool:
+    def contains_block(self, header_hash: bytes32) -> bool:  # type: ignore
         pass
 
     def remove_block_record(self, header_hash: bytes32) -> None:
@@ -42,7 +42,7 @@ class BlockchainInterface:
     def add_block_record(self, block_record: BlockRecord) -> None:
         pass
 
-    def contains_height(self, height: uint32) -> bool:
+    def contains_height(self, height: uint32) -> bool:  # type: ignore
         pass
 
     async def warmup(self, fork_point: uint32) -> None:
@@ -51,10 +51,10 @@ class BlockchainInterface:
     async def get_block_record_from_db(self, header_hash: bytes32) -> Optional[BlockRecord]:
         pass
 
-    async def get_block_records_in_range(self, start: int, stop: int) -> Dict[bytes32, BlockRecord]:
+    async def get_block_records_in_range(self, start: int, stop: int) -> Dict[bytes32, BlockRecord]:  # type: ignore
         pass
 
-    async def get_header_blocks_in_range(
+    async def get_header_blocks_in_range(  # type: ignore
         self, start: int, stop: int, tx_filter: bool = True
     ) -> Dict[bytes32, HeaderBlock]:
         pass
@@ -64,7 +64,7 @@ class BlockchainInterface:
     ) -> Optional[HeaderBlock]:
         pass
 
-    async def get_block_records_at(self, heights: List[uint32]) -> List[BlockRecord]:
+    async def get_block_records_at(self, heights: List[uint32]) -> List[BlockRecord]:  # type: ignore
         pass
 
     def try_block_record(self, header_hash: bytes32) -> Optional[BlockRecord]:
@@ -83,5 +83,5 @@ class BlockchainInterface:
     ) -> Optional[List[SubEpochChallengeSegment]]:
         pass
 
-    def seen_compact_proofs(self, vdf_info: VDFInfo, height: uint32) -> bool:
+    def seen_compact_proofs(self, vdf_info: VDFInfo, height: uint32) -> bool:  # type: ignore
         pass
