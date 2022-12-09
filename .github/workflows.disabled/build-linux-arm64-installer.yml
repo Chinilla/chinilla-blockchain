@@ -139,9 +139,6 @@ jobs:
         tar -xvzf /tmp/bladebit.tar.gz -C $GITHUB_WORKSPACE/bladebit
         chmod +x "$GITHUB_WORKSPACE/bladebit/bladebit"
 
-    - name: Install Rust/Cargo
-      run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-
     - uses: ./.github/actions/install
       with:
         python-version: ${{ matrix.python-version }}

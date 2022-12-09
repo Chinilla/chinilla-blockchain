@@ -28,7 +28,7 @@ jobs:
       matrix:
         python-version: [3.9]
         os:
-          - runs-on: macos-10.14
+          - runs-on: macos-latest
             name: intel
             file-suffix: ""
             mac-package-name: "Chinilla-darwin-x64"
