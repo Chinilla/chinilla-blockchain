@@ -32,7 +32,7 @@ This release aligns with Chia 1.6.1.
 - Chinillavdf updated to 1.0.7
 - Chinillapos updated to 1.0.11
 - Clvm_tools updated to 0.4.5
-- Chinilla_rs updated to 0.1.14
+- Chia_rs updated to 0.1.14
 - Clvm-tools-rs updated to 0.1.24
 - Aiohttp updated to 3.8.3
 - Colorlog updated to 6.7.0
@@ -72,11 +72,11 @@ This release aligns with Chia 1.6.1.
 - Allow developers to easily use standard Chinilla `clvm` puzzles and libraries
 - Skipped validating `GTElement` in mempool
 - Improved logging for `chinilla plotters version` errors
-- Performance improvements in `subscribe_to_phs` using CoinState from chinilla_rs
+- Performance improvements in `subscribe_to_phs` using CoinState from chia_rs
 - Performance improvements in wallet syncing by doing bulk coin record lookups
 - Performance improvements in wallet syncing by caching the last derivation path
 - Performance improvements in offer parsing by implementing a more efficient Program.uncurry()
-- Performance improvements in puzzle parsing by using rust parser (`chinilla_rs`) for Program.from_bytes()
+- Performance improvements in puzzle parsing by using rust parser (`chia_rs`) for Program.from_bytes()
 - Performance improvements in wallet by caching the uncurried puzzle in UncurriedPuzzle class
 - Implement generator_for_single_coin() in python instead of `clvm`
 - Optimize get_block_store by not parsing the full block
@@ -89,7 +89,7 @@ This release aligns with Chia 1.6.1.
 - Significant scalability improvements in NFT handling
 - Minter DID now shown in output of `chinilla wallet nft get_info` and in GUI
 - Treehash optimization for DID wallet
-- Performance improvements by using `get_puzzle_and_solution_for_coin()` from `chinilla_rs`
+- Performance improvements by using `get_puzzle_and_solution_for_coin()` from `chia_rs`
 - Adds handling for daemon not sending `initial_target_state` (thanks @bolshoytoster) (#10058)
 - Reduced log noise during wallet syncing
 - Run `get_puzzle_and_solution_for_coin` and `get_block_header` expensive API requests in separate thread
@@ -239,7 +239,7 @@ This release aligns with Chia 1.5.1
 - Don't convert `ConsensusConstants` to/from JSON
 - Move some class methods out of `Streamable`
 - Request header blocks, and new rate limits
-- Replaced the python implementation of `Coin` with the Rust native `Coin` from `chinilla_rs`
+- Replaced the python implementation of `Coin` with the Rust native `Coin` from `chia_rs`
 - Watchdog==2.1.9 for bad file descriptor avoidance
 - Be specific about `*args` in `RpcServer` state changed methods
 - Make WalletUserStore.create_wallet() raise on failure, and return non-optional
@@ -545,7 +545,7 @@ There is a known issue where harvesters will not reconnect to the farmer automat
 - Consolidated socket library to aiohttp and removed websockets dependency
 - During node startup, missing blocks in the DB will throw an exception
 - Updated cryptography to 36.0.2
-- The rust implementation of CLVM is now called `chinilla_rs` instead of `clvm_rs`.
+- The rust implementation of CLVM is now called `chia_rs` instead of `clvm_rs`.
 - Updated code to use improved rust interface `run_generator2`
 - Code improvements to prefer connecting to a local trusted node over untrusted nodes
 

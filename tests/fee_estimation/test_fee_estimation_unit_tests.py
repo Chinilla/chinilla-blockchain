@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from chinilla_rs import Coin
+from chia_rs import Coin
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.bitcoin_fee_estimator import create_bitcoin_fee_estimator

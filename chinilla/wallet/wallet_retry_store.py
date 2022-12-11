@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple
 
-from chinilla_rs import CoinState
+from chia_rs import CoinState
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.db_wrapper import DBWrapper2

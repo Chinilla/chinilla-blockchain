@@ -6,7 +6,7 @@ from clvm import SExp
 from clvm.casts import int_from_bytes
 from clvm.EvalError import EvalError
 from clvm.serialize import sexp_from_stream, sexp_to_stream
-from chinilla_rs import MEMPOOL_MODE, run_chinilla_program, serialized_length, run_generator, tree_hash
+from chia_rs import MEMPOOL_MODE, run_chia_program, serialized_length, run_generator, tree_hash
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.hash import std_hash
@@ -37,7 +37,7 @@ class Program(SExp):
         # the first argument is the buffer we want to parse. This effectively
         # leverages the rust parser and LazyNode, making it a lot faster to
         # parse serialized programs into a python compatible structure
-        cost, ret = run_chinilla_program(
+        cost, ret = run_chia_program(
             b"\x01",
             blob,
             50,
@@ -114,7 +114,7 @@ class Program(SExp):
 
     def run_with_cost(self, max_cost: int, args) -> Tuple[int, "Program"]:
         prog_args = Program.to(args)
-        cost, r = run_chinilla_program(self.as_bin(), prog_args.as_bin(), max_cost, 0)
+        cost, r = run_chia_program(self.as_bin(), prog_args.as_bin(), max_cost, 0)
         return cost, Program.to(r)
 
     def run(self, args) -> "Program":
@@ -294,7 +294,7 @@ class SerializedProgram:
     def run_with_cost(self, max_cost: int, *args) -> Tuple[int, Program]:
         return self._run(max_cost, 0, *args)
 
-    # returns an optional error code and an optional SpendBundleConditions (from chinilla_rs)
+    # returns an optional error code and an optional SpendBundleConditions (from chia_rs)
     # exactly one of those will hold a value
     def run_as_generator(
         self, max_cost: int, flags: int, *args
@@ -338,7 +338,7 @@ class SerializedProgram:
         else:
             serialized_args += _serialize(args[0])
 
-        cost, ret = run_chinilla_program(
+        cost, ret = run_chia_program(
             self._buf,
             bytes(serialized_args),
             max_cost,

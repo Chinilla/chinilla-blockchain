@@ -10,7 +10,7 @@ from typing import Callable, Optional
 from time import time
 
 
-from chinilla_rs import run_generator, MEMPOOL_MODE
+from chia_rs import run_generator, MEMPOOL_MODE
 
 from chinilla.types.blockchain_format.program import Program
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
@@ -20,7 +20,7 @@ from chinilla.util.full_block_utils import block_info_from_block, generator_from
 GENERATOR_ROM = bytes(get_generator())
 
 
-# returns an optional error code and an optional PySpendBundleConditions (from chinilla_rs)
+# returns an optional error code and an optional PySpendBundleConditions (from chia_rs)
 # exactly one of those will hold a value and the number of seconds it took to
 # run
 def run_gen(env_data: bytes, block_program_args: bytes, flags: int):

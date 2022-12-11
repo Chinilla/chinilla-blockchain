@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
-from chinilla_rs import compute_merkle_set_root
+from chia_rs import compute_merkle_set_root
 
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
 from chinilla.types.blockchain_format.sized_bytes import bytes32

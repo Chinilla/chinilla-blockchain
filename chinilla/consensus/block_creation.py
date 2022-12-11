@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import chinillablspy
 from chinillablspy import G1Element, G2Element
-from chinilla_rs import compute_merkle_set_root
+from chia_rs import compute_merkle_set_root
 from chinillabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord

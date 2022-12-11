@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from chinilla_rs import compute_merkle_set_root
+from chia_rs import compute_merkle_set_root
 from chinillabip158 import PyBIP158
 
 from chinilla.cmds.init_funcs import create_all_ssl, create_default_chinilla_config

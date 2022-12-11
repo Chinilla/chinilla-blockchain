@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, Optional, Tuple
-from chinilla_rs import (
+from chia_rs import (
     MEMPOOL_MODE,
     NO_NEG_DIV,
     get_puzzle_and_solution_for_coin as get_puzzle_and_solution_for_coin_rust,

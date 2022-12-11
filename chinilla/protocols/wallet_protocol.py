@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from chinilla_rs import CoinState, RespondToPhUpdates
+from chia_rs import CoinState, RespondToPhUpdates
 
 from chinilla.full_node.fee_estimate import FeeEstimateGroup
 from chinilla.types.blockchain_format.coin import Coin

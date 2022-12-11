@@ -5,7 +5,7 @@ import logging
 import random
 from typing import List, Optional, Tuple, Union, Dict
 
-from chinilla_rs import compute_merkle_set_root
+from chia_rs import compute_merkle_set_root
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.protocols import wallet_protocol
