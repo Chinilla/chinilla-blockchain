@@ -30,7 +30,7 @@ class CoinRecord(Streamable):
 
     @property
     def name(self) -> bytes32:
-        return self.coin.name()
+        return self.coin.name()  # type: ignore
 
     @property
     def coin_state(self) -> CoinState:

@@ -24,4 +24,4 @@ class WalletCoinRecord:
     wallet_id: int
 
     def name(self) -> bytes32:
-        return self.coin.name()
+        return self.coin.name()  # type: ignore

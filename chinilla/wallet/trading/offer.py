@@ -433,7 +433,7 @@ class Offer:
                     sibling_spends: str = "("
                     sibling_puzzles: str = "("
                     sibling_solutions: str = "("
-                    disassembled_offer_mod: str = disassemble(offer_mod)  # type: ignore
+                    disassembled_offer_mod: str = disassemble(offer_mod)
                     for sibling_coin in offered_coins:
                         if sibling_coin != coin:
                             siblings += (
@@ -445,7 +445,7 @@ class Offer:
                             )
                             sibling_spends += "0x" + bytes(coin_to_spend_dict[sibling_coin]).hex() + " "
                             sibling_puzzles += disassembled_offer_mod + " "
-                            sibling_solutions += disassemble(coin_to_solution_dict[sibling_coin]) + " "  # type: ignore
+                            sibling_solutions += disassemble(coin_to_solution_dict[sibling_coin]) + " "
                     siblings += ")"
                     sibling_spends += ")"
                     sibling_puzzles += ")"
