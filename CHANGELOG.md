@@ -388,7 +388,7 @@ This release aligns with Chia 1.4.0
 - New coin selection algorithm based on bitcoin knapsack. Previously chinilla selected the largest coin
 - Updated chinillapos to 1.0.10
 - Updated chinillavdf to 1.0.6
-- Updated chinillablspy to 1.0.13
+- Updated blspy to 1.0.13
 - Updated setproctitle to 1.2.3
 - Updated PyYAML to 6.0
 - Updated pyinstaller to 5.0
@@ -414,7 +414,7 @@ This release aligns with Chia 1.4.0
 - Simplify SizedBytes and StructStream
 - Allow services to set a non-default max request body size limit
 - Reduce the redundant computations of coin_ids in block_body_validation
-- Uses the new `from_bytes_unchecked` method in chinillablspy, to improve perfo…
+- Uses the new `from_bytes_unchecked` method in blspy, to improve perfo…
 - Remove the cache from CoinStore
 - Keep daemon websocket alive during keyring unlock
 - Support searching derived addresses on testnet.

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Optional, Dict
 
-from chinillablspy import G1Element
+from blspy import G1Element
 
 from chinilla.protocols.pool_protocol import POOL_PROTOCOL_VERSION
 from chinilla.types.blockchain_format.coin import Coin

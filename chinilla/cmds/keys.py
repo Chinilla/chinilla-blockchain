@@ -297,7 +297,7 @@ def search_cmd(
 ):
     import sys
     from .keys_funcs import search_derive, resolve_derivation_master_key
-    from chinillablspy import PrivateKey
+    from blspy import PrivateKey
 
     private_key: Optional[PrivateKey] = None
     fingerprint: Optional[int] = ctx.obj.get("fingerprint", None)

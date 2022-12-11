@@ -5,7 +5,7 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
-from chinillablspy import AugSchemeMPL, G2Element, PrivateKey
+from blspy import AugSchemeMPL, G2Element, PrivateKey
 
 import chinilla.server.ws_connection as ws
 from chinilla import __version__

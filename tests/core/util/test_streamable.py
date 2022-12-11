@@ -6,7 +6,7 @@ from dataclasses import dataclass, field, fields
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type, get_type_hints
 
 import pytest
-from chinillablspy import G1Element
+from blspy import G1Element
 from clvm_tools import binutils
 from typing_extensions import Literal, get_args
 

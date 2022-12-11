@@ -3,7 +3,7 @@ import logging
 import time
 from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING, Tuple
 
-from chinillablspy import G1Element, G2Element, AugSchemeMPL
+from blspy import G1Element, G2Element, AugSchemeMPL
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.full_node.bundle_tools import simple_solution_generator

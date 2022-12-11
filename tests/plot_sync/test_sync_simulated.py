@@ -11,7 +11,7 @@ from secrets import token_bytes
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import pytest
-from chinillablspy import G1Element
+from blspy import G1Element
 
 from chinilla.farmer.farmer_api import Farmer
 from chinilla.harvester.harvester_api import Harvester

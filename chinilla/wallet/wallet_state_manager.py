@@ -9,7 +9,7 @@ from pathlib import Path
 from secrets import token_bytes
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
-from chinillablspy import G1Element, PrivateKey
+from blspy import G1Element, PrivateKey
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.consensus.coinbase import farmer_parent_id, pool_parent_id

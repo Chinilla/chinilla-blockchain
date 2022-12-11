@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from chinillablspy import G1Element, G2Element
+from blspy import G1Element, G2Element
 from clvm_tools import binutils
 
 from chinilla.types.blockchain_format.program import Program, SerializedProgram

@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, Optional, Tuple
 
-from chinillablspy import PrivateKey
+from blspy import PrivateKey
 
 from chinilla.cmds.init_funcs import create_all_ssl
 from chinilla.consensus.coinbase import create_puzzlehash_for_pk

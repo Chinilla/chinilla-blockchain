@@ -18,7 +18,7 @@ from chinilla.types.weight_proof import (
 )
 from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
-from chinillablspy import G1Element, G2Element
+from blspy import G1Element, G2Element
 from chinilla.types.header_block import HeaderBlock
 from chinilla.types.full_block import FullBlock
 from chinilla.types.unfinished_block import UnfinishedBlock

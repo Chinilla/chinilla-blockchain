@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from chinillablspy import G1Element, G2Element, PrivateKey
+from blspy import G1Element, G2Element, PrivateKey
 
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward
 from chinilla.data_layer.data_layer_wallet import DataLayerWallet

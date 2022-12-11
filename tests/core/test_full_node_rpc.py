@@ -2,7 +2,7 @@
 from typing import List
 
 import pytest
-from chinillablspy import AugSchemeMPL
+from blspy import AugSchemeMPL
 
 from chinilla.consensus.pot_iterations import is_overflow_block
 from chinilla.full_node.signage_point import SignagePoint

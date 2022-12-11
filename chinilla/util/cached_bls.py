@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 from typing import Dict, List, Optional, Sequence
 
-from chinillablspy import AugSchemeMPL, G1Element, G2Element, GTElement
+from blspy import AugSchemeMPL, G1Element, G2Element, GTElement
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32, bytes48
 from chinilla.util.hash import std_hash

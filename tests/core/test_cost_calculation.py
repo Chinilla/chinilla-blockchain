@@ -5,7 +5,7 @@ import pathlib
 from typing import List
 
 import pytest
-from chinillablspy import G1Element
+from blspy import G1Element
 from clvm_tools import binutils
 
 from chinilla.consensus.condition_costs import ConditionCost

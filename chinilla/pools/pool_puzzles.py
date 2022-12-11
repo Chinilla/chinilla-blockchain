@@ -1,6 +1,6 @@
 import logging
 from typing import Tuple, List, Optional
-from chinillablspy import G1Element
+from blspy import G1Element
 from clvm.casts import int_from_bytes, int_to_bytes
 
 from chinilla.clvm.singleton import SINGLETON_LAUNCHER

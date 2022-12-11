@@ -9,7 +9,7 @@ import traceback
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
-from chinillablspy import AugSchemeMPL, PrivateKey, G2Element, G1Element
+from blspy import AugSchemeMPL, PrivateKey, G2Element, G1Element
 from packaging.version import Version
 
 from chinilla.consensus.block_record import BlockRecord

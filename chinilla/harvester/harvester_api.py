@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from typing import List, Tuple
 
-from chinillablspy import AugSchemeMPL, G1Element, G2Element
+from blspy import AugSchemeMPL, G1Element, G2Element
 
 from chinilla.consensus.pot_iterations import calculate_iterations_quality, calculate_sp_interval_iters
 from chinilla.harvester.harvester import Harvester

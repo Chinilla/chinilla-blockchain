@@ -9,7 +9,7 @@ from typing import Any, Callable, List, Optional, Tuple
 
 import pytest
 import pytest_asyncio
-from chinillablspy import G1Element
+from blspy import G1Element
 
 from chinilla.farmer.farmer_api import Farmer
 from chinilla.harvester.harvester_api import Harvester

@@ -11,7 +11,7 @@ from chinilla.types.clvm_cost import CLVMCost
 from chinilla.types.fee_rate import FeeRate
 from chinilla.util.inline_executor import InlineExecutor
 from typing import Dict, List, Optional, Set, Tuple
-from chinillablspy import GTElement
+from blspy import GTElement
 from chinillabip158 import PyBIP158
 
 from chinilla.util import cached_bls

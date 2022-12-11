@@ -8,7 +8,7 @@ from math import ceil
 from pathlib import Path
 from typing import Dict, ItemsView, KeysView, List, Optional, Tuple, ValuesView
 
-from chinillablspy import G1Element
+from blspy import G1Element
 from chinillapos import DiskProver
 
 from chinilla.plotting.util import parse_plot_info

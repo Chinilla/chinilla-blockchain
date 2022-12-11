@@ -4,7 +4,7 @@ import io
 from dataclasses import dataclass
 from typing import Callable, List, Optional, Tuple
 
-from chinillablspy import G1Element, G2Element
+from blspy import G1Element, G2Element
 from chia_rs import serialized_length
 from chinillabip158 import PyBIP158
 

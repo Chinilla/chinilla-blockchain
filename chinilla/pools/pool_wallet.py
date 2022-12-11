@@ -6,7 +6,7 @@ import time
 from typing import cast, Any, Optional, Set, Tuple, List, Dict, TYPE_CHECKING
 from typing_extensions import final
 
-from chinillablspy import PrivateKey, G2Element, G1Element
+from blspy import PrivateKey, G2Element, G1Element
 
 from chinilla.pools.pool_config import PoolWalletConfig, load_pool_config, update_pool_config
 from chinilla.pools.pool_wallet_info import (

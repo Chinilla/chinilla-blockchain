@@ -1,6 +1,6 @@
 from typing import List
 
-from chinillablspy import AugSchemeMPL, G2Element, PrivateKey
+from blspy import AugSchemeMPL, G2Element, PrivateKey
 
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.util.condition_tools import conditions_by_opcode, conditions_for_solution, pkm_pairs_for_conditions_dict

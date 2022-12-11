@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
 
-from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 from clvm.casts import int_from_bytes, int_to_bytes
 
 from chinilla.consensus.constants import ConsensusConstants

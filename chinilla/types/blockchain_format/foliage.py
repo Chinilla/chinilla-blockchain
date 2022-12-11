@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
 
-from chinillablspy import G2Element
+from blspy import G2Element
 
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.pool_target import PoolTarget

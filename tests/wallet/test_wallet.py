@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import pytest
-from chinillablspy import AugSchemeMPL, G1Element, G2Element
+from blspy import AugSchemeMPL, G1Element, G2Element
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.protocols.full_node_protocol import RespondBlock
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi

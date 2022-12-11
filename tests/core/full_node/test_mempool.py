@@ -30,7 +30,7 @@ from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
 from chinilla.util.api_decorators import api_request, peer_required, bytes_required
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
 from chinilla.full_node.pending_tx_cache import PendingTxCache
-from chinillablspy import G2Element
+from blspy import G2Element
 
 from chinilla.util.recursive_replace import recursive_replace
 from tests.blockchain.blockchain_test_utils import _validate_and_add_block
@@ -43,7 +43,7 @@ from chinilla.consensus.condition_costs import ConditionCost
 from chinilla.types.blockchain_format.program import SerializedProgram
 from clvm_tools import binutils
 from chinilla.types.generator_types import BlockGenerator
-from chinillablspy import G1Element
+from blspy import G1Element
 from chinilla.types.spend_bundle_conditions import SpendBundleConditions, Spend
 
 from tests.util.misc import assert_runtime

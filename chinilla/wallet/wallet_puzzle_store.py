@@ -4,7 +4,7 @@ import asyncio
 import logging
 from typing import Dict, List, Optional, Set, Tuple
 
-from chinillablspy import G1Element
+from blspy import G1Element
 
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.db_wrapper import DBWrapper2, execute_fetchone

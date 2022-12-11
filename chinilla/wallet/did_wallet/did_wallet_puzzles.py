@@ -1,7 +1,7 @@
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.blockchain_format.program import Program
 from typing import List, Optional, Tuple, Iterator, Dict
-from chinillablspy import G1Element
+from blspy import G1Element
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.util.ints import uint64

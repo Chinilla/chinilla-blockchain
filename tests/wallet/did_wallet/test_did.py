@@ -2,7 +2,7 @@ import json
 from typing import Optional
 
 import pytest
-from chinillablspy import AugSchemeMPL, G1Element, G2Element
+from blspy import AugSchemeMPL, G1Element, G2Element
 
 from chinilla.consensus.block_rewards import calculate_pool_reward, calculate_base_farmer_reward
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi

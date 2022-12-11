@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union

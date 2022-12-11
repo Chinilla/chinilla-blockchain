@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import aiohttp
-from chinillablspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
+from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
 import chinilla.server.ws_connection as ws  # lgtm [py/import-and-import-from]
 from chinilla.consensus.constants import ConsensusConstants

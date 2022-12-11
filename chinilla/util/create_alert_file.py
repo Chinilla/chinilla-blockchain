@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List
 
-from chinillablspy import AugSchemeMPL
+from blspy import AugSchemeMPL
 
 from chinilla.util.ints import uint32
 from chinilla.util.keychain import Keychain

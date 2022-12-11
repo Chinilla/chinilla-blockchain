@@ -7,7 +7,7 @@ import math
 import time
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Type, TypeVar, Union
 
-from chinillablspy import AugSchemeMPL, G1Element, G2Element
+from blspy import AugSchemeMPL, G1Element, G2Element
 from clvm.casts import int_from_bytes, int_to_bytes
 
 from chinilla.protocols.wallet_protocol import CoinState

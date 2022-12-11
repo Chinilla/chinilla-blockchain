@@ -1,6 +1,6 @@
 import pytest
 
-from chinillablspy import G2Element
+from blspy import G2Element
 
 from chinilla.clvm.spend_sim import SpendSim, SimClient
 from chinilla.types.blockchain_format.sized_bytes import bytes32

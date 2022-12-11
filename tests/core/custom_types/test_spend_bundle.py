@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from chinillablspy import G2Element
+from blspy import G2Element
 
 from chinilla.types.spend_bundle import SpendBundle
 

@@ -1,5 +1,5 @@
 # flake8: noqa: E501
-from chinillablspy import AugSchemeMPL, PrivateKey
+from blspy import AugSchemeMPL, PrivateKey
 
 from chinilla.pools.pool_config import PoolWalletConfig
 from chinilla.util.config import create_default_chinilla_config, load_config, lock_config, save_config

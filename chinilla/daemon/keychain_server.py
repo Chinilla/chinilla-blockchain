@@ -1,6 +1,6 @@
 import logging
 
-from chinillablspy import PrivateKey
+from blspy import PrivateKey
 from chinilla.cmds.init_funcs import check_keys
 from chinilla.util.errors import KeychainException, KeychainFingerprintNotFound
 from chinilla.util.ints import uint32

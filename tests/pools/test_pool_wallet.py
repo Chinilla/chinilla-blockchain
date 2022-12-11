@@ -6,7 +6,7 @@ from typing import Any, List, Optional, cast
 from unittest.mock import MagicMock
 
 import pytest
-from chinillablspy import G1Element
+from blspy import G1Element
 
 from benchmarks.utils import rand_g1, rand_hash
 from chinilla.pools.pool_wallet import PoolWallet

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Dict
 
-import chinillablspy
+import blspy
 
 from chinilla.full_node.bundle_tools import simple_solution_generator
 from chinilla.types.blockchain_format.coin import Coin
@@ -18,14 +18,14 @@ from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import puzzle_
 GROUP_ORDER = 0x73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001
 
 
-def int_to_public_key(index: int) -> chinillablspy.G1Element:
+def int_to_public_key(index: int) -> blspy.G1Element:
     index = index % GROUP_ORDER
-    private_key_from_int = chinillablspy.PrivateKey.from_bytes(index.to_bytes(32, "big"))
+    private_key_from_int = blspy.PrivateKey.from_bytes(index.to_bytes(32, "big"))
     return private_key_from_int.get_g1()
 
 
 def puzzle_hash_for_index(index: int, puzzle_hash_db: dict) -> bytes32:
-    public_key: chinillablspy.G1Element = int_to_public_key(index)
+    public_key: blspy.G1Element = int_to_public_key(index)
     puzzle: Program = puzzle_for_pk(public_key)
     puzzle_hash: bytes32 = puzzle.get_tree_hash()
     puzzle_hash_db[puzzle_hash] = puzzle
@@ -61,7 +61,7 @@ def make_spend_bundle(count: int) -> SpendBundle:
         coin_spend = CoinSpend(coin, puzzle_reveal, solution)
         coin_spends.append(coin_spend)
 
-    spend_bundle = SpendBundle(coin_spends, chinillablspy.G2Element())
+    spend_bundle = SpendBundle(coin_spends, blspy.G2Element())
     return spend_bundle
 
 

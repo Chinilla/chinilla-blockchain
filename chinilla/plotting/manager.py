@@ -8,7 +8,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
-from chinillablspy import G1Element
+from blspy import G1Element
 from chinillapos import DiskProver
 
 from chinilla.consensus.pos_quality import UI_ACTUAL_SPACE_CONSTANT_FACTOR, _expected_plot_size
