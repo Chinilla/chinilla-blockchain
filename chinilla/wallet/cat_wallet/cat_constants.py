@@ -1,11 +1,18 @@
 from __future__ import annotations
 
-STABLY_USDS = {
-    "asset_id": "6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589",
-    "name": "Stably USD",
-    "symbol": "USDS",
+FOUNDERS_TOKEN = {
+    "asset_id": "33bbcb7aa011958c7c3f2eb40b243779a70dedf6160c343670e7540f5403ab15",
+    "name": "Founders Token",
+    "symbol": "CFT",
+}
+
+EARLY_FARMER = {
+    "asset_id": "9c0916102ee58599dd639542cbd069776759eb1af10901873b518b79191cbbf6",
+    "name": "Early Farmer",
+    "symbol": "CEF",
 }
 
 DEFAULT_CATS = {
-    STABLY_USDS["asset_id"]: STABLY_USDS,
+    FOUNDERS_TOKEN["asset_id"]: FOUNDERS_TOKEN,
+    EARLY_FARMER["asset_id"]: EARLY_FARMER,
 }
