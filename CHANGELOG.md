@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.3.1 Chinilla blockchain 2022-12-04
+## 1.3.1 Chinilla blockchain Unreleased
 
 This release aligns with Chia 1.6.1.
 
