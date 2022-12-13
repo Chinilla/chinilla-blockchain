@@ -6,20 +6,20 @@ from typing import Any, Dict, List
 
 import pytest
 
-from chia.consensus.cost_calculator import NPCResult
-from chia.full_node.bundle_tools import simple_solution_generator
-from chia.full_node.mempool_check_conditions import get_name_puzzle_conditions
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.blockchain_format.program import INFINITE_COST
-from chia.util.ints import uint64
-from chia.wallet.cat_wallet.cat_wallet import CATWallet
-from chia.wallet.outer_puzzles import AssetType
-from chia.wallet.puzzle_drivers import PuzzleInfo
-from chia.wallet.trading.offer import Offer
-from chia.wallet.trading.trade_status import TradeStatus
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.util.transaction_type import TransactionType
+from chinilla.consensus.cost_calculator import NPCResult
+from chinilla.full_node.bundle_tools import simple_solution_generator
+from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.blockchain_format.program import INFINITE_COST
+from chinilla.util.ints import uint64
+from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
+from chinilla.wallet.outer_puzzles import AssetType
+from chinilla.wallet.puzzle_drivers import PuzzleInfo
+from chinilla.wallet.trading.offer import Offer
+from chinilla.wallet.trading.trade_status import TradeStatus
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.util.transaction_type import TransactionType
 from tests.util.wallet_is_synced import wallets_are_synced
 
 buffer_blocks = 4

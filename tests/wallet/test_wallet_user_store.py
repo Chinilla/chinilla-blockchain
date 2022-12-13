@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from chia.wallet.util.wallet_types import WalletType
-from chia.wallet.wallet_user_store import WalletUserStore
+from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.wallet.wallet_user_store import WalletUserStore
 from tests.util.db_connection import DBConnection
 
 

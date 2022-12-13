@@ -8,17 +8,17 @@ import pytest
 from blspy import G1Element
 from clvm_tools import binutils
 
-from chia.consensus.condition_costs import ConditionCost
-from chia.consensus.cost_calculator import NPCResult
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.bundle_tools import simple_solution_generator
-from chia.full_node.mempool_check_conditions import get_name_puzzle_conditions, get_puzzle_and_solution_for_coin
-from chia.simulator.block_tools import test_constants
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import Program, SerializedProgram
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.generator_types import BlockGenerator
-from chia.wallet.puzzles import p2_delegated_puzzle_or_hidden_puzzle
+from chinilla.consensus.condition_costs import ConditionCost
+from chinilla.consensus.cost_calculator import NPCResult
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.full_node.bundle_tools import simple_solution_generator
+from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions, get_puzzle_and_solution_for_coin
+from chinilla.simulator.block_tools import test_constants
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import Program, SerializedProgram
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.generator_types import BlockGenerator
+from chinilla.wallet.puzzles import p2_delegated_puzzle_or_hidden_puzzle
 from tests.util.misc import assert_runtime
 
 from .make_block_generator import make_block_generator
@@ -278,7 +278,7 @@ async def test_get_puzzle_and_solution_for_coin_performance():
 
     from clvm.casts import int_from_bytes
 
-    from chia.full_node.mempool_check_conditions import DESERIALIZE_MOD
+    from chinilla.full_node.mempool_check_conditions import DESERIALIZE_MOD
     from tests.core.large_block import LARGE_BLOCK
 
     spends: List[Coin] = []

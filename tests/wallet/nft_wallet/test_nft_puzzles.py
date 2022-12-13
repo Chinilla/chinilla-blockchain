@@ -5,19 +5,19 @@ from typing import Tuple
 
 from clvm.casts import int_from_bytes
 
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.wallet.nft_wallet import uncurry_nft
-from chia.wallet.nft_wallet.nft_puzzles import (
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.wallet.nft_wallet import uncurry_nft
+from chinilla.wallet.nft_wallet.nft_puzzles import (
     construct_ownership_layer,
     create_full_puzzle,
     create_nft_layer_puzzle_with_curry_params,
     recurry_nft_puzzle,
 )
-from chia.wallet.outer_puzzles import match_puzzle
-from chia.wallet.puzzles.load_clvm import load_clvm
-from chia.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import puzzle_for_pk, solution_for_conditions
-from chia.wallet.uncurried_puzzle import uncurry_puzzle
+from chinilla.wallet.outer_puzzles import match_puzzle
+from chinilla.wallet.puzzles.load_clvm import load_clvm
+from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import puzzle_for_pk, solution_for_conditions
+from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
 from tests.core.make_block_generator import int_to_public_key
 
 SINGLETON_MOD = load_clvm("singleton_top_layer_v1_1.clvm")

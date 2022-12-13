@@ -10,42 +10,42 @@ import pytest
 import pytest_asyncio
 from blspy import G2Element
 
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.consensus.coinbase import create_puzzlehash_for_pk
-from chia.rpc.full_node_rpc_client import FullNodeRpcClient
-from chia.rpc.wallet_rpc_client import WalletRpcClient
-from chia.server.server import ChiaServer
-from chia.simulator.full_node_simulator import FullNodeSimulator
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_record import CoinRecord
-from chia.types.coin_spend import CoinSpend
-from chia.types.peer_info import PeerInfo
-from chia.types.spend_bundle import SpendBundle
-from chia.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
-from chia.util.config import lock_and_load_config, save_config
-from chia.util.hash import std_hash
-from chia.util.ints import uint16, uint32, uint64
-from chia.wallet.cat_wallet.cat_constants import DEFAULT_CATS
-from chia.wallet.cat_wallet.cat_wallet import CATWallet
-from chia.wallet.derive_keys import master_sk_to_wallet_sk, master_sk_to_wallet_sk_unhardened
-from chia.wallet.did_wallet.did_wallet import DIDWallet
-from chia.wallet.nft_wallet.nft_wallet import NFTWallet
-from chia.wallet.puzzles.cat_loader import CAT_MOD
-from chia.wallet.trading.trade_status import TradeStatus
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.transaction_sorting import SortKey
-from chia.wallet.uncurried_puzzle import uncurry_puzzle
-from chia.wallet.util.address_type import AddressType
-from chia.wallet.util.compute_memos import compute_memos
-from chia.wallet.util.wallet_types import WalletType
-from chia.wallet.wallet import Wallet
-from chia.wallet.wallet_node import WalletNode
-from chia.wallet.wallet_protocol import WalletProtocol
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.consensus.coinbase import create_puzzlehash_for_pk
+from chinilla.rpc.full_node_rpc_client import FullNodeRpcClient
+from chinilla.rpc.wallet_rpc_client import WalletRpcClient
+from chinilla.server.server import ChiaServer
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_record import CoinRecord
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.peer_info import PeerInfo
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
+from chinilla.util.config import lock_and_load_config, save_config
+from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.cat_wallet.cat_constants import DEFAULT_CATS
+from chinilla.wallet.cat_wallet.cat_wallet import CATWallet
+from chinilla.wallet.derive_keys import master_sk_to_wallet_sk, master_sk_to_wallet_sk_unhardened
+from chinilla.wallet.did_wallet.did_wallet import DIDWallet
+from chinilla.wallet.nft_wallet.nft_wallet import NFTWallet
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
+from chinilla.wallet.trading.trade_status import TradeStatus
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.transaction_sorting import SortKey
+from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
+from chinilla.wallet.util.address_type import AddressType
+from chinilla.wallet.util.compute_memos import compute_memos
+from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.wallet.wallet import Wallet
+from chinilla.wallet.wallet_node import WalletNode
+from chinilla.wallet.wallet_protocol import WalletProtocol
 from tests.util.wallet_is_synced import wallet_is_synced
 
 log = logging.getLogger(__name__)

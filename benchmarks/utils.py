@@ -12,20 +12,20 @@ import aiosqlite
 import click
 from blspy import AugSchemeMPL, G1Element, G2Element
 
-from chia.consensus.coinbase import create_farmer_coin, create_pool_coin
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.types.blockchain_format.classgroup import ClassgroupElement
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
-from chia.types.blockchain_format.pool_target import PoolTarget
-from chia.types.blockchain_format.program import SerializedProgram
-from chia.types.blockchain_format.proof_of_space import ProofOfSpace
-from chia.types.blockchain_format.reward_chain_block import RewardChainBlock
-from chia.types.blockchain_format.sized_bytes import bytes32, bytes100
-from chia.types.blockchain_format.vdf import VDFInfo, VDFProof
-from chia.types.full_block import FullBlock
-from chia.util.db_wrapper import DBWrapper2
-from chia.util.ints import uint8, uint32, uint64, uint128
+from chinilla.consensus.coinbase import create_farmer_coin, create_pool_coin
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.types.blockchain_format.classgroup import ClassgroupElement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.pool_target import PoolTarget
+from chinilla.types.blockchain_format.program import SerializedProgram
+from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
+from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
+from chinilla.types.blockchain_format.sized_bytes import bytes32, bytes100
+from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
+from chinilla.types.full_block import FullBlock
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.ints import uint8, uint32, uint64, uint128
 
 # farmer puzzle hash
 ph = bytes32(b"a" * 32)

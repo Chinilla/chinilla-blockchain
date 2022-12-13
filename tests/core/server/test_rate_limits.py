@@ -5,17 +5,17 @@ from typing import List
 
 import pytest
 
-from chia.protocols.protocol_message_types import ProtocolMessageTypes
-from chia.protocols.shared_protocol import Capability
-from chia.server.outbound_message import make_msg
-from chia.server.rate_limit_numbers import compose_rate_limits, get_rate_limits_to_use
-from chia.server.rate_limit_numbers import rate_limits as rl_numbers
-from chia.server.rate_limits import RateLimiter
-from chia.server.server import ChiaServer
-from chia.server.ws_connection import WSChiaConnection
-from chia.simulator.block_tools import test_constants
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16
+from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
+from chinilla.protocols.shared_protocol import Capability
+from chinilla.server.outbound_message import make_msg
+from chinilla.server.rate_limit_numbers import compose_rate_limits, get_rate_limits_to_use
+from chinilla.server.rate_limit_numbers import rate_limits as rl_numbers
+from chinilla.server.rate_limits import RateLimiter
+from chinilla.server.server import ChiaServer
+from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.simulator.block_tools import test_constants
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16
 from tests.conftest import node_with_params
 
 constants = test_constants

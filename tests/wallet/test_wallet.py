@@ -8,26 +8,26 @@ from typing import Any, Dict, List, Tuple
 import pytest
 from blspy import AugSchemeMPL, G1Element, G2Element
 
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.protocols.full_node_protocol import RespondBlock
-from chia.rpc.wallet_rpc_api import WalletRpcApi
-from chia.server.server import ChiaServer
-from chia.simulator.block_tools import BlockTools
-from chia.simulator.full_node_simulator import FullNodeSimulator
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
-from chia.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.bech32m import encode_puzzle_hash
-from chia.util.ints import uint16, uint32, uint64
-from chia.wallet.derive_keys import master_sk_to_wallet_sk
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.util.compute_memos import compute_memos
-from chia.wallet.util.transaction_type import TransactionType
-from chia.wallet.util.wallet_types import AmountWithPuzzlehash
-from chia.wallet.wallet_node import WalletNode, get_wallet_db_path
-from chia.wallet.wallet_state_manager import WalletStateManager
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.protocols.full_node_protocol import RespondBlock
+from chinilla.rpc.wallet_rpc_api import WalletRpcApi
+from chinilla.server.server import ChiaServer
+from chinilla.simulator.block_tools import BlockTools
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
+from chinilla.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.bech32m import encode_puzzle_hash
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.derive_keys import master_sk_to_wallet_sk
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.util.compute_memos import compute_memos
+from chinilla.wallet.util.transaction_type import TransactionType
+from chinilla.wallet.util.wallet_types import AmountWithPuzzlehash
+from chinilla.wallet.wallet_node import WalletNode, get_wallet_db_path
+from chinilla.wallet.wallet_state_manager import WalletStateManager
 from tests.util.wallet_is_synced import wallet_is_synced
 
 

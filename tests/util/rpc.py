@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from chia.rpc.rpc_client import RpcClient
-from chia.rpc.rpc_server import RpcApiProtocol
+from chinilla.rpc.rpc_client import RpcClient
+from chinilla.rpc.rpc_server import RpcApiProtocol
 
 
 async def validate_get_routes(client: RpcClient, api: RpcApiProtocol) -> None:

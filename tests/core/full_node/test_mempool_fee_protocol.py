@@ -5,16 +5,16 @@ from typing import List, Tuple, Union
 
 import pytest
 
-from chia.full_node.full_node_api import FullNodeAPI
-from chia.protocols import full_node_protocol, wallet_protocol
-from chia.protocols.protocol_message_types import ProtocolMessageTypes
-from chia.protocols.wallet_protocol import RespondFeeEstimates
-from chia.server.server import ChiaServer
-from chia.simulator.block_tools import BlockTools
-from chia.simulator.full_node_simulator import FullNodeSimulator
-from chia.simulator.time_out_assert import time_out_assert
-from chia.util.ints import uint64
-from chia.wallet.wallet import Wallet
+from chinilla.full_node.full_node_api import FullNodeAPI
+from chinilla.protocols import full_node_protocol, wallet_protocol
+from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
+from chinilla.protocols.wallet_protocol import RespondFeeEstimates
+from chinilla.server.server import ChiaServer
+from chinilla.simulator.block_tools import BlockTools
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.util.ints import uint64
+from chinilla.wallet.wallet import Wallet
 from tests.core.node_height import node_height_at_least
 
 

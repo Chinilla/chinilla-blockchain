@@ -7,17 +7,17 @@ import logging
 import pytest
 from aiohttp import ClientSession, ClientTimeout, ServerDisconnectedError, WSCloseCode, WSMessage, WSMsgType
 
-from chia.full_node.full_node_api import FullNodeAPI
-from chia.protocols import full_node_protocol
-from chia.protocols.protocol_message_types import ProtocolMessageTypes
-from chia.protocols.shared_protocol import Handshake
-from chia.server.outbound_message import Message, make_msg
-from chia.server.rate_limits import RateLimiter
-from chia.server.ws_connection import WSChiaConnection
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.peer_info import PeerInfo
-from chia.util.errors import Err
-from chia.util.ints import uint16, uint64
+from chinilla.full_node.full_node_api import FullNodeAPI
+from chinilla.protocols import full_node_protocol
+from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
+from chinilla.protocols.shared_protocol import Handshake
+from chinilla.server.outbound_message import Message, make_msg
+from chinilla.server.rate_limits import RateLimiter
+from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.errors import Err
+from chinilla.util.ints import uint16, uint64
 
 log = logging.getLogger(__name__)
 

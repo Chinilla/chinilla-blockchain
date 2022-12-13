@@ -13,17 +13,17 @@ import pytest
 from blspy import G2Element
 from clvm_tools.binutils import assemble
 
-from chia.simulator.block_tools import BlockTools
-from chia.simulator.keyring import TempKeyring
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.program import Program
-from chia.types.coin_record import CoinRecord
-from chia.types.coin_spend import CoinSpend
-from chia.types.condition_opcodes import ConditionOpcode
-from chia.types.full_block import FullBlock
-from chia.types.spend_bundle import SpendBundle
-from chia.util.errors import Err
-from chia.util.ints import uint32
+from chinilla.simulator.block_tools import BlockTools
+from chinilla.simulator.keyring import TempKeyring
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.coin_record import CoinRecord
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.condition_opcodes import ConditionOpcode
+from chinilla.types.full_block import FullBlock
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.errors import Err
+from chinilla.util.ints import uint32
 
 from ...blockchain.blockchain_test_utils import _validate_and_add_block
 from .ram_db import create_ram_blockchain

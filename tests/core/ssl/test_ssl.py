@@ -5,15 +5,15 @@ import asyncio
 import aiohttp
 import pytest
 
-from chia.protocols.shared_protocol import capabilities, protocol_version
-from chia.server.outbound_message import NodeType
-from chia.server.server import ChiaServer, ssl_context_for_client
-from chia.server.ssl_context import chia_ssl_ca_paths, private_ssl_ca_paths
-from chia.server.ws_connection import WSChiaConnection
-from chia.ssl.create_ssl import generate_ca_signed_cert
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16
+from chinilla.protocols.shared_protocol import capabilities, protocol_version
+from chinilla.server.outbound_message import NodeType
+from chinilla.server.server import ChiaServer, ssl_context_for_client
+from chinilla.server.ssl_context import chia_ssl_ca_paths, private_ssl_ca_paths
+from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.ssl.create_ssl import generate_ca_signed_cert
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16
 
 
 async def establish_connection(server: ChiaServer, self_hostname: str, ssl_context) -> None:

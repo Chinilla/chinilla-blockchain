@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 import pytest
 
-from chia.wallet.util.address_type import AddressType, ensure_valid_address, is_valid_address
+from chinilla.wallet.util.address_type import AddressType, ensure_valid_address, is_valid_address
 
 
 @pytest.mark.parametrize("prefix", [None])

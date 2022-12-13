@@ -9,14 +9,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from chia.protocols import full_node_protocol
-from chia.simulator.block_tools import test_constants
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.blockchain_format.sub_epoch_summary import SubEpochSummary
-from chia.types.full_block import FullBlock
-from chia.types.peer_info import PeerInfo
-from chia.util.hash import std_hash
-from chia.util.ints import uint16
+from chinilla.protocols import full_node_protocol
+from chinilla.simulator.block_tools import test_constants
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
+from chinilla.types.full_block import FullBlock
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint16
 from tests.core.node_height import node_height_between, node_height_exactly
 
 log = logging.getLogger(__name__)

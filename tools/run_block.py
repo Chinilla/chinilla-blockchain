@@ -45,20 +45,20 @@ from typing import Dict, List, Tuple
 import click
 from clvm.casts import int_from_bytes
 
-from chia.consensus.constants import ConsensusConstants
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import SerializedProgram
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.condition_opcodes import ConditionOpcode
-from chia.types.condition_with_args import ConditionWithArgs
-from chia.types.generator_types import BlockGenerator
-from chia.util.config import load_config
-from chia.util.default_root import DEFAULT_ROOT_PATH
-from chia.util.ints import uint32, uint64
-from chia.wallet.cat_wallet.cat_utils import match_cat_puzzle
-from chia.wallet.puzzles.load_clvm import load_serialized_clvm_maybe_recompile
-from chia.wallet.uncurried_puzzle import uncurry_puzzle
+from chinilla.consensus.constants import ConsensusConstants
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import SerializedProgram
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.condition_opcodes import ConditionOpcode
+from chinilla.types.condition_with_args import ConditionWithArgs
+from chinilla.types.generator_types import BlockGenerator
+from chinilla.util.config import load_config
+from chinilla.util.default_root import DEFAULT_ROOT_PATH
+from chinilla.util.ints import uint32, uint64
+from chinilla.wallet.cat_wallet.cat_utils import match_cat_puzzle
+from chinilla.wallet.puzzles.load_clvm import load_serialized_clvm_maybe_recompile
+from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
 
 DESERIALIZE_MOD = load_serialized_clvm_maybe_recompile(
     "chialisp_deserialisation.clvm", package_or_requirement="chia.wallet.puzzles"

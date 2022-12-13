@@ -9,8 +9,8 @@ import pytest
 from blspy import G1Element
 
 from benchmarks.utils import rand_g1, rand_hash
-from chia.pools.pool_wallet import PoolWallet
-from chia.types.blockchain_format.sized_bytes import bytes32
+from chinilla.pools.pool_wallet import PoolWallet
+from chinilla.types.blockchain_format.sized_bytes import bytes32
 
 
 @dataclass

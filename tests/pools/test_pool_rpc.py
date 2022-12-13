@@ -10,27 +10,27 @@ import pytest
 import pytest_asyncio
 from blspy import G1Element
 
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.full_node.full_node_api import FullNodeAPI
-from chia.pools.pool_puzzles import SINGLETON_LAUNCHER_HASH
-from chia.pools.pool_wallet_info import PoolSingletonState, PoolWalletInfo
-from chia.protocols import full_node_protocol
-from chia.protocols.full_node_protocol import RespondBlock
-from chia.rpc.wallet_rpc_client import WalletRpcClient
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.bech32m import encode_puzzle_hash
-from chia.util.byte_types import hexstr_to_bytes
-from chia.util.config import load_config
-from chia.util.ints import uint16, uint32
-from chia.wallet.derive_keys import find_authentication_sk, find_owner_sk
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.util.wallet_types import WalletType
-from chia.simulator.block_tools import BlockTools, get_plot_dir
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.full_node.full_node_api import FullNodeAPI
+from chinilla.pools.pool_puzzles import SINGLETON_LAUNCHER_HASH
+from chinilla.pools.pool_wallet_info import PoolSingletonState, PoolWalletInfo
+from chinilla.protocols import full_node_protocol
+from chinilla.protocols.full_node_protocol import RespondBlock
+from chinilla.rpc.wallet_rpc_client import WalletRpcClient
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.bech32m import encode_puzzle_hash
+from chinilla.util.byte_types import hexstr_to_bytes
+from chinilla.util.config import load_config
+from chinilla.util.ints import uint16, uint32
+from chinilla.wallet.derive_keys import find_authentication_sk, find_owner_sk
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.simulator.block_tools import BlockTools, get_plot_dir
 from tests.util.wallet_is_synced import wallet_is_synced
-from chia.simulator.setup_nodes import setup_simulators_and_wallets_service
-from chia.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
+from chinilla.simulator.setup_nodes import setup_simulators_and_wallets_service
+from chinilla.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
 
 # TODO: Compare deducted fees in all tests against reported total_fee
 

@@ -4,11 +4,11 @@ from secrets import token_bytes
 
 import pytest
 
-from chia.types.blockchain_format.coin import Coin
-from chia.util.ints import uint32, uint64
-from chia.wallet.util.wallet_types import WalletType
-from chia.wallet.wallet_coin_record import WalletCoinRecord
-from chia.wallet.wallet_coin_store import WalletCoinStore
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.util.ints import uint32, uint64
+from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.wallet.wallet_coin_record import WalletCoinRecord
+from chinilla.wallet.wallet_coin_store import WalletCoinStore
 from tests.util.db_connection import DBConnection
 
 coin_1 = Coin(token_bytes(32), token_bytes(32), uint64(12312))

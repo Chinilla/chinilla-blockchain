@@ -8,17 +8,17 @@ from typing import List
 
 import pytest
 
-from chia.cmds.db_validate_func import validate_v2
-from chia.consensus.blockchain import Blockchain
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.consensus.multiprocess_validation import PreValidationResult
-from chia.full_node.block_store import BlockStore
-from chia.full_node.coin_store import CoinStore
-from chia.simulator.block_tools import test_constants
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.full_block import FullBlock
-from chia.util.db_wrapper import DBWrapper2
-from chia.util.ints import uint64
+from chinilla.cmds.db_validate_func import validate_v2
+from chinilla.consensus.blockchain import Blockchain
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.consensus.multiprocess_validation import PreValidationResult
+from chinilla.full_node.block_store import BlockStore
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.simulator.block_tools import test_constants
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.full_block import FullBlock
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.ints import uint64
 from tests.util.temp_file import TempFile
 
 

@@ -4,24 +4,24 @@ from typing import List, Tuple, Optional
 
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.blockchain_format.coin import Coin
-from chia.types.coin_spend import CoinSpend
-from chia.types.condition_opcodes import ConditionOpcode
-from chia.types.spend_bundle import SpendBundle
-from chia.util.errors import Err
-from chia.util.ints import uint64
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.wallet.lineage_proof import LineageProof
-from chia.wallet.puzzles import p2_conditions, p2_delegated_puzzle_or_hidden_puzzle
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.condition_opcodes import ConditionOpcode
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.errors import Err
+from chinilla.util.ints import uint64
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.wallet.lineage_proof import LineageProof
+from chinilla.wallet.puzzles import p2_conditions, p2_delegated_puzzle_or_hidden_puzzle
 from tests.util.key_tool import KeyTool
 from tests.clvm.test_puzzles import (
     public_key_for_index,
     secret_exponent_for_index,
 )
 
-from chia.clvm.spend_sim import SpendSim, SimClient
+from chinilla.clvm.spend_sim import SpendSim, SimClient
 
 """
 This test suite aims to test:
@@ -91,11 +91,11 @@ class TestSingleton:
             starting_puzzle: Program = p2_delegated_puzzle_or_hidden_puzzle.puzzle_for_pk(pk)  # noqa
 
             if version == 0:
-                from chia.wallet.puzzles import singleton_top_layer
+                from chinilla.wallet.puzzles import singleton_top_layer
 
                 adapted_puzzle: Program = singleton_top_layer.adapt_inner_to_singleton(starting_puzzle)  # noqa
             else:
-                from chia.wallet.puzzles import singleton_top_layer_v1_1 as singleton_top_layer
+                from chinilla.wallet.puzzles import singleton_top_layer_v1_1 as singleton_top_layer
 
                 adapted_puzzle = starting_puzzle
             adapted_puzzle_hash: bytes32 = adapted_puzzle.get_tree_hash()

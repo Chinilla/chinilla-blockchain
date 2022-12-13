@@ -5,24 +5,24 @@ from typing import Any, Dict, List, Optional
 import pytest
 from blspy import G2Element
 
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_spend import CoinSpend
-from chia.types.mempool_inclusion_status import MempoolInclusionStatus
-from chia.types.spend_bundle import SpendBundle
-from chia.util.ints import uint64
-from chia.wallet.cat_wallet.cat_utils import (
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.ints import uint64
+from chinilla.wallet.cat_wallet.cat_utils import (
     SpendableCAT,
     construct_cat_puzzle,
     unsigned_spend_bundle_for_spendable_cats,
 )
-from chia.wallet.outer_puzzles import AssetType
-from chia.wallet.payment import Payment
-from chia.wallet.puzzle_drivers import PuzzleInfo
-from chia.wallet.puzzles.cat_loader import CAT_MOD
-from chia.wallet.trading.offer import NotarizedPayment, Offer
+from chinilla.wallet.outer_puzzles import AssetType
+from chinilla.wallet.payment import Payment
+from chinilla.wallet.puzzle_drivers import PuzzleInfo
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
+from chinilla.wallet.trading.offer import NotarizedPayment, Offer
 from tests.clvm.benchmark_costs import cost_of_spend_bundle
 
 acs = Program.to(1)

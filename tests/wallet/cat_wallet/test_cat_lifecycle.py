@@ -6,23 +6,23 @@ import pytest
 from blspy import AugSchemeMPL, G2Element, PrivateKey
 from clvm.casts import int_to_bytes
 
-from chia.clvm.spend_sim import SimClient, SpendSim
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_spend import CoinSpend
-from chia.types.mempool_inclusion_status import MempoolInclusionStatus
-from chia.types.spend_bundle import SpendBundle
-from chia.util.errors import Err
-from chia.util.ints import uint64
-from chia.wallet.cat_wallet.cat_utils import (
+from chinilla.clvm.spend_sim import SimClient, SpendSim
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.errors import Err
+from chinilla.util.ints import uint64
+from chinilla.wallet.cat_wallet.cat_utils import (
     SpendableCAT,
     construct_cat_puzzle,
     unsigned_spend_bundle_for_spendable_cats,
 )
-from chia.wallet.lineage_proof import LineageProof
-from chia.wallet.puzzles.cat_loader import CAT_MOD
-from chia.wallet.puzzles.tails import DelegatedLimitations, EverythingWithSig, GenesisById, GenesisByPuzhash
+from chinilla.wallet.lineage_proof import LineageProof
+from chinilla.wallet.puzzles.cat_loader import CAT_MOD
+from chinilla.wallet.puzzles.tails import DelegatedLimitations, EverythingWithSig, GenesisById, GenesisByPuzhash
 from tests.clvm.benchmark_costs import cost_of_spend_bundle
 from tests.clvm.test_puzzles import secret_exponent_for_index
 

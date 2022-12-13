@@ -7,16 +7,16 @@ import pytest
 from blspy import G2Element
 from chia_rs import Coin
 
-from chia.clvm.spend_sim import SimClient, SpendSim
-from chia.consensus.constants import ConsensusConstants
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.bitcoin_fee_estimator import BitcoinFeeEstimator
-from chia.full_node.mempool_manager import MempoolManager
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_spend import CoinSpend
-from chia.types.mempool_item import MempoolItem
-from chia.types.spend_bundle import SpendBundle
+from chinilla.clvm.spend_sim import SimClient, SpendSim
+from chinilla.consensus.constants import ConsensusConstants
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.full_node.bitcoin_fee_estimator import BitcoinFeeEstimator
+from chinilla.full_node.mempool_manager import MempoolManager
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.mempool_item import MempoolItem
+from chinilla.types.spend_bundle import SpendBundle
 
 log = logging.getLogger(__name__)
 

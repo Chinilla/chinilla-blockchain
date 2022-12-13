@@ -9,19 +9,19 @@ from typing import Iterator, List
 
 from utils import setup_db
 
-from chia.consensus.block_record import BlockRecord
-from chia.consensus.coinbase import create_farmer_coin, create_pool_coin
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.coin_store import CoinStore
-from chia.full_node.mempool_manager import MempoolManager
-from chia.simulator.wallet_tools import WalletTool
-from chia.types.blockchain_format.classgroup import ClassgroupElement
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.sized_bytes import bytes32, bytes100
-from chia.types.mempool_inclusion_status import MempoolInclusionStatus
-from chia.types.spend_bundle import SpendBundle
-from chia.util.db_wrapper import DBWrapper2
-from chia.util.ints import uint8, uint32, uint64, uint128
+from chinilla.consensus.block_record import BlockRecord
+from chinilla.consensus.coinbase import create_farmer_coin, create_pool_coin
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.full_node.mempool_manager import MempoolManager
+from chinilla.simulator.wallet_tools import WalletTool
+from chinilla.types.blockchain_format.classgroup import ClassgroupElement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32, bytes100
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.ints import uint8, uint32, uint64, uint128
 
 NUM_ITERS = 100
 NUM_PEERS = 5

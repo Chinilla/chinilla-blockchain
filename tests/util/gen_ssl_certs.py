@@ -6,7 +6,7 @@ from typing import Optional
 import click
 from pytest import MonkeyPatch
 
-from chia.ssl.create_ssl import generate_ca_signed_cert, get_chia_ca_crt_key, make_ca_cert
+from chinilla.ssl.create_ssl import generate_ca_signed_cert, get_chia_ca_crt_key, make_ca_cert
 
 # NOTE: This is a standalone tool that can be used to generate a CA cert/key as well as node certs/keys.
 

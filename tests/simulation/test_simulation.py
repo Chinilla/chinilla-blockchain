@@ -5,23 +5,23 @@ from typing import AsyncIterator, List, Tuple
 import pytest
 import pytest_asyncio
 
-from chia.cmds.units import units
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.full_node.full_node import FullNode
-from chia.server.outbound_message import NodeType
-from chia.server.server import ChiaServer
-from chia.server.start_service import Service
-from chia.simulator.block_tools import BlockTools, create_block_tools_async
-from chia.simulator.full_node_simulator import FullNodeSimulator
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol, GetAllCoinsProtocol, ReorgProtocol
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint16, uint32, uint64
-from chia.simulator.setup_nodes import SimulatorsAndWallets, setup_simulators_and_wallets, setup_full_system
-from chia.simulator.setup_services import setup_full_node
-from chia.wallet.wallet_node import WalletNode
-from chia.simulator.block_tools import test_constants
-from chia.simulator.keyring import TempKeyring
+from chinilla.cmds.units import units
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.full_node.full_node import FullNode
+from chinilla.server.outbound_message import NodeType
+from chinilla.server.server import ChiaServer
+from chinilla.server.start_service import Service
+from chinilla.simulator.block_tools import BlockTools, create_block_tools_async
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, GetAllCoinsProtocol, ReorgProtocol
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.simulator.setup_nodes import SimulatorsAndWallets, setup_simulators_and_wallets, setup_full_system
+from chinilla.simulator.setup_services import setup_full_node
+from chinilla.wallet.wallet_node import WalletNode
+from chinilla.simulator.block_tools import test_constants
+from chinilla.simulator.keyring import TempKeyring
 
 test_constants_modified = test_constants.replace(
     **{

@@ -5,16 +5,16 @@ from dataclasses import dataclass
 from secrets import token_bytes
 from typing import Optional
 
-from chia.farmer.farmer import Farmer
-from chia.harvester.harvester import Harvester
-from chia.plot_sync.sender import Sender
-from chia.protocols.harvester_protocol import PlotSyncIdentifier
-from chia.server.outbound_message import Message, NodeType
-from chia.server.start_service import Service
-from chia.simulator.time_out_assert import time_out_assert
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.ints import uint64
+from chinilla.farmer.farmer import Farmer
+from chinilla.harvester.harvester import Harvester
+from chinilla.plot_sync.sender import Sender
+from chinilla.protocols.harvester_protocol import PlotSyncIdentifier
+from chinilla.server.outbound_message import Message, NodeType
+from chinilla.server.start_service import Service
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.ints import uint64
 
 
 @dataclass

@@ -9,8 +9,8 @@ from typing import Callable, List, Optional, Tuple
 import pytest
 from blspy import AugSchemeMPL, G1Element, PrivateKey
 
-from chia.simulator.keyring import using_temp_file_keyring
-from chia.util.errors import (
+from chinilla.simulator.keyring import using_temp_file_keyring
+from chinilla.util.errors import (
     KeychainFingerprintExists,
     KeychainFingerprintNotFound,
     KeychainKeyDataMismatch,
@@ -18,8 +18,8 @@ from chia.util.errors import (
     KeychainLabelInvalid,
     KeychainSecretsMissing,
 )
-from chia.util.ints import uint32
-from chia.util.keychain import (
+from chinilla.util.ints import uint32
+from chinilla.util.keychain import (
     Keychain,
     KeyData,
     KeyDataSecrets,

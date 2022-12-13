@@ -9,17 +9,17 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 
-from chia.protocols.shared_protocol import capabilities, protocol_version
-from chia.server.outbound_message import NodeType
-from chia.server.server import ChiaServer, ssl_context_for_client
-from chia.server.ssl_context import chia_ssl_ca_paths
-from chia.server.ws_connection import WSChiaConnection
-from chia.simulator.time_out_assert import time_out_assert
-from chia.ssl.create_ssl import generate_ca_signed_cert
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.config import load_config
-from chia.util.ints import uint16
+from chinilla.protocols.shared_protocol import capabilities, protocol_version
+from chinilla.server.outbound_message import NodeType
+from chinilla.server.server import ChiaServer, ssl_context_for_client
+from chinilla.server.ssl_context import chia_ssl_ca_paths
+from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.simulator.time_out_assert import time_out_assert
+from chinilla.ssl.create_ssl import generate_ca_signed_cert
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.config import load_config
+from chinilla.util.ints import uint16
 
 log = logging.getLogger(__name__)
 

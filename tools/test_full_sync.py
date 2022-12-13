@@ -17,18 +17,18 @@ import aiosqlite
 import click
 import zstd
 
-from chia.cmds.init_funcs import chia_init
-from chia.consensus.default_constants import DEFAULT_CONSTANTS
-from chia.full_node.full_node import FullNode
-from chia.protocols import full_node_protocol
-from chia.server.outbound_message import Message, NodeType
-from chia.server.ws_connection import WSChiaConnection
-from chia.simulator.block_tools import make_unfinished_block
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.full_block import FullBlock
-from chia.types.peer_info import PeerInfo
-from chia.util.config import load_config
-from chia.util.ints import uint16
+from chinilla.cmds.init_funcs import chia_init
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.full_node.full_node import FullNode
+from chinilla.protocols import full_node_protocol
+from chinilla.server.outbound_message import Message, NodeType
+from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.simulator.block_tools import make_unfinished_block
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.full_block import FullBlock
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.config import load_config
+from chinilla.util.ints import uint16
 from tools.test_constants import test_constants as TEST_CONSTANTS
 
 

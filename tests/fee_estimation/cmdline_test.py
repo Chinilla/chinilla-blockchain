@@ -7,11 +7,11 @@ from typing import Tuple, Union
 
 from click.testing import CliRunner
 
-from chia.cmds.chia import cli
-from chia.full_node.full_node_api import FullNodeAPI
-from chia.server.server import ChiaServer
-from chia.simulator.block_tools import BlockTools
-from chia.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.cmds.chia import cli
+from chinilla.full_node.full_node_api import FullNodeAPI
+from chinilla.server.server import ChiaServer
+from chinilla.simulator.block_tools import BlockTools
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
 
 
 def test_print_fee_info_cmd(

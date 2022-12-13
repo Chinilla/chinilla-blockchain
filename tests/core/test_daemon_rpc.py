@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from chia import __version__
-from chia.daemon.client import connect_to_daemon
+from chinilla import __version__
+from chinilla.daemon.client import connect_to_daemon
 
 
 class TestDaemonRpc:

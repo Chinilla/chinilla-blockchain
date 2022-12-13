@@ -8,24 +8,24 @@ import pytest
 from blspy import AugSchemeMPL, G1Element, G2Element
 from clvm_tools.binutils import disassemble
 
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.rpc.wallet_rpc_api import WalletRpcApi
-from chia.simulator.full_node_simulator import FullNodeSimulator
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
-from chia.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.types.spend_bundle import SpendBundle
-from chia.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
-from chia.util.byte_types import hexstr_to_bytes
-from chia.util.ints import uint16, uint32, uint64
-from chia.wallet.did_wallet.did_wallet import DIDWallet
-from chia.wallet.nft_wallet.nft_wallet import NFTWallet
-from chia.wallet.util.address_type import AddressType
-from chia.wallet.util.compute_memos import compute_memos
-from chia.wallet.util.wallet_types import WalletType
-from chia.wallet.wallet_state_manager import WalletStateManager
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.rpc.wallet_rpc_api import WalletRpcApi
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
+from chinilla.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.bech32m import decode_puzzle_hash, encode_puzzle_hash
+from chinilla.util.byte_types import hexstr_to_bytes
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.did_wallet.did_wallet import DIDWallet
+from chinilla.wallet.nft_wallet.nft_wallet import NFTWallet
+from chinilla.wallet.util.address_type import AddressType
+from chinilla.wallet.util.compute_memos import compute_memos
+from chinilla.wallet.util.wallet_types import WalletType
+from chinilla.wallet.wallet_state_manager import WalletStateManager
 from tests.util.wallet_is_synced import wallet_is_synced
 
 
@@ -440,7 +440,7 @@ async def test_nft_wallet_rpc_creation_and_list(two_wallet_nodes: Any, trusted: 
 )
 @pytest.mark.asyncio
 async def test_nft_wallet_rpc_update_metadata(two_wallet_nodes: Any, trusted: Any) -> None:
-    from chia.types.blockchain_format.sized_bytes import bytes32
+    from chinilla.types.blockchain_format.sized_bytes import bytes32
 
     num_blocks = 3
     full_nodes, wallets, _ = two_wallet_nodes

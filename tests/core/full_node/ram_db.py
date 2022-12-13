@@ -4,11 +4,11 @@ import random
 from pathlib import Path
 from typing import Tuple
 
-from chia.consensus.blockchain import Blockchain
-from chia.consensus.constants import ConsensusConstants
-from chia.full_node.block_store import BlockStore
-from chia.full_node.coin_store import CoinStore
-from chia.util.db_wrapper import DBWrapper2
+from chinilla.consensus.blockchain import Blockchain
+from chinilla.consensus.constants import ConsensusConstants
+from chinilla.full_node.block_store import BlockStore
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.util.db_wrapper import DBWrapper2
 
 
 async def create_ram_blockchain(consensus_constants: ConsensusConstants) -> Tuple[DBWrapper2, Blockchain]:

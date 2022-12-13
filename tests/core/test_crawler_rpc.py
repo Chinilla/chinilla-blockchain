@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from chia.rpc.crawler_rpc_api import CrawlerRpcApi
-from chia.seeder.crawler import Crawler
+from chinilla.rpc.crawler_rpc_api import CrawlerRpcApi
+from chinilla.seeder.crawler import Crawler
 
 
 class TestCrawlerRpc:

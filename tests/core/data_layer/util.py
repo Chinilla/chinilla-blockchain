@@ -8,10 +8,10 @@ import subprocess
 from dataclasses import dataclass
 from typing import IO, TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
 
-from chia.data_layer.data_layer_util import NodeType, Side, Status
-from chia.data_layer.data_store import DataStore
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.tree_hash import bytes32
+from chinilla.data_layer.data_layer_util import NodeType, Side, Status
+from chinilla.data_layer.data_store import DataStore
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.tree_hash import bytes32
 
 # from subprocess.pyi
 _FILE = Union[None, int, IO[Any]]

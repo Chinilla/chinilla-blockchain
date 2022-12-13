@@ -8,32 +8,32 @@ import pytest
 from aiosqlite import Error as AIOSqliteError
 from colorlog import getLogger
 
-from chia.consensus.block_record import BlockRecord
-from chia.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
-from chia.full_node.full_node_api import FullNodeAPI
-from chia.full_node.mempool_manager import MempoolManager
-from chia.full_node.weight_proof import WeightProofHandler
-from chia.protocols import full_node_protocol, wallet_protocol
-from chia.protocols.protocol_message_types import ProtocolMessageTypes
-from chia.protocols.shared_protocol import Capability
-from chia.protocols.wallet_protocol import RequestAdditions, RespondAdditions, RespondBlockHeaders, SendTransaction
-from chia.server.outbound_message import Message, make_msg
-from chia.simulator.block_tools import test_constants
-from chia.simulator.simulator_protocol import FarmNewBlockProtocol
-from chia.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.peer_info import PeerInfo
-from chia.util.block_cache import BlockCache
-from chia.util.hash import std_hash
-from chia.util.ints import uint16, uint32, uint64
-from chia.wallet.nft_wallet.nft_wallet import NFTWallet
-from chia.wallet.transaction_record import TransactionRecord
-from chia.wallet.util.compute_memos import compute_memos
-from chia.wallet.util.wallet_sync_utils import PeerRequestException
-from chia.wallet.util.wallet_types import AmountWithPuzzlehash
-from chia.wallet.wallet_coin_record import WalletCoinRecord
-from chia.wallet.wallet_weight_proof_handler import get_wp_fork_point
+from chinilla.consensus.block_record import BlockRecord
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.full_node.full_node_api import FullNodeAPI
+from chinilla.full_node.mempool_manager import MempoolManager
+from chinilla.full_node.weight_proof import WeightProofHandler
+from chinilla.protocols import full_node_protocol, wallet_protocol
+from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
+from chinilla.protocols.shared_protocol import Capability
+from chinilla.protocols.wallet_protocol import RequestAdditions, RespondAdditions, RespondBlockHeaders, SendTransaction
+from chinilla.server.outbound_message import Message, make_msg
+from chinilla.simulator.block_tools import test_constants
+from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
+from chinilla.simulator.time_out_assert import time_out_assert, time_out_assert_not_none
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.peer_info import PeerInfo
+from chinilla.util.block_cache import BlockCache
+from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint16, uint32, uint64
+from chinilla.wallet.nft_wallet.nft_wallet import NFTWallet
+from chinilla.wallet.transaction_record import TransactionRecord
+from chinilla.wallet.util.compute_memos import compute_memos
+from chinilla.wallet.util.wallet_sync_utils import PeerRequestException
+from chinilla.wallet.util.wallet_types import AmountWithPuzzlehash
+from chinilla.wallet.wallet_coin_record import WalletCoinRecord
+from chinilla.wallet.wallet_weight_proof_handler import get_wp_fork_point
 from tests.connection_utils import disconnect_all, disconnect_all_and_reconnect
 from tests.util.wallet_is_synced import wallet_is_synced
 from tests.weight_proof.test_weight_proof import load_blocks_dont_validate

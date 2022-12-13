@@ -10,11 +10,11 @@ from typing import List, Tuple
 
 from utils import rand_hash, rewards, setup_db
 
-from chia.full_node.coin_store import CoinStore
-from chia.types.blockchain_format.coin import Coin
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.util.db_wrapper import DBWrapper2
-from chia.util.ints import uint32, uint64
+from chinilla.full_node.coin_store import CoinStore
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.ints import uint32, uint64
 
 NUM_ITERS = 200
 

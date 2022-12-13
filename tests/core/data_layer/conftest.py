@@ -13,9 +13,9 @@ import pytest_asyncio
 # https://github.com/pytest-dev/pytest/issues/7469
 from _pytest.fixtures import SubRequest
 
-from chia.data_layer.data_layer_util import NodeType, Status
-from chia.data_layer.data_store import DataStore
-from chia.types.blockchain_format.tree_hash import bytes32
+from chinilla.data_layer.data_layer_util import NodeType, Status
+from chinilla.data_layer.data_store import DataStore
+from chinilla.types.blockchain_format.tree_hash import bytes32
 from tests.core.data_layer.util import (
     ChiaRoot,
     Example,

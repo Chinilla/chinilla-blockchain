@@ -6,15 +6,15 @@ from typing import List, Tuple
 import pytest
 from blspy import G2Element
 
-from chia.clvm.spend_sim import SimClient, SpendSim
-from chia.types.announcement import Announcement
-from chia.types.blockchain_format.program import Program
-from chia.types.blockchain_format.sized_bytes import bytes32
-from chia.types.coin_spend import CoinSpend
-from chia.types.mempool_inclusion_status import MempoolInclusionStatus
-from chia.types.spend_bundle import SpendBundle
-from chia.util.errors import Err
-from chia.wallet.nft_wallet.nft_puzzles import (
+from chinilla.clvm.spend_sim import SimClient, SpendSim
+from chinilla.types.announcement import Announcement
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.errors import Err
+from chinilla.wallet.nft_wallet.nft_puzzles import (
     NFT_METADATA_UPDATER,
     NFT_TRANSFER_PROGRAM_DEFAULT,
     construct_ownership_layer,
