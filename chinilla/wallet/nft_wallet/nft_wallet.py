@@ -11,7 +11,7 @@ from blspy import AugSchemeMPL, G1Element, G2Element
 from clvm.casts import int_from_bytes, int_to_bytes
 
 from chinilla.protocols.wallet_protocol import CoinState
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.announcement import Announcement
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.program import Program
@@ -149,7 +149,7 @@ class NFTWallet:
             raise KeyError(f"Couldn't find coin with id: {nft_coin_id}")
         return nft_coin
 
-    async def coin_added(self, coin: Coin, height: uint32, peer: WSChiaConnection) -> None:
+    async def coin_added(self, coin: Coin, height: uint32, peer: WSChinillaConnection) -> None:
         """Notification from wallet state manager that wallet has been received."""
         self.log.info(f"NFT wallet %s has been notified that {coin} was added", self.wallet_info.name)
         if await self.nft_store.exists(coin.name()):
@@ -167,7 +167,7 @@ class NFTWallet:
         assert cs is not None
         await self.puzzle_solution_received(cs, peer)
 
-    async def puzzle_solution_received(self, coin_spend: CoinSpend, peer: WSChiaConnection) -> None:
+    async def puzzle_solution_received(self, coin_spend: CoinSpend, peer: WSChinillaConnection) -> None:
         self.log.debug("Puzzle solution received to wallet: %s", self.wallet_info)
         coin_name = coin_spend.coin.name()
         puzzle: Program = Program.from_bytes(bytes(coin_spend.puzzle_reveal))
@@ -537,7 +537,7 @@ class NFTWallet:
             pubkey, private = await self.wallet_state_manager.get_keys(puzzle_hash)
             synthetic_secret_key = calculate_synthetic_secret_key(private, DEFAULT_HIDDEN_PUZZLE_HASH)
             synthetic_pk = synthetic_secret_key.get_g1()
-            puzzle: Program = Program.to(("Chia Signed Message", message))
+            puzzle: Program = Program.to(("Chinilla Signed Message", message))
             return synthetic_pk, AugSchemeMPL.sign(synthetic_secret_key, puzzle.get_tree_hash())
         else:
             raise ValueError("Invalid NFT puzzle.")
@@ -586,16 +586,16 @@ class NFTWallet:
     async def create_tandem_xch_tx(
         self, fee: uint64, announcement_to_assert: Optional[Announcement] = None
     ) -> TransactionRecord:
-        chia_coins = await self.standard_wallet.select_coins(fee)
-        chia_tx = await self.standard_wallet.generate_signed_transaction(
+        chinilla_coins = await self.standard_wallet.select_coins(fee)
+        chinilla_tx = await self.standard_wallet.generate_signed_transaction(
             uint64(0),
             (await self.standard_wallet.get_new_puzzlehash()),
             fee=fee,
-            coins=chia_coins,
+            coins=chinilla_coins,
             coin_announcements_to_consume={announcement_to_assert} if announcement_to_assert is not None else None,
         )
-        assert chia_tx.spend_bundle is not None
-        return chia_tx
+        assert chinilla_tx.spend_bundle is not None
+        return chinilla_tx
 
     async def generate_signed_transaction(
         self,
@@ -628,7 +628,7 @@ class NFTWallet:
 
         payment_sum = sum([p.amount for p in payments])
 
-        unsigned_spend_bundle, chia_tx = await self.generate_unsigned_spendbundle(
+        unsigned_spend_bundle, chinilla_tx = await self.generate_unsigned_spendbundle(
             payments,
             fee,
             coins=coins,
@@ -642,9 +642,9 @@ class NFTWallet:
         )
         spend_bundle = await self.sign(unsigned_spend_bundle)
         spend_bundle = SpendBundle.aggregate([spend_bundle] + additional_bundles)
-        if chia_tx is not None and chia_tx.spend_bundle is not None:
-            spend_bundle = SpendBundle.aggregate([spend_bundle, chia_tx.spend_bundle])
-            chia_tx = dataclasses.replace(chia_tx, spend_bundle=None)
+        if chinilla_tx is not None and chinilla_tx.spend_bundle is not None:
+            spend_bundle = SpendBundle.aggregate([spend_bundle, chinilla_tx.spend_bundle])
+            chinilla_tx = dataclasses.replace(chinilla_tx, spend_bundle=None)
 
         tx_list = [
             TransactionRecord(
@@ -667,8 +667,8 @@ class NFTWallet:
             ),
         ]
 
-        if chia_tx is not None:
-            tx_list.append(chia_tx)
+        if chinilla_tx is not None:
+            tx_list.append(chinilla_tx)
 
         return tx_list
 
@@ -710,10 +710,10 @@ class NFTWallet:
 
         if fee > 0:
             announcement_to_make = nft_coin.coin.name()
-            chia_tx = await self.create_tandem_xch_tx(fee, Announcement(nft_coin.coin.name(), announcement_to_make))
+            chinilla_tx = await self.create_tandem_xch_tx(fee, Announcement(nft_coin.coin.name(), announcement_to_make))
         else:
             announcement_to_make = None
-            chia_tx = None
+            chinilla_tx = None
 
         innersol: Program = self.standard_wallet.make_solution(
             primaries=primaries,
@@ -752,7 +752,7 @@ class NFTWallet:
 
         nft_spend_bundle = SpendBundle([coin_spend], G2Element())
 
-        return nft_spend_bundle, chia_tx
+        return nft_spend_bundle, chinilla_tx
 
     @staticmethod
     def royalty_calculation(

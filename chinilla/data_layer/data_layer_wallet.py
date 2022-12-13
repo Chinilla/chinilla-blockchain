@@ -13,7 +13,7 @@ from chinilla.consensus.block_record import BlockRecord
 from chinilla.data_layer.data_layer_errors import OfferIntegrityError
 from chinilla.data_layer.data_layer_util import OfferStore, ProofOfInclusion, ProofOfInclusionLayer, StoreProofs, leaf_hash
 from chinilla.protocols.wallet_protocol import CoinState
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.announcement import Announcement
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
@@ -196,7 +196,7 @@ class DataLayerWallet:
 
         return True, inner_puzhash
 
-    async def get_launcher_coin_state(self, launcher_id: bytes32, peer: WSChiaConnection) -> CoinState:
+    async def get_launcher_coin_state(self, launcher_id: bytes32, peer: WSChinillaConnection) -> CoinState:
         coin_states: List[CoinState] = await self.wallet_state_manager.wallet_node.get_coin_state(
             [launcher_id], peer=peer
         )
@@ -216,7 +216,7 @@ class DataLayerWallet:
     async def track_new_launcher_id(
         self,
         launcher_id: bytes32,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         spend: Optional[CoinSpend] = None,
         height: Optional[uint32] = None,
     ) -> None:
@@ -235,7 +235,7 @@ class DataLayerWallet:
     async def new_launcher_spend(
         self,
         launcher_spend: CoinSpend,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         height: Optional[uint32] = None,
     ) -> None:
         launcher_id: bytes32 = launcher_spend.coin.name()
@@ -396,7 +396,7 @@ class DataLayerWallet:
         announcement_to_assert: Announcement,
         coin_announcement: bool = True,
     ) -> TransactionRecord:
-        chia_tx = await self.standard_wallet.generate_signed_transaction(
+        chinilla_tx = await self.standard_wallet.generate_signed_transaction(
             amount=uint64(0),
             puzzle_hash=await self.standard_wallet.get_new_puzzlehash(),
             fee=fee,
@@ -404,8 +404,8 @@ class DataLayerWallet:
             coin_announcements_to_consume={announcement_to_assert} if coin_announcement else None,
             puzzle_announcements_to_consume=None if coin_announcement else {announcement_to_assert},
         )
-        assert chia_tx.spend_bundle is not None
-        return chia_tx
+        assert chinilla_tx.spend_bundle is not None
+        return chinilla_tx
 
     async def create_update_state_spend(
         self,
@@ -612,13 +612,13 @@ class DataLayerWallet:
             name=singleton_record.coin_id,
         )
         if fee > 0:
-            chia_tx = await self.create_tandem_xch_tx(
+            chinilla_tx = await self.create_tandem_xch_tx(
                 fee, Announcement(current_coin.name(), b"$"), coin_announcement=True
             )
-            aggregate_bundle = SpendBundle.aggregate([dl_tx.spend_bundle, chia_tx.spend_bundle])
+            aggregate_bundle = SpendBundle.aggregate([dl_tx.spend_bundle, chinilla_tx.spend_bundle])
             dl_tx = dataclasses.replace(dl_tx, spend_bundle=aggregate_bundle)
-            chia_tx = dataclasses.replace(chia_tx, spend_bundle=None)
-            txs: List[TransactionRecord] = [dl_tx, chia_tx]
+            chinilla_tx = dataclasses.replace(chinilla_tx, spend_bundle=None)
+            txs: List[TransactionRecord] = [dl_tx, chinilla_tx]
         else:
             txs = [dl_tx]
 
@@ -749,7 +749,7 @@ class DataLayerWallet:
         return [create_mirror_tx_record]
 
     async def delete_mirror(
-        self, mirror_id: bytes32, peer: WSChiaConnection, fee: uint64 = uint64(0)
+        self, mirror_id: bytes32, peer: WSChinillaConnection, fee: uint64 = uint64(0)
     ) -> List[TransactionRecord]:
         mirror: Mirror = await self.get_mirror(mirror_id)
         mirror_coin: Coin = (await self.wallet_state_manager.wallet_node.get_coin_state([mirror.coin_id], peer=peer))[
@@ -810,7 +810,7 @@ class DataLayerWallet:
         ]
 
         if excess_fee > 0:
-            chia_tx: TransactionRecord = await self.wallet_state_manager.main_wallet.generate_signed_transaction(
+            chinilla_tx: TransactionRecord = await self.wallet_state_manager.main_wallet.generate_signed_transaction(
                 uint64(1),
                 new_puzhash,
                 fee=uint64(excess_fee),
@@ -818,9 +818,9 @@ class DataLayerWallet:
             )
             txs = [
                 dataclasses.replace(
-                    txs[0], spend_bundle=SpendBundle.aggregate([txs[0].spend_bundle, chia_tx.spend_bundle])
+                    txs[0], spend_bundle=SpendBundle.aggregate([txs[0].spend_bundle, chinilla_tx.spend_bundle])
                 ),
-                dataclasses.replace(chia_tx, spend_bundle=None),
+                dataclasses.replace(chinilla_tx, spend_bundle=None),
             ]
 
         return txs
@@ -829,7 +829,7 @@ class DataLayerWallet:
     # SYNCING #
     ###########
 
-    async def coin_added(self, coin: Coin, height: uint32, peer: WSChiaConnection) -> None:
+    async def coin_added(self, coin: Coin, height: uint32, peer: WSChinillaConnection) -> None:
         if coin.puzzle_hash == create_mirror_puzzle().get_tree_hash():
             parent_state: CoinState = (
                 await self.wallet_state_manager.wallet_node.get_coin_state([coin.parent_coin_info], peer=peer)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from chinilla.wallet.chialisp import (
+from chinilla.wallet.chinillalisp import (
     apply,
     args,
     cons,
@@ -19,7 +19,7 @@ from chinilla.wallet.chialisp import (
 )
 
 
-class TestChialisp:
+class TestChinillalisp:
     def test_sexp(self):
         assert sexp() == "()"
         assert sexp(1) == "(1)"

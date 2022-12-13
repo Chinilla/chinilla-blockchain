@@ -4,7 +4,7 @@ import sys
 from decimal import Decimal
 from typing import Any, Dict, List, Tuple, Union
 
-from chinilla.cmds.wallet_funcs import get_mojo_per_unit, get_wallet_type, print_balance
+from chinilla.cmds.wallet_funcs import get_vojo_per_unit, get_wallet_type, print_balance
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -27,16 +27,16 @@ async def async_list(args: Dict[str, Any], wallet_client: WalletRpcClient, finge
         paginate = sys.stdout.isatty()
     try:
         wallet_type = await get_wallet_type(wallet_id=wallet_id, wallet_client=wallet_client)
-        mojo_per_unit = get_mojo_per_unit(wallet_type)
+        vojo_per_unit = get_vojo_per_unit(wallet_type)
     except LookupError:
         print(f"Wallet id: {wallet_id} not found.")
         return
     if not await wallet_client.get_synced():
         print("Wallet not synced. Please wait.")
         return
-    final_min_coin_amount: uint64 = uint64(int(min_coin_amount * mojo_per_unit))
-    final_max_coin_amount: uint64 = uint64(int(max_coin_amount * mojo_per_unit))
-    final_excluded_amounts: List[uint64] = [uint64(int(Decimal(amount) * mojo_per_unit)) for amount in excluded_amounts]
+    final_min_coin_amount: uint64 = uint64(int(min_coin_amount * vojo_per_unit))
+    final_max_coin_amount: uint64 = uint64(int(max_coin_amount * vojo_per_unit))
+    final_excluded_amounts: List[uint64] = [uint64(int(Decimal(amount) * vojo_per_unit)) for amount in excluded_amounts]
     conf_coins, unconfirmed_removals, unconfirmed_additions = await wallet_client.get_spendable_coins(
         wallet_id=wallet_id,
         max_coin_amount=final_max_coin_amount,
@@ -52,7 +52,7 @@ async def async_list(args: Dict[str, Any], wallet_client: WalletRpcClient, finge
     print_coins(
         "\tAddress: {} Amount: {}, Confirmed in block: {}\n",
         [(cr.coin, str(cr.confirmed_block_index)) for cr in conf_coins],
-        mojo_per_unit,
+        vojo_per_unit,
         addr_prefix,
         paginate,
     )
@@ -61,7 +61,7 @@ async def async_list(args: Dict[str, Any], wallet_client: WalletRpcClient, finge
         print_coins(
             "\tPrevious Address: {} Amount: {}, Confirmed in block: {}\n",
             [(cr.coin, str(cr.confirmed_block_index)) for cr in unconfirmed_removals],
-            mojo_per_unit,
+            vojo_per_unit,
             addr_prefix,
             paginate,
         )
@@ -69,14 +69,14 @@ async def async_list(args: Dict[str, Any], wallet_client: WalletRpcClient, finge
         print_coins(
             "\tNew Address: {} Amount: {}, Not yet confirmed in a block.{}\n",
             [(coin, "") for coin in unconfirmed_additions],
-            mojo_per_unit,
+            vojo_per_unit,
             addr_prefix,
             paginate,
         )
 
 
 def print_coins(
-    target_string: str, coins: List[Tuple[Coin, str]], mojo_per_unit: int, addr_prefix: str, paginate: bool
+    target_string: str, coins: List[Tuple[Coin, str]], vojo_per_unit: int, addr_prefix: str, paginate: bool
 ) -> None:
     if len(coins) == 0:
         print("\tNo Coins.")
@@ -88,7 +88,7 @@ def print_coins(
                 break
             coin, conf_height = coins[i + j]
             address = encode_puzzle_hash(coin.puzzle_hash, addr_prefix)
-            amount_str = print_balance(coin.amount, mojo_per_unit, addr_prefix, decimal_only=True)
+            amount_str = print_balance(coin.amount, vojo_per_unit, addr_prefix, decimal_only=True)
             print(f"Coin ID: 0x{coin.name().hex()}")
             print(target_string.format(address, amount_str, conf_height))
 
@@ -117,18 +117,18 @@ async def async_combine(args: Dict[str, Any], wallet_client: WalletRpcClient, fi
         raise ValueError(f"{number_of_coins} coins is greater then the maximum limit of 500 coins.")
     try:
         wallet_type = await get_wallet_type(wallet_id=wallet_id, wallet_client=wallet_client)
-        mojo_per_unit = get_mojo_per_unit(wallet_type)
+        vojo_per_unit = get_vojo_per_unit(wallet_type)
     except LookupError:
         print(f"Wallet id: {wallet_id} not found.")
         return
     if not await wallet_client.get_synced():
         print("Wallet not synced. Please wait.")
         return
-    final_max_dust_amount = uint64(int(max_dust_amount * mojo_per_unit)) if not target_coin_ids else uint64(0)
-    final_min_coin_amount: uint64 = uint64(int(min_coin_amount * mojo_per_unit))
-    final_excluded_amounts: List[uint64] = [uint64(int(Decimal(amount) * mojo_per_unit)) for amount in excluded_amounts]
-    final_fee = uint64(int(fee * mojo_per_unit))
-    final_target_coin_amount = uint64(int(target_coin_amount * mojo_per_unit))
+    final_max_dust_amount = uint64(int(max_dust_amount * vojo_per_unit)) if not target_coin_ids else uint64(0)
+    final_min_coin_amount: uint64 = uint64(int(min_coin_amount * vojo_per_unit))
+    final_excluded_amounts: List[uint64] = [uint64(int(Decimal(amount) * vojo_per_unit)) for amount in excluded_amounts]
+    final_fee = uint64(int(fee * vojo_per_unit))
+    final_target_coin_amount = uint64(int(target_coin_amount * vojo_per_unit))
     if final_target_coin_amount != 0:  # if we have a set target, just use standard coin selection.
         removals: List[Coin] = await wallet_client.select_coins(
             amount=final_target_coin_amount + final_fee,
@@ -170,7 +170,7 @@ async def async_combine(args: Dict[str, Any], wallet_client: WalletRpcClient, fi
     )
     tx_id = transaction.name.hex()
     print(f"Transaction sent: {tx_id}")
-    print(f"To get status, use command: chia wallet get_transaction -f {fingerprint} -tx 0x{tx_id}")
+    print(f"To get status, use command: chinilla wallet get_transaction -f {fingerprint} -tx 0x{tx_id}")
 
 
 async def async_split(args: Dict[str, Any], wallet_client: WalletRpcClient, fingerprint: int) -> None:
@@ -185,23 +185,23 @@ async def async_split(args: Dict[str, Any], wallet_client: WalletRpcClient, fing
         return
     try:
         wallet_type = await get_wallet_type(wallet_id=wallet_id, wallet_client=wallet_client)
-        mojo_per_unit = get_mojo_per_unit(wallet_type)
+        vojo_per_unit = get_vojo_per_unit(wallet_type)
     except LookupError:
         print(f"Wallet id: {wallet_id} not found.")
         return
     if not await wallet_client.get_synced():
         print("Wallet not synced. Please wait.")
         return
-    final_amount_per_coin = uint64(int(amount_per_coin * mojo_per_unit))
-    final_fee = uint64(int(fee * mojo_per_unit))
+    final_amount_per_coin = uint64(int(amount_per_coin * vojo_per_unit))
+    final_fee = uint64(int(fee * vojo_per_unit))
 
     total_amount = (final_amount_per_coin * number_of_coins) + final_fee
     # get full coin record from name, and validate information about it.
     removal_coin_record: CoinRecord = (await wallet_client.get_coin_records_by_names([target_coin_id]))[0]
     if removal_coin_record.coin.amount < total_amount:
         print(
-            f"Coin amount: {removal_coin_record.coin.amount/ mojo_per_unit} "
-            f"is less than the total amount of the split: {total_amount/mojo_per_unit}, exiting."
+            f"Coin amount: {removal_coin_record.coin.amount/ vojo_per_unit} "
+            f"is less than the total amount of the split: {total_amount/vojo_per_unit}, exiting."
         )
         print("Try using a smaller fee or amount.")
         return
@@ -215,4 +215,4 @@ async def async_split(args: Dict[str, Any], wallet_client: WalletRpcClient, fing
     )
     tx_id = transaction.name.hex()
     print(f"Transaction sent: {tx_id}")
-    print(f"To get status, use command: chia wallet get_transaction -f {fingerprint} -tx 0x{tx_id}")
+    print(f"To get status, use command: chinilla wallet get_transaction -f {fingerprint} -tx 0x{tx_id}")

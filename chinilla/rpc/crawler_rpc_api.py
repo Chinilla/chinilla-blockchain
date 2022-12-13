@@ -11,7 +11,7 @@ from chinilla.util.ws_message import WsRpcMessage, create_payload_dict
 class CrawlerRpcApi:
     def __init__(self, crawler: Crawler):
         self.service = crawler
-        self.service_name = "chia_crawler"
+        self.service_name = "chinilla_crawler"
 
     def get_routes(self) -> Dict[str, Endpoint]:
         return {

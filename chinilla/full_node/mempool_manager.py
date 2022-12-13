@@ -10,7 +10,7 @@ from multiprocessing.context import BaseContext
 from typing import Awaitable, Callable, Dict, List, Optional, Set, Tuple
 
 from blspy import GTElement
-from chiabip158 import PyBIP158
+from chinillabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.constants import ConsensusConstants
@@ -484,7 +484,7 @@ class MempoolManager:
                 log.warning(f"{spend.puzzle_hash.hex()} != {coin_record.coin.puzzle_hash.hex()}")
                 return Err.WRONG_PUZZLE_HASH, None, []
 
-        chialisp_height = (
+        chinillalisp_height = (
             self.peak.prev_transaction_block_height if not self.peak.is_transaction_block else self.peak.height
         )
 
@@ -492,7 +492,7 @@ class MempoolManager:
         tl_error: Optional[Err] = mempool_check_time_locks(
             removal_record_dict,
             npc_result.conds,
-            uint32(chialisp_height),
+            uint32(chinillalisp_height),
             self.peak.timestamp,
         )
 

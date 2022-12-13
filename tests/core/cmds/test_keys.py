@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 import pytest
 from click.testing import CliRunner, Result
 
-from chinilla.cmds.chia import cli
+from chinilla.cmds.chinilla import cli
 from chinilla.cmds.keys import delete_all_cmd, generate_and_print_cmd, sign_cmd, verify_cmd
 from chinilla.util.config import load_config
 from chinilla.util.keychain import Keychain, KeyData, generate_mnemonic
@@ -269,7 +269,7 @@ class TestKeysCommands:
         assert runner.invoke(cli, [*base_params, "init"]).exit_code == 0
         # Make sure the command works with no keys
         result = runner.invoke(cli, [*base_params, *cmd_params])
-        assert result.output == "No keys are present in the keychain. Generate them with 'chia keys generate'\n"
+        assert result.output == "No keys are present in the keychain. Generate them with 'chinilla keys generate'\n"
         # Add 10 keys to the keychain, give every other a label
         keys = [KeyData.generate(f"key_{i}" if i % 2 == 0 else None) for i in range(10)]
         for key in keys:
@@ -290,7 +290,7 @@ class TestKeysCommands:
 
     def test_show(self, keyring_with_one_key, tmp_path):
         """
-        Test that the `chia keys show` command shows the correct key.
+        Test that the `chinilla keys show` command shows the correct key.
         """
 
         keychain = keyring_with_one_key
@@ -316,7 +316,7 @@ class TestKeysCommands:
 
     def test_show_fingerprint(self, keyring_with_one_key, tmp_path):
         """
-        Test that the `chia keys show --fingerprint` command shows the correct key.
+        Test that the `chinilla keys show --fingerprint` command shows the correct key.
         """
 
         keychain = keyring_with_one_key
@@ -346,7 +346,7 @@ class TestKeysCommands:
 
     def test_show_json(self, keyring_with_one_key, tmp_path):
         """
-        Test that the `chia keys show --json` command shows the correct key.
+        Test that the `chinilla keys show --json` command shows the correct key.
         """
 
         keychain = keyring_with_one_key
@@ -374,7 +374,7 @@ class TestKeysCommands:
 
     def test_show_mnemonic(self, keyring_with_one_key, tmp_path):
         """
-        Test that the `chia keys show --show-mnemonic-seed` command shows the key's mnemonic seed.
+        Test that the `chinilla keys show --show-mnemonic-seed` command shows the key's mnemonic seed.
         """
 
         keychain = keyring_with_one_key
@@ -402,7 +402,7 @@ class TestKeysCommands:
 
     def test_show_mnemonic_json(self, keyring_with_one_key, tmp_path):
         """
-        Test that the `chia keys show --show-mnemonic-seed --json` command shows the key's mnemonic seed.
+        Test that the `chinilla keys show --show-mnemonic-seed --json` command shows the key's mnemonic seed.
         """
 
         keychain = keyring_with_one_key
@@ -572,7 +572,7 @@ class TestKeysCommands:
 
     def test_generate_and_print(self):
         """
-        Test the `chia keys generate_and_print` command.
+        Test the `chinilla keys generate_and_print` command.
         """
 
         runner = CliRunner()
@@ -583,7 +583,7 @@ class TestKeysCommands:
 
     def test_sign(self, keyring_with_one_key):
         """
-        Test the `chia keys sign` command.
+        Test the `chinilla keys sign` command.
         """
 
         message: str = "hello world"
@@ -616,7 +616,7 @@ class TestKeysCommands:
 
     def test_sign_non_observer(self, keyring_with_one_key):
         """
-        Test the `chia keys sign` command with a non-observer key.
+        Test the `chinilla keys sign` command with a non-observer key.
         """
 
         message: str = "hello world"
@@ -688,7 +688,7 @@ class TestKeysCommands:
 
     def test_verify(self):
         """
-        Test the `chia keys verify` command.
+        Test the `chinilla keys verify` command.
         """
 
         message: str = "hello world"
@@ -709,7 +709,7 @@ class TestKeysCommands:
 
     def test_derive_search(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive search` command, searching a public and private key
+        Test the `chinilla keys derive search` command, searching a public and private key
         """
 
         keychain = keyring_with_one_key
@@ -767,7 +767,7 @@ class TestKeysCommands:
 
     def test_derive_search_wallet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive search` command, searching for a wallet address
+        Test the `chinilla keys derive search` command, searching for a wallet address
         """
 
         keychain = keyring_with_one_key
@@ -815,7 +815,7 @@ class TestKeysCommands:
 
     def test_derive_search_wallet_testnet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive search` command, searching for a testnet wallet address
+        Test the `chinilla keys derive search` command, searching for a testnet wallet address
         """
 
         keychain = keyring_with_one_key
@@ -865,7 +865,7 @@ class TestKeysCommands:
 
     def test_derive_search_failure(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive search` command with a failing search.
+        Test the `chinilla keys derive search` command with a failing search.
         """
 
         keychain = keyring_with_one_key
@@ -904,7 +904,7 @@ class TestKeysCommands:
 
     def test_derive_search_hd_path(self, tmp_path, empty_keyring, mnemonic_seed_file):
         """
-        Test the `chia keys derive search` command, searching under a provided HD path.
+        Test the `chinilla keys derive search` command, searching under a provided HD path.
         """
 
         keychain = empty_keyring
@@ -954,7 +954,7 @@ class TestKeysCommands:
 
     def test_derive_wallet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive wallet-address` command, generating a couple of wallet addresses.
+        Test the `chinilla keys derive wallet-address` command, generating a couple of wallet addresses.
         """
 
         keychain = keyring_with_one_key
@@ -1012,7 +1012,7 @@ class TestKeysCommands:
 
     def test_derive_wallet_testnet_address(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive wallet-address` command, generating a couple of testnet wallet addresses.
+        Test the `chinilla keys derive wallet-address` command, generating a couple of testnet wallet addresses.
         """
 
         keychain = keyring_with_one_key
@@ -1072,7 +1072,7 @@ class TestKeysCommands:
 
     def test_derive_child_keys(self, tmp_path, keyring_with_one_key):
         """
-        Test the `chia keys derive child-keys` command, generating a couple of derived keys.
+        Test the `chinilla keys derive child-keys` command, generating a couple of derived keys.
         """
 
         keychain = keyring_with_one_key

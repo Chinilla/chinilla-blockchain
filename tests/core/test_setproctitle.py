@@ -10,4 +10,4 @@ pytestmark = pytest.mark.skip(
 
 
 def test_does_not_crash():
-    setproctitle("chia test title")
+    setproctitle("chinilla test title")

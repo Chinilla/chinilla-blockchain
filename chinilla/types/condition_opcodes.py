@@ -4,7 +4,7 @@ import enum
 from typing import Any
 
 
-# See chia/wallet/puzzles/condition_codes.clvm
+# See chinilla/wallet/puzzles/condition_codes.clvm
 class ConditionOpcode(bytes, enum.Enum):
     # AGG_SIG is ascii "1"
 

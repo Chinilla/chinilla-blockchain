@@ -25,7 +25,7 @@ from chinilla.protocols.harvester_protocol import (
 )
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.server.outbound_message import NodeType, make_msg
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.util.generator_tools import list_to_batches
 from chinilla.util.ints import int16, uint32, uint64
 
@@ -90,7 +90,7 @@ class ExpectedResponse:
 
 class Sender:
     _plot_manager: PlotManager
-    _connection: Optional[WSChiaConnection]
+    _connection: Optional[WSChinillaConnection]
     _sync_id: uint64
     _next_message_id: uint64
     _messages: List[MessageGenerator[PayloadType]]
@@ -134,7 +134,7 @@ class Sender:
         self._reset()
         self._stop_requested = False
 
-    def set_connection(self, connection: WSChiaConnection) -> None:
+    def set_connection(self, connection: WSChinillaConnection) -> None:
         assert connection.connection_type is not None
         if connection.connection_type != NodeType.FARMER:
             raise InvalidConnectionTypeError(connection.connection_type, NodeType.HARVESTER)

@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional
 import colorlog
 from concurrent_log_handler import ConcurrentRotatingFileHandler
 
-from chinilla.cmds.init_funcs import chia_full_version_str
+from chinilla.cmds.init_funcs import chinilla_full_version_str
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.path import path_from_root
 
@@ -17,7 +17,7 @@ default_log_level = "WARNING"
 
 def get_beta_logging_config() -> Dict[str, Any]:
     return {
-        "log_filename": f"{chia_full_version_str()}/chia-blockchain/beta.log",
+        "log_filename": f"{chinilla_full_version_str()}/chinilla-blockchain/beta.log",
         "log_level": "DEBUG",
         "log_stdout": False,
         "log_maxfilesrotation": 100,

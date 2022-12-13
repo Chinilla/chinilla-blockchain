@@ -11,7 +11,7 @@ from blspy import AugSchemeMPL, G1Element, G2Element
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.protocols.full_node_protocol import RespondBlock
 from chinilla.rpc.wallet_rpc_api import WalletRpcApi
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.simulator.block_tools import BlockTools
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
@@ -39,14 +39,14 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_coinbase(
         self,
-        wallet_node_sim_and_wallet: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        wallet_node_sim_and_wallet: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
         num_blocks = 10
         full_nodes, wallets, _ = wallet_node_sim_and_wallet
         full_node_api = full_nodes[0]
-        server_1: ChiaServer = full_node_api.full_node.server
+        server_1: ChinillaServer = full_node_api.full_node.server
         wallet_node, server_2 = wallets[0]
 
         wallet = wallet_node.wallet_state_manager.main_wallet
@@ -100,7 +100,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_make_transaction(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -163,7 +163,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_coinbase_reorg(
         self,
-        wallet_node_sim_and_wallet: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        wallet_node_sim_and_wallet: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -209,7 +209,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_send_to_three_peers(
         self,
-        three_sim_two_wallets: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        three_sim_two_wallets: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -284,7 +284,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_make_transaction_hop(
         self,
-        two_wallet_nodes_five_freeze: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes_five_freeze: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -391,7 +391,7 @@ class TestWalletSimulator:
     #     introducer, introducer_server = await node_iters[2].__anext__()
     #
     #     async def has_full_node():
-    #         outbound: List[WSChiaConnection] = wallet.server.get_outgoing_connections()
+    #         outbound: List[WSChinillaConnection] = wallet.server.get_outgoing_connections()
     #         for connection in outbound:
     #             if connection.connection_type is NodeType.FULL_NODE:
     #                 return True
@@ -410,7 +410,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_make_transaction_with_fee(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -485,7 +485,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_create_hit_max_send_amount(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -572,7 +572,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_prevent_fee_theft(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -665,7 +665,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_tx_reorg(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -772,13 +772,13 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_address_sliding_window(
         self,
-        wallet_node_100_pk: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        wallet_node_100_pk: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
         full_nodes, wallets, _ = wallet_node_100_pk
         full_node_api = full_nodes[0]
-        server_1: ChiaServer = full_node_api.full_node.server
+        server_1: ChinillaServer = full_node_api.full_node.server
         wallet_node, server_2 = wallets[0]
         if trusted:
             wallet_node.config["trusted_peers"] = {server_1.node_id.hex(): server_1.node_id.hex()}
@@ -820,7 +820,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_sign_message(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -843,7 +843,7 @@ class TestWalletSimulator:
         await server_2.start_client(PeerInfo(self_hostname, uint16(server_1._port)), None)
         message = "Hello World"
         response = await api_0.sign_message_by_address({"address": encode_puzzle_hash(ph, "xch"), "message": message})
-        puzzle: Program = Program.to(("Chia Signed Message", message))
+        puzzle: Program = Program.to(("Chinilla Signed Message", message))
 
         assert AugSchemeMPL.verify(
             G1Element.from_bytes(bytes.fromhex(response["pubkey"])),
@@ -858,7 +858,7 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_transaction_options(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         trusted: bool,
         self_hostname: str,
     ) -> None:
@@ -923,7 +923,7 @@ class TestWalletSimulator:
 
 
 def test_get_wallet_db_path_v2_r1() -> None:
-    root_path: Path = Path("/x/y/z/.chia/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v2_r1_CHALLENGE_KEY.sqlite",
         "selected_network": "mainnet",
@@ -935,7 +935,7 @@ def test_get_wallet_db_path_v2_r1() -> None:
 
 
 def test_get_wallet_db_path_v2() -> None:
-    root_path: Path = Path("/x/y/z/.chia/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v2_CHALLENGE_KEY.sqlite",
         "selected_network": "mainnet",
@@ -947,7 +947,7 @@ def test_get_wallet_db_path_v2() -> None:
 
 
 def test_get_wallet_db_path_v1() -> None:
-    root_path: Path = Path("/x/y/z/.chia/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v1_CHALLENGE_KEY.sqlite",
         "selected_network": "mainnet",
@@ -959,7 +959,7 @@ def test_get_wallet_db_path_v1() -> None:
 
 
 def test_get_wallet_db_path_testnet() -> None:
-    root_path: Path = Path("/x/y/z/.chia/testnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/testnet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v2_CHALLENGE_KEY.sqlite",
         "selected_network": "testnet",

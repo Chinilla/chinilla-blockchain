@@ -117,7 +117,7 @@ def prompt_to_save_passphrase() -> bool:
             print(
                 "\n"
                 "Your passphrase can be stored in your system's secure credential store. "
-                "Other Chia processes will be able to access your keys without prompting for your passphrase."
+                "Other Chinilla processes will be able to access your keys without prompting for your passphrase."
             )
             if warning is not None:
                 colorama.init()
@@ -154,7 +154,7 @@ def prompt_for_new_passphrase() -> Tuple[str, bool]:
 
 
 def read_passphrase_from_file(passphrase_file: TextIOWrapper) -> str:
-    passphrase = passphrase_file.read().rstrip(os.environ.get("CHIA_PASSPHRASE_STRIP_TRAILING_CHARS", "\r\n"))
+    passphrase = passphrase_file.read().rstrip(os.environ.get("CHINILLA_PASSPHRASE_STRIP_TRAILING_CHARS", "\r\n"))
     passphrase_file.close()
     return passphrase
 
@@ -162,7 +162,7 @@ def read_passphrase_from_file(passphrase_file: TextIOWrapper) -> str:
 def initialize_passphrase() -> None:
     if Keychain.has_master_passphrase():
         print("Keyring is already protected by a passphrase")
-        print("\nUse 'chia passphrase set' or 'chia passphrase remove' to update or remove your passphrase")
+        print("\nUse 'chinilla passphrase set' or 'chinilla passphrase remove' to update or remove your passphrase")
         sys.exit(1)
 
     # We'll rely on Keyring initialization to leverage the cached passphrase for

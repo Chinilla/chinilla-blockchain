@@ -36,8 +36,8 @@ from chinilla.data_layer.download_data import insert_from_delta_file, write_file
 from chinilla.rpc.rpc_server import default_get_connections
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.server.outbound_message import NodeType
-from chinilla.server.server import ChiaServer
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.server import ChinillaServer
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.ints import uint32, uint64
 from chinilla.util.path import path_from_root
@@ -57,10 +57,10 @@ class DataLayer:
     initialized: bool
     none_bytes: bytes32
     lock: asyncio.Lock
-    _server: Optional[ChiaServer]
+    _server: Optional[ChinillaServer]
 
     @property
-    def server(self) -> ChiaServer:
+    def server(self) -> ChinillaServer:
         # This is a stop gap until the class usage is refactored such the values of
         # integral attributes are known at creation of the instance.
         if self._server is None:
@@ -100,13 +100,13 @@ class DataLayer:
     def _set_state_changed_callback(self, callback: Callable[..., object]) -> None:
         self.state_changed_callback = callback
 
-    async def on_connect(self, connection: WSChiaConnection) -> None:
+    async def on_connect(self, connection: WSChinillaConnection) -> None:
         pass
 
     def get_connections(self, request_node_type: Optional[NodeType]) -> List[Dict[str, Any]]:
         return default_get_connections(server=self.server, request_node_type=request_node_type)
 
-    def set_server(self, server: ChiaServer) -> None:
+    def set_server(self, server: ChinillaServer) -> None:
         self._server = server
 
     async def _start(self) -> None:

@@ -204,7 +204,7 @@ progress_bladebit_disk = {
 }
 
 
-def plot_bladebit(args, chia_root_path, root_path):
+def plot_bladebit(args, chinilla_root_path, root_path):
     (found, version_or_exception) = get_bladebit_version(root_path)
     if found is None:
         print(f"Error: {version_or_exception}")
@@ -229,7 +229,7 @@ def plot_bladebit(args, chia_root_path, root_path):
             None,
             None if args.pool_key == b"" else args.pool_key.hex(),
             None if args.contract == "" else args.contract,
-            chia_root_path,
+            chinilla_root_path,
             log,
             args.connect_to_daemon,
         )
@@ -305,7 +305,7 @@ def plot_bladebit(args, chia_root_path, root_path):
 
     try:
         progress = progress_bladebit_ram if plot_type == "ramplot" else progress_bladebit_disk
-        asyncio.run(run_plotter(chia_root_path, args.plotter, call_args, progress))
+        asyncio.run(run_plotter(chinilla_root_path, args.plotter, call_args, progress))
     except Exception as e:
         print(f"Exception while plotting: {e} {type(e)}")
         print(f"Traceback: {traceback.format_exc()}")

@@ -8,7 +8,7 @@ from chinilla.introducer.introducer import Introducer
 from chinilla.introducer.introducer_api import IntroducerAPI
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import Service, async_run
-from chinilla.util.chia_logging import initialize_service_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 

@@ -3,7 +3,7 @@ import binascii
 import os
 from enum import Enum
 from chinilla.plotters.bladebit import get_bladebit_install_info, plot_bladebit
-from chinilla.plotters.chiapos import get_chiapos_install_info, plot_chia
+from chinilla.plotters.chinillapos import get_chinillapos_install_info, plot_chinilla
 from chinilla.plotters.madmax import get_madmax_install_info, plot_madmax
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -48,7 +48,7 @@ class Options(Enum):
     BLADEBIT_NO_T2_DIRECT = 36
 
 
-chia_plotter_options = [
+chinilla_plotter_options = [
     Options.TMP_DIR,
     Options.TMP_DIR2,
     Options.K,
@@ -148,7 +148,7 @@ def build_parser(subparsers, root_path, option_list, name, plotter_desc):
                 default=32,
             )
         if option is Options.NUM_BUCKETS:
-            u_default = 0 if name == "chiapos" else 256
+            u_default = 0 if name == "chinillapos" else 256
             parser.add_argument(
                 "-u",
                 "--buckets",
@@ -416,8 +416,8 @@ def build_parser(subparsers, root_path, option_list, name, plotter_desc):
 
 
 def call_plotters(root_path: Path, args):
-    # Add `plotters` section in CHIA_ROOT.
-    chia_root_path = root_path
+    # Add `plotters` section in CHINILLA_ROOT.
+    chinilla_root_path = root_path
     root_path = get_plotters_root_path(root_path)
     if not root_path.is_dir():
         if os.path.exists(root_path):
@@ -427,16 +427,16 @@ def call_plotters(root_path: Path, args):
                 print(f"Exception deleting old root path: {type(e)} {e}.")
 
     if not os.path.exists(root_path):
-        print(f"Creating plotters folder within CHIA_ROOT: {root_path}")
+        print(f"Creating plotters folder within CHINILLA_ROOT: {root_path}")
         try:
             os.mkdir(root_path)
         except Exception as e:
             print(f"Cannot create plotters root path {root_path} {type(e)} {e}.")
 
-    plotters = argparse.ArgumentParser("chia plotters", description="Available options.")
+    plotters = argparse.ArgumentParser("chinilla plotters", description="Available options.")
     subparsers = plotters.add_subparsers(help="Available options", dest="plotter")
 
-    build_parser(subparsers, root_path, chia_plotter_options, "chiapos", "Create a plot with the default chia plotter")
+    build_parser(subparsers, root_path, chinilla_plotter_options, "chinillapos", "Create a plot with the default chinilla plotter")
     build_parser(subparsers, root_path, madmax_plotter_options, "madmax", "Create a plot with madMAx")
 
     bladebit_parser = subparsers.add_parser("bladebit", help="Create a plot with bladebit")
@@ -447,12 +447,12 @@ def call_plotters(root_path: Path, args):
     subparsers.add_parser("version", help="Show plotter versions")
 
     deprecation_warning = (
-        "[DEPRECATED] 'chia plotters install' is no longer available. Use install-plotter.sh/ps1 instead."
+        "[DEPRECATED] 'chinilla plotters install' is no longer available. Use install-plotter.sh/ps1 instead."
     )
     install_parser = subparsers.add_parser("install", help=deprecation_warning)
     install_parser.add_argument("install_plotter", type=str, nargs="*")
 
-    deprecation_warning_bb2 = "[DEPRECATED] 'chia plotters bladebit2' was integrated to 'chia plotters bladebit'"
+    deprecation_warning_bb2 = "[DEPRECATED] 'chinilla plotters bladebit2' was integrated to 'chinilla plotters bladebit'"
     bladebit2_parser = subparsers.add_parser("bladebit2", help=deprecation_warning_bb2)
     bladebit2_parser.add_argument("bladebit2_plotter", type=str, nargs="*")
 
@@ -460,14 +460,14 @@ def call_plotters(root_path: Path, args):
 
     if args.plotter is None:
         plotters.print_help()
-    elif args.plotter == "chiapos":
-        plot_chia(args, chia_root_path)
+    elif args.plotter == "chinillapos":
+        plot_chinilla(args, chinilla_root_path)
     elif args.plotter == "madmax":
-        plot_madmax(args, chia_root_path, root_path)
+        plot_madmax(args, chinilla_root_path, root_path)
     elif args.plotter == "bladebit":
-        plot_bladebit(args, chia_root_path, root_path)
+        plot_bladebit(args, chinilla_root_path, root_path)
     elif args.plotter == "version":
-        show_plotters_version(chia_root_path)
+        show_plotters_version(chinilla_root_path)
     elif args.plotter == "install":
         print(deprecation_warning)
     elif args.plotter == "bladebit2":
@@ -477,12 +477,12 @@ def call_plotters(root_path: Path, args):
 def get_available_plotters(root_path) -> Dict[str, Any]:
     plotters_root_path: Path = get_plotters_root_path(root_path)
     plotters: Dict[str, Any] = {}
-    chiapos: Optional[Dict[str, Any]] = get_chiapos_install_info()
+    chinillapos: Optional[Dict[str, Any]] = get_chinillapos_install_info()
     bladebit: Optional[Dict[str, Any]] = get_bladebit_install_info(plotters_root_path)
     madmax: Optional[Dict[str, Any]] = get_madmax_install_info(plotters_root_path)
 
-    if chiapos is not None:
-        plotters["chiapos"] = chiapos
+    if chinillapos is not None:
+        plotters["chinillapos"] = chinillapos
     if bladebit and bladebit.get("version") is not None:
         bladebit_major_version = bladebit["version"].split(".")[0]
         if bladebit_major_version == "2":
@@ -497,8 +497,8 @@ def get_available_plotters(root_path) -> Dict[str, Any]:
 
 def show_plotters_version(root_path: Path):
     info = get_available_plotters(root_path)
-    if "chiapos" in info and "version" in info["chiapos"]:
-        print(f"chiapos: {info['chiapos']['version']}")
+    if "chinillapos" in info and "version" in info["chinillapos"]:
+        print(f"chinillapos: {info['chinillapos']['version']}")
     if "bladebit" in info and "version" in info["bladebit"]:
         print(f"bladebit: {info['bladebit']['version']}")
     if "bladebit2" in info and "version" in info["bladebit2"]:

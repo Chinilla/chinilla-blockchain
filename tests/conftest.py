@@ -20,12 +20,12 @@ from chinilla.server.start_service import Service
 from chinilla.clvm.spend_sim import SimClient, SpendSim
 from chinilla.full_node.full_node_api import FullNodeAPI
 from chinilla.protocols import full_node_protocol
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
 
 
 from chinilla.types.peer_info import PeerInfo
-from chinilla.util.config import create_default_chia_config, lock_and_load_config
+from chinilla.util.config import create_default_chinilla_config, lock_and_load_config
 from chinilla.util.ints import uint16
 from chinilla.simulator.setup_services import setup_daemon, setup_introducer, setup_timelord
 from chinilla.util.ints import uint16, uint64
@@ -35,7 +35,7 @@ from chinilla.util.task_timing import (
     stop_task_instrumentation,
 )
 from chinilla.wallet.wallet import Wallet
-from tests.core.data_layer.util import ChiaRoot
+from tests.core.data_layer.util import ChinillaRoot
 from tests.core.node_height import node_height_at_least
 from chinilla.simulator.setup_nodes import (
     setup_simulators_and_wallets,
@@ -102,7 +102,7 @@ def self_hostname():
 
 
 # NOTE:
-#       Instantiating the bt fixture results in an attempt to create the chia root directory
+#       Instantiating the bt fixture results in an attempt to create the chinilla root directory
 #       which the build scripts symlink to a sometimes-not-there directory.
 #       When not there, Python complains since, well, the symlink is not a directory nor points to a directory.
 #
@@ -335,7 +335,7 @@ async def two_nodes_sim_and_wallets_services():
 
 @pytest_asyncio.fixture(scope="function")
 async def wallet_node_sim_and_wallet() -> AsyncIterator[
-    Tuple[List[Union[FullNodeAPI, FullNodeSimulator]], List[Tuple[Wallet, ChiaServer]], BlockTools],
+    Tuple[List[Union[FullNodeAPI, FullNodeSimulator]], List[Tuple[Wallet, ChinillaServer]], BlockTools],
 ]:
     async for _ in setup_simulators_and_wallets(1, 1, {}):
         yield _
@@ -468,7 +468,7 @@ async def wallet_and_node():
 
 
 @pytest_asyncio.fixture(scope="function")
-async def one_node_one_block() -> AsyncIterator[Tuple[Union[FullNodeAPI, FullNodeSimulator], ChiaServer, BlockTools]]:
+async def one_node_one_block() -> AsyncIterator[Tuple[Union[FullNodeAPI, FullNodeSimulator], ChinillaServer, BlockTools]]:
     async_gen = setup_simulators_and_wallets(1, 0, {})
     nodes, _, bt = await async_gen.__anext__()
     full_node_1 = nodes[0]
@@ -583,7 +583,7 @@ async def get_daemon(bt):
 
 @pytest.fixture(scope="function")
 def empty_keyring():
-    with TempKeyring(user="user-chia-1.8", service="chia-user-chia-1.8") as keychain:
+    with TempKeyring(user="user-chinilla-1.8", service="chinilla-user-chinilla-1.8") as keychain:
         yield keychain
         KeyringWrapper.cleanup_shared_instance()
 
@@ -696,23 +696,23 @@ async def setup_sim():
 
 
 @pytest.fixture(scope="function")
-def tmp_chia_root(tmp_path):
+def tmp_chinilla_root(tmp_path):
     """
-    Create a temp directory and populate it with an empty chia_root directory.
+    Create a temp directory and populate it with an empty chinilla_root directory.
     """
-    path: Path = tmp_path / "chia_root"
+    path: Path = tmp_path / "chinilla_root"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
 @pytest.fixture(scope="function")
-def root_path_populated_with_config(tmp_chia_root) -> Path:
+def root_path_populated_with_config(tmp_chinilla_root) -> Path:
     """
-    Create a temp chia_root directory and populate it with a default config.yaml.
-    Returns the chia_root path.
+    Create a temp chinilla_root directory and populate it with a default config.yaml.
+    Returns the chinilla_root path.
     """
-    root_path: Path = tmp_chia_root
-    create_default_chia_config(root_path)
+    root_path: Path = tmp_chinilla_root
+    create_default_chinilla_config(root_path)
     return root_path
 
 
@@ -733,9 +733,9 @@ def scripts_path_fixture() -> Path:
     return Path(scripts_string)
 
 
-@pytest.fixture(name="chia_root", scope="function")
-def chia_root_fixture(tmp_path: Path, scripts_path: Path) -> ChiaRoot:
-    root = ChiaRoot(path=tmp_path.joinpath("chia_root"), scripts_path=scripts_path)
+@pytest.fixture(name="chinilla_root", scope="function")
+def chinilla_root_fixture(tmp_path: Path, scripts_path: Path) -> ChinillaRoot:
+    root = ChinillaRoot(path=tmp_path.joinpath("chinilla_root"), scripts_path=scripts_path)
     root.run(args=["init"])
     root.run(args=["configure", "--set-log-level", "INFO"])
 

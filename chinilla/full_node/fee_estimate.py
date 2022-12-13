@@ -18,12 +18,12 @@ class FeeEstimate(Streamable):
     or, an invalid parameter may have been passed.
 
     time_target: Epoch time in seconds we are targeting to include our `SpendBundle` in the blockchain.
-    estimated_fee_rate: expressed in mojo per 1 clvm_cost. `estimated_fee` can be zero.
+    estimated_fee_rate: expressed in vojo per 1 clvm_cost. `estimated_fee` can be zero.
     """
 
     error: Optional[str]
     time_target: uint64  # unix time stamp in seconds
-    estimated_fee_rate: FeeRate  # Mojos per clvm cost
+    estimated_fee_rate: FeeRate  # Vojos per clvm cost
 
 
 @streamable
@@ -31,7 +31,7 @@ class FeeEstimate(Streamable):
 class FeeEstimateGroup(Streamable):
     """
     If error is not None, at least one item in the list `estimates` is invalid.
-    Estimates are expressed in mojos / 1 clvm_cost.
+    Estimates are expressed in vojos / 1 clvm_cost.
     """
 
     error: Optional[str]

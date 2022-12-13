@@ -8,7 +8,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 import blspy
 from blspy import G1Element, G2Element
 from chia_rs import compute_merkle_set_root
-from chiabip158 import PyBIP158
+from chinillabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward

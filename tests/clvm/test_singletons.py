@@ -25,12 +25,12 @@ from chinilla.clvm.spend_sim import SpendSim, SimClient
 
 """
 This test suite aims to test:
-    - chia.wallet.puzzles.singleton_top_layer.py
-    - chia.wallet.puzzles.singleton_top_layer.clvm
-    - chia.wallet.puzzles.singleton_top_layer_v1_1.py
-    - chia.wallet.puzzles.singleton_top_layer_v1_1.clvm
-    - chia.wallet.puzzles.p2_singleton.clvm
-    - chia.wallet.puzzles.p2_singleton_or_delayed_puzhash.clvm
+    - chinilla.wallet.puzzles.singleton_top_layer.py
+    - chinilla.wallet.puzzles.singleton_top_layer.clvm
+    - chinilla.wallet.puzzles.singleton_top_layer_v1_1.py
+    - chinilla.wallet.puzzles.singleton_top_layer_v1_1.clvm
+    - chinilla.wallet.puzzles.p2_singleton.clvm
+    - chinilla.wallet.puzzles.p2_singleton_or_delayed_puzhash.clvm
 """
 
 
@@ -117,7 +117,7 @@ class TestSingleton:
                 )
                 raise AssertionError("This should fail due to an even amount")
             except ValueError as msg:
-                assert str(msg) == "Coin amount cannot be even. Subtract one mojo."
+                assert str(msg) == "Coin amount cannot be even. Subtract one vojo."
                 conditions, launcher_coinsol = singleton_top_layer.launch_conditions_and_coinsol(  # noqa
                     starting_coin, adapted_puzzle, comment, START_AMOUNT
                 )

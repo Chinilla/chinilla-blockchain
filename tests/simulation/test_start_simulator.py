@@ -9,7 +9,7 @@ import pytest_asyncio
 
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
 from chinilla.simulator.simulator_full_node_rpc_client import SimulatorFullNodeRpcClient
-from chinilla.simulator.simulator_test_tools import get_full_chia_simulator, get_puzzle_hash_from_key
+from chinilla.simulator.simulator_test_tools import get_full_chinilla_simulator, get_puzzle_hash_from_key
 from chinilla.simulator.time_out_assert import time_out_assert
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.hash import std_hash
@@ -27,17 +27,17 @@ class TestStartSimulator:
     """
 
     @pytest_asyncio.fixture(scope="function")
-    async def get_chia_simulator(
+    async def get_chinilla_simulator(
         self, tmp_path: Path, empty_keyring: Keychain
     ) -> AsyncGenerator[Tuple[FullNodeSimulator, Path, Dict[str, Any], str, int, Keychain], None]:
-        async for simulator_args in get_full_chia_simulator(chia_root=tmp_path, keychain=empty_keyring):
+        async for simulator_args in get_full_chinilla_simulator(chinilla_root=tmp_path, keychain=empty_keyring):
             yield simulator_args
 
     @pytest.mark.asyncio
     async def test_start_simulator(
-        self, get_chia_simulator: Tuple[FullNodeSimulator, Path, Dict[str, Any], str, int, Keychain]
+        self, get_chinilla_simulator: Tuple[FullNodeSimulator, Path, Dict[str, Any], str, int, Keychain]
     ) -> None:
-        simulator, root_path, config, mnemonic, fingerprint, keychain = get_chia_simulator
+        simulator, root_path, config, mnemonic, fingerprint, keychain = get_chinilla_simulator
         ph_1: bytes32 = get_puzzle_hash_from_key(keychain=keychain, fingerprint=fingerprint, key_id=1)
         ph_2: bytes32 = get_puzzle_hash_from_key(keychain=keychain, fingerprint=fingerprint, key_id=2)
         dummy_hash: bytes32 = std_hash(b"test")

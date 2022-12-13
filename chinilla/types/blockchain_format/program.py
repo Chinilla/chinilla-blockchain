@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
-from chia_rs import MEMPOOL_MODE, run_chia_program, run_generator, serialized_length, tree_hash
+from chia_rs import MEMPOOL_MODE, run_chinilla_program, run_generator, serialized_length, tree_hash
 from clvm import SExp
 from clvm.casts import int_from_bytes
 from clvm.EvalError import EvalError
@@ -37,7 +37,7 @@ class Program(SExp):
         # the first argument is the buffer we want to parse. This effectively
         # leverages the rust parser and LazyNode, making it a lot faster to
         # parse serialized programs into a python compatible structure
-        cost, ret = run_chia_program(
+        cost, ret = run_chinilla_program(
             b"\x01",
             blob,
             50,
@@ -114,7 +114,7 @@ class Program(SExp):
 
     def run_with_cost(self, max_cost: int, args) -> Tuple[int, "Program"]:
         prog_args = Program.to(args)
-        cost, r = run_chia_program(self.as_bin(), prog_args.as_bin(), max_cost, 0)
+        cost, r = run_chinilla_program(self.as_bin(), prog_args.as_bin(), max_cost, 0)
         return cost, Program.to(r)
 
     def run(self, args) -> "Program":
@@ -338,7 +338,7 @@ class SerializedProgram:
         else:
             serialized_args += _serialize(args[0])
 
-        cost, ret = run_chia_program(
+        cost, ret = run_chinilla_program(
             self._buf,
             bytes(serialized_args),
             max_cost,

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-run_block: Convert an encoded FullBlock from the Chia blockchain into a list of transactions
+run_block: Convert an encoded FullBlock from the Chinilla blockchain into a list of transactions
 
-As input, takes a file containing a [FullBlock](../chia/types/full_block.py) in json format
+As input, takes a file containing a [FullBlock](../chinilla/types/full_block.py) in json format
 
 ```
 curl --insecure --cert $config_root/config/ssl/full_node/private_full_node.crt \
@@ -11,8 +11,8 @@ curl --insecure --cert $config_root/config/ssl/full_node/private_full_node.crt \
      -d '{ "header_hash": "'$hash'" }' -H "Content-Type: application/json" \
      -X POST https://localhost:$port/get_block
 
-$ca_root is the directory containing your current Chia config files
-$hash is the header_hash of the [BlockRecord](../chia/consensus/block_record.py)
+$ca_root is the directory containing your current Chinilla config files
+$hash is the header_hash of the [BlockRecord](../chinilla/consensus/block_record.py)
 $port is the Full Node RPC API port
 ```
 
@@ -27,7 +27,7 @@ then be verified by the consensus rules, or used to view some aspects of transac
 
 The information for each spend is an "NPC" (Name, Puzzle, Condition):
         "coin_name": a unique 32 byte identifier
-        "conditions": a list of condition expressions, as in [condition_opcodes.py](../chia/types/condition_opcodes.py)
+        "conditions": a list of condition expressions, as in [condition_opcodes.py](../chinilla/types/condition_opcodes.py)
         "puzzle_hash": the sha256 of the CLVM bytecode that controls spending this coin
 
 Condition Opcodes, such as AGG_SIG_ME, or CREATE_COIN are created by running the "puzzle", i.e. the CLVM bytecode
@@ -61,7 +61,7 @@ from chinilla.wallet.puzzles.load_clvm import load_serialized_clvm_maybe_recompi
 from chinilla.wallet.uncurried_puzzle import uncurry_puzzle
 
 DESERIALIZE_MOD = load_serialized_clvm_maybe_recompile(
-    "chialisp_deserialisation.clvm", package_or_requirement="chia.wallet.puzzles"
+    "chinillalisp_deserialisation.clvm", package_or_requirement="chinilla.wallet.puzzles"
 )
 
 

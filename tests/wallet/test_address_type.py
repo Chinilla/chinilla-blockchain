@@ -80,7 +80,7 @@ def test_is_valid_address_nft_bad_address(config_with_address_prefix: Dict[str, 
 def test_is_valid_address_did(config_with_address_prefix: Dict[str, Any]) -> None:
     config = config_with_address_prefix
     valid = is_valid_address(
-        "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
+        "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
         allowed_types={AddressType.DID},
         config=config,
     )
@@ -91,7 +91,7 @@ def test_is_valid_address_did(config_with_address_prefix: Dict[str, Any]) -> Non
 def test_is_valid_address_did_with_testnet(config_with_address_prefix: Dict[str, Any]) -> None:
     config = config_with_address_prefix
     valid = is_valid_address(
-        "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
+        "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
         allowed_types={AddressType.DID},
         config=config,
     )
@@ -102,7 +102,7 @@ def test_is_valid_address_did_with_testnet(config_with_address_prefix: Dict[str,
 def test_is_valid_address_did_bad_address(config_with_address_prefix: Dict[str, Any]) -> None:
     config = config_with_address_prefix
     valid = is_valid_address(
-        "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsrxxxxx",
+        "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsrxxxxx",
         allowed_types={AddressType.DID},
         config=config,
     )
@@ -164,11 +164,11 @@ def test_ensure_valid_address_nft_bad_address(config_with_address_prefix: Dict[s
 def test_ensure_valid_address_did(config_with_address_prefix: Dict[str, Any]) -> None:
     config = config_with_address_prefix
     address = ensure_valid_address(
-        "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
+        "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7",
         allowed_types={AddressType.DID},
         config=config,
     )
-    assert address == "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7"
+    assert address == "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsr9gsr7"
 
 
 @pytest.mark.parametrize("prefix", [None])
@@ -176,7 +176,7 @@ def test_ensure_valid_address_did_bad_address(config_with_address_prefix: Dict[s
     config = config_with_address_prefix
     with pytest.raises(ValueError):
         ensure_valid_address(
-            "did:chia:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsrxxxxx",
+            "did:chinilla:14jxdtqcyp3gk8ka0678eq8mmtnktgpmp2vuqq3vtsl2e5qr7fyrsrxxxxx",
             allowed_types={AddressType.DID},
             config=config,
         )

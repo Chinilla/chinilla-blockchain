@@ -47,7 +47,7 @@ def generate_and_print():
     mnemonic = generate_mnemonic()
     print("Generating private key. Mnemonic (24 secret words):")
     print(mnemonic)
-    print("Note that this key has not been added to the keychain. Run chia keys add")
+    print("Note that this key has not been added to the keychain. Run chinilla keys add")
     return mnemonic
 
 
@@ -97,7 +97,7 @@ def show_all_key_labels() -> None:
     keys = Keychain().get_keys()
 
     if len(keys) == 0:
-        sys.exit("No keys are present in the keychain. Generate them with 'chia keys generate'")
+        sys.exit("No keys are present in the keychain. Generate them with 'chinilla keys generate'")
 
     print_line("fingerprint", "label")
     print_line("-" * fingerprint_width, "-" * MAX_LABEL_LENGTH)

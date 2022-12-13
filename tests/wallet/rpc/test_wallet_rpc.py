@@ -14,7 +14,7 @@ from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calcu
 from chinilla.consensus.coinbase import create_puzzlehash_for_pk
 from chinilla.rpc.full_node_rpc_client import FullNodeRpcClient
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.simulator.time_out_assert import time_out_assert
@@ -60,7 +60,7 @@ class WalletBundle:
 
 @dataclasses.dataclass
 class FullNodeBundle:
-    server: ChiaServer
+    server: ChinillaServer
     api: FullNodeSimulator
     rpc_client: FullNodeRpcClient
 
@@ -608,7 +608,7 @@ async def test_cat_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
     await generate_funds(full_node_api, env.wallet_1, 1)
     await generate_funds(full_node_api, env.wallet_2, 1)
 
-    # Creates a CAT wallet with 100 mojos and a CAT with 20 mojos
+    # Creates a CAT wallet with 100 vojos and a CAT with 20 vojos
     await client.create_new_cat_and_wallet(uint64(100))
     await time_out_assert(20, client.get_synced)
 
@@ -723,7 +723,7 @@ async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment)
     await generate_funds(full_node_api, env.wallet_1, 1)
     await generate_funds(full_node_api, env.wallet_2, 1)
 
-    # Creates a CAT wallet with 20 mojos
+    # Creates a CAT wallet with 20 vojos
     res = await wallet_1_rpc.create_new_cat_and_wallet(uint64(20))
     assert res["success"]
     cat_wallet_id = res["wallet_id"]
@@ -749,7 +749,7 @@ async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment)
         assert cr.coin in spend_bundle.additions()
     with pytest.raises(ValueError):
         await wallet_1_rpc.get_coin_records_by_names([a.name() for a in spend_bundle.additions() if a.amount == 4])
-    # Create an offer of 5 chia for one CAT
+    # Create an offer of 5 chinilla for one CAT
     offer, trade_record = await wallet_1_rpc.create_offer_for_ids(
         {uint32(1): -5, cat_asset_id.hex(): 1}, validate_only=True
     )
@@ -974,7 +974,7 @@ async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
         None,
         None,
         "0xD4584AD463139FA8C0D9F68F4B59F185",
-        ["https://www.chia.net/img/branding/chia-logo.svg"],
+        ["https://www.chinilla.net/img/branding/chinilla-logo.svg"],
     )
     assert res["success"]
 

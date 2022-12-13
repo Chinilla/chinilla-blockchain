@@ -23,8 +23,8 @@ from chinilla.pools.pool_wallet import PoolWallet
 from chinilla.protocols import wallet_protocol
 from chinilla.protocols.wallet_protocol import CoinState
 from chinilla.server.outbound_message import NodeType
-from chinilla.server.server import ChiaServer
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.server import ChinillaServer
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -128,7 +128,7 @@ class WalletStateManager:
     interested_store: WalletInterestedStore
     retry_store: WalletRetryStore
     multiprocessing_context: multiprocessing.context.BaseContext
-    server: ChiaServer
+    server: ChinillaServer
     root_path: Path
     wallet_node: Any
     pool_store: WalletPoolStore
@@ -143,7 +143,7 @@ class WalletStateManager:
         config: Dict,
         db_path: Path,
         constants: ConsensusConstants,
-        server: ChiaServer,
+        server: ChinillaServer,
         root_path: Path,
         wallet_node,
         name: str = None,
@@ -604,7 +604,7 @@ class WalletStateManager:
         return removals
 
     async def determine_coin_type(
-        self, peer: WSChiaConnection, coin_state: CoinState, fork_height: Optional[uint32]
+        self, peer: WSChinillaConnection, coin_state: CoinState, fork_height: Optional[uint32]
     ) -> Tuple[Optional[uint32], Optional[WalletType]]:
         if coin_state.created_height is not None and (
             self.is_pool_reward(uint32(coin_state.created_height), coin_state.coin)
@@ -638,7 +638,7 @@ class WalletStateManager:
 
         # Check if the coin is a NFT
         #                                                        hint
-        # First spend where 1 mojo coin -> Singleton launcher -> NFT -> NFT
+        # First spend where 1 vojo coin -> Singleton launcher -> NFT -> NFT
         uncurried_nft = UncurriedNFT.uncurry(uncurried.mod, uncurried.args)
         if uncurried_nft is not None:
             return await self.handle_nft(coin_spend, uncurried_nft, parent_coin_state, coin_state)
@@ -655,7 +655,7 @@ class WalletStateManager:
     async def filter_spam(self, new_coin_state: List[CoinState]) -> List[CoinState]:
         xch_spam_amount = self.config.get("xch_spam_amount", 1000000)
 
-        # No need to filter anything if the filter is set to 1 or 0 mojos
+        # No need to filter anything if the filter is set to 1 or 0 vojos
         if xch_spam_amount <= 1:
             return new_coin_state
 
@@ -748,7 +748,7 @@ class WalletStateManager:
         parent_coin_state: CoinState,
         coin_state: CoinState,
         coin_spend: CoinSpend,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
     ) -> Tuple[Optional[uint32], Optional[WalletType]]:
         """
         Handle the new coin when it is a DID
@@ -835,7 +835,7 @@ class WalletStateManager:
             self.state_changed("wallet_created", wallet_id, {"did_id": did_wallet.get_my_DID()})
         return wallet_id, wallet_type
 
-    async def get_minter_did(self, launcher_coin: Coin, peer: WSChiaConnection) -> Optional[bytes32]:
+    async def get_minter_did(self, launcher_coin: Coin, peer: WSChinillaConnection) -> Optional[bytes32]:
         # Get minter DID
         eve_coin = (await self.wallet_node.fetch_children(launcher_coin.name(), peer=peer))[0]
         eve_coin_spend: CoinSpend = await self.wallet_node.fetch_puzzle_solution(
@@ -976,7 +976,7 @@ class WalletStateManager:
     async def new_coin_state(
         self,
         coin_states: List[CoinState],
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         fork_height: Optional[uint32],
     ) -> None:
         # TODO: add comment about what this method does
@@ -1422,7 +1422,7 @@ class WalletStateManager:
         all_unconfirmed_transaction_records: List[TransactionRecord],
         wallet_id: uint32,
         wallet_type: WalletType,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         coin_name: bytes32,
     ) -> None:
         """

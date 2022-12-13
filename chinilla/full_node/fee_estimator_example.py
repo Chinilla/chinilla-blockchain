@@ -10,11 +10,11 @@ from chinilla.types.fee_rate import FeeRate
 from chinilla.types.mempool_item import MempoolItem
 from chinilla.util.ints import uint64
 
-MIN_MOJO_PER_COST = 5
+MIN_VOJO_PER_COST = 5
 
 
 def example_fee_rate_function(time_in_seconds: int) -> uint64:
-    return uint64(MIN_MOJO_PER_COST * max((3600 - time_in_seconds), 1))
+    return uint64(MIN_VOJO_PER_COST * max((3600 - time_in_seconds), 1))
 
 
 class FeeEstimatorExample(FeeEstimatorInterface):

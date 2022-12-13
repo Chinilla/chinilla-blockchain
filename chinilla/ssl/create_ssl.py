@@ -26,9 +26,9 @@ _all_private_node_names: List[str] = [
 _all_public_node_names: List[str] = ["full_node", "wallet", "farmer", "introducer", "timelord", "data_layer"]
 
 
-def get_chia_ca_crt_key() -> Tuple[Any, Any]:
-    crt = pkg_resources.resource_string(__name__, "chia_ca.crt")
-    key = pkg_resources.resource_string(__name__, "chia_ca.key")
+def get_chinilla_ca_crt_key() -> Tuple[Any, Any]:
+    crt = pkg_resources.resource_string(__name__, "chinilla_ca.crt")
+    key = pkg_resources.resource_string(__name__, "chinilla_ca.key")
     return crt, key
 
 
@@ -69,8 +69,8 @@ def generate_ca_signed_cert(ca_crt: bytes, ca_key: bytes, cert_out: Path, key_ou
     cert_key = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
     new_subject = x509.Name(
         [
-            x509.NameAttribute(NameOID.COMMON_NAME, "Chia"),
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Chia"),
+            x509.NameAttribute(NameOID.COMMON_NAME, "Chinilla"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Chinilla"),
             x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Organic Farming Division"),
         ]
     )
@@ -84,7 +84,7 @@ def generate_ca_signed_cert(ca_crt: bytes, ca_key: bytes, cert_out: Path, key_ou
         .not_valid_before(datetime.datetime.today() - one_day)
         .not_valid_after(datetime.datetime(2100, 8, 2))
         .add_extension(
-            x509.SubjectAlternativeName([x509.DNSName("chia.net")]),
+            x509.SubjectAlternativeName([x509.DNSName("chinilla.net")]),
             critical=False,
         )
         .sign(root_key, hashes.SHA256(), default_backend())
@@ -104,8 +104,8 @@ def make_ca_cert(cert_path: Path, key_path: Path):
     root_key = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
     subject = issuer = x509.Name(
         [
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Chia"),
-            x509.NameAttribute(NameOID.COMMON_NAME, "Chia CA"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Chinilla"),
+            x509.NameAttribute(NameOID.COMMON_NAME, "Chinilla CA"),
             x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Organic Farming Division"),
         ]
     )
@@ -157,10 +157,10 @@ def create_all_ssl(
 
     private_ca_key_path = ca_dir / "private_ca.key"
     private_ca_crt_path = ca_dir / "private_ca.crt"
-    chia_ca_crt, chia_ca_key = get_chia_ca_crt_key()
-    chia_ca_crt_path = ca_dir / "chia_ca.crt"
-    chia_ca_key_path = ca_dir / "chia_ca.key"
-    write_ssl_cert_and_key(chia_ca_crt_path, chia_ca_crt, chia_ca_key_path, chia_ca_key, overwrite=overwrite)
+    chinilla_ca_crt, chinilla_ca_key = get_chinilla_ca_crt_key()
+    chinilla_ca_crt_path = ca_dir / "chinilla_ca.crt"
+    chinilla_ca_key_path = ca_dir / "chinilla_ca.key"
+    write_ssl_cert_and_key(chinilla_ca_crt_path, chinilla_ca_crt, chinilla_ca_key_path, chinilla_ca_key, overwrite=overwrite)
 
     # If Private CA crt/key are passed-in, write them out
     if private_ca_crt_and_key is not None:
@@ -198,11 +198,11 @@ def create_all_ssl(
             overwrite=overwrite,
         )
 
-    chia_ca_crt, chia_ca_key = get_chia_ca_crt_key()
+    chinilla_ca_crt, chinilla_ca_key = get_chinilla_ca_crt_key()
     generate_ssl_for_nodes(
         ssl_dir,
-        chia_ca_crt,
-        chia_ca_key,
+        chinilla_ca_crt,
+        chinilla_ca_key,
         prefix="public",
         nodes=public_node_names,
         overwrite=False,
@@ -239,7 +239,7 @@ def generate_ssl_for_nodes(
 
 
 def main():
-    return make_ca_cert(Path("./chia_ca.crt"), Path("./chia_ca.key"))
+    return make_ca_cert(Path("./chinilla_ca.crt"), Path("./chinilla_ca.key"))
 
 
 if __name__ == "__main__":

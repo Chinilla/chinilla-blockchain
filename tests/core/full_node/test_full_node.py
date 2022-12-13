@@ -24,7 +24,7 @@ from chinilla.protocols.shared_protocol import Capability, capabilities
 from chinilla.protocols.wallet_protocol import SendTransaction, TransactionAck
 from chinilla.server.address_manager import AddressManager
 from chinilla.server.outbound_message import Message, NodeType
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.simulator.block_tools import BlockTools, get_signage_point, test_constants
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.simulator.time_out_assert import time_out_assert, time_out_assert_custom_interval, time_out_messages
@@ -1961,7 +1961,7 @@ class TestFullNodeProtocol:
             [capabilities, True],
             # an additional enabled but unknown capability
             [[*capabilities, (uint16(max(Capability) + 1), "1")], True],
-            # no capability, not even Chia mainnet
+            # no capability, not even Chinilla mainnet
             # TODO: shouldn't we fail without Capability.BASE?
             [[], True],
             # only an unknown capability
@@ -1972,7 +1972,7 @@ class TestFullNodeProtocol:
     @pytest.mark.asyncio
     async def test_invalid_capability_can_connect(
         self,
-        two_nodes: Tuple[FullNodeAPI, FullNodeAPI, ChiaServer, ChiaServer, BlockTools],
+        two_nodes: Tuple[FullNodeAPI, FullNodeAPI, ChinillaServer, ChinillaServer, BlockTools],
         self_hostname: str,
         custom_capabilities: List[Tuple[uint16, str]],
         expect_success: bool,

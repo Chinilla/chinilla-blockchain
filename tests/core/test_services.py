@@ -22,8 +22,8 @@ from chinilla.simulator.socket import find_available_listen_port
 from chinilla.util.config import lock_and_load_config, save_config
 from chinilla.util.ints import uint16
 from chinilla.util.misc import sendable_termination_signals
-from tests.core.data_layer.util import ChiaRoot
-from tests.util.misc import closing_chia_root_popen
+from tests.core.data_layer.util import ChinillaRoot
+from tests.util.misc import closing_chinilla_root_popen
 
 
 class CreateServiceProtocol(Protocol):
@@ -51,14 +51,14 @@ async def wait_for_daemon_connection(root_path: Path, config: Dict[str, Any], ti
 
 @pytest.mark.parametrize(argnames="signal_number", argvalues=sendable_termination_signals)
 @pytest.mark.asyncio
-async def test_daemon_terminates(signal_number: signal.Signals, chia_root: ChiaRoot) -> None:
+async def test_daemon_terminates(signal_number: signal.Signals, chinilla_root: ChinillaRoot) -> None:
     port = find_available_listen_port()
-    with lock_and_load_config(root_path=chia_root.path, filename="config.yaml") as config:
+    with lock_and_load_config(root_path=chinilla_root.path, filename="config.yaml") as config:
         config["daemon_port"] = port
-        save_config(root_path=chia_root.path, filename="config.yaml", config_data=config)
+        save_config(root_path=chinilla_root.path, filename="config.yaml", config_data=config)
 
-    with closing_chia_root_popen(chia_root=chia_root, args=[sys.executable, "-m", "chia.daemon.server"]) as process:
-        client = await wait_for_daemon_connection(root_path=chia_root.path, config=config)
+    with closing_chinilla_root_popen(chinilla_root=chinilla_root, args=[sys.executable, "-m", "chinilla.daemon.server"]) as process:
+        client = await wait_for_daemon_connection(root_path=chinilla_root.path, config=config)
 
         try:
             return_code = process.poll()
@@ -74,29 +74,29 @@ async def test_daemon_terminates(signal_number: signal.Signals, chia_root: ChiaR
 @pytest.mark.parametrize(
     argnames=["create_service", "module_path", "service_config_name"],
     argvalues=[
-        [DataLayerRpcClient.create, "chia.server.start_data_layer", "data_layer"],
-        [FarmerRpcClient.create, "chia.server.start_farmer", "farmer"],
-        [FullNodeRpcClient.create, "chia.server.start_full_node", "full_node"],
-        [HarvesterRpcClient.create, "chia.server.start_harvester", "harvester"],
-        [WalletRpcClient.create, "chia.server.start_wallet", "wallet"],
+        [DataLayerRpcClient.create, "chinilla.server.start_data_layer", "data_layer"],
+        [FarmerRpcClient.create, "chinilla.server.start_farmer", "farmer"],
+        [FullNodeRpcClient.create, "chinilla.server.start_full_node", "full_node"],
+        [HarvesterRpcClient.create, "chinilla.server.start_harvester", "harvester"],
+        [WalletRpcClient.create, "chinilla.server.start_wallet", "wallet"],
         # TODO: review and somehow test the other services too
-        # [, "chia.server.start_introducer", "introducer"],
-        # [, "chia.seeder.start_crawler", ""],
-        # [, "chia.server.start_timelord", "timelord"],
-        # [, "chia.timelord.timelord_launcher", ],
-        # [, "chia.simulator.start_simulator", ],
-        # [, "chia.data_layer.data_layer_server", "data_layer"],
+        # [, "chinilla.server.start_introducer", "introducer"],
+        # [, "chinilla.seeder.start_crawler", ""],
+        # [, "chinilla.server.start_timelord", "timelord"],
+        # [, "chinilla.timelord.timelord_launcher", ],
+        # [, "chinilla.simulator.start_simulator", ],
+        # [, "chinilla.data_layer.data_layer_server", "data_layer"],
     ],
 )
 @pytest.mark.asyncio
 async def test_services_terminate(
     signal_number: signal.Signals,
-    chia_root: ChiaRoot,
+    chinilla_root: ChinillaRoot,
     create_service: CreateServiceProtocol,
     module_path: str,
     service_config_name: str,
 ) -> None:
-    with lock_and_load_config(root_path=chia_root.path, filename="config.yaml") as config:
+    with lock_and_load_config(root_path=chinilla_root.path, filename="config.yaml") as config:
         config["daemon_port"] = find_available_listen_port(name="daemon")
         service_config = config[service_config_name]
         if "port" in service_config:
@@ -104,27 +104,27 @@ async def test_services_terminate(
             service_config["port"] = port
         rpc_port = find_available_listen_port(name="rpc")
         service_config["rpc_port"] = rpc_port
-        save_config(root_path=chia_root.path, filename="config.yaml", config_data=config)
+        save_config(root_path=chinilla_root.path, filename="config.yaml", config_data=config)
 
     # TODO: make the wallet start up regardless so this isn't needed
-    with closing_chia_root_popen(
-        chia_root=chia_root,
-        args=[sys.executable, "-m", "chia.daemon.server"],
+    with closing_chinilla_root_popen(
+        chinilla_root=chinilla_root,
+        args=[sys.executable, "-m", "chinilla.daemon.server"],
     ):
         # Make sure the daemon is running and responsive before starting other services.
         # This probably shouldn't be required.  For now, it helps at least with the
         # farmer.
-        daemon_client = await wait_for_daemon_connection(root_path=chia_root.path, config=config)
+        daemon_client = await wait_for_daemon_connection(root_path=chinilla_root.path, config=config)
         await daemon_client.close()
 
-        with closing_chia_root_popen(
-            chia_root=chia_root,
+        with closing_chinilla_root_popen(
+            chinilla_root=chinilla_root,
             args=[sys.executable, "-m", module_path],
         ) as process:
             client = await create_service(
                 self_hostname=config["self_hostname"],
                 port=uint16(rpc_port),
-                root_path=chia_root.path,
+                root_path=chinilla_root.path,
                 net_config=config,
             )
             try:

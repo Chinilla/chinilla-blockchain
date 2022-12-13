@@ -10,7 +10,7 @@ from chinilla.util.config import selected_network_address_prefix
 class AddressType(Enum):
     XCH = "xch"
     NFT = "nft"
-    DID = "did:chia:"
+    DID = "did:chinilla:"
 
     def hrp(self, config: Dict[str, Any]) -> str:
         if self == AddressType.XCH:

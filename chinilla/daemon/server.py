@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 from chinilla import __version__
-from chinilla.cmds.init_funcs import check_keys, chia_full_version_str, chia_init
+from chinilla.cmds.init_funcs import check_keys, chinilla_full_version_str, chinilla_init
 from chinilla.cmds.passphrase_funcs import default_passphrase, using_default_passphrase
 from chinilla.daemon.keychain_server import KeychainServer, keychain_commands
 from chinilla.daemon.windows_signal import kill
@@ -27,7 +27,7 @@ from chinilla.plotting.util import add_plot_directory
 from chinilla.server.server import ssl_context_for_root, ssl_context_for_server
 from chinilla.ssl.create_ssl import get_mozilla_ca_crt
 from chinilla.util.beta_metrics import BetaMetricsLogger
-from chinilla.util.chia_logging import initialize_service_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config
 from chinilla.util.errors import KeychainCurrentPassphraseIsInvalid
 from chinilla.util.json_util import dict_to_json_str
@@ -44,13 +44,13 @@ try:
     from aiohttp import ClientSession, WSMsgType, web
     from aiohttp.web_ws import WebSocketResponse
 except ModuleNotFoundError:
-    print("Error: Make sure to run . ./activate from the project folder before starting Chia.")
+    print("Error: Make sure to run . ./activate from the project folder before starting Chinilla.")
     quit()
 
 
 log = logging.getLogger(__name__)
 
-service_plotter = "chia_plotter"
+service_plotter = "chinilla_plotter"
 
 
 async def fetch(url: str):
@@ -83,19 +83,19 @@ class PlotEvent(str, Enum):
 # determine if application is a script file or frozen exe
 if getattr(sys, "frozen", False):
     name_map = {
-        "chia": "chia",
-        "chia_data_layer": "start_data_layer",
-        "chia_data_layer_http": "start_data_layer_http",
-        "chia_wallet": "start_wallet",
-        "chia_full_node": "start_full_node",
-        "chia_harvester": "start_harvester",
-        "chia_farmer": "start_farmer",
-        "chia_introducer": "start_introducer",
-        "chia_timelord": "start_timelord",
-        "chia_timelord_launcher": "timelord_launcher",
-        "chia_full_node_simulator": "start_simulator",
-        "chia_seeder": "start_seeder",
-        "chia_crawler": "start_crawler",
+        "chinilla": "chinilla",
+        "chinilla_data_layer": "start_data_layer",
+        "chinilla_data_layer_http": "start_data_layer_http",
+        "chinilla_wallet": "start_wallet",
+        "chinilla_full_node": "start_full_node",
+        "chinilla_harvester": "start_harvester",
+        "chinilla_farmer": "start_farmer",
+        "chinilla_introducer": "start_introducer",
+        "chinilla_timelord": "start_timelord",
+        "chinilla_timelord_launcher": "timelord_launcher",
+        "chinilla_full_node_simulator": "start_simulator",
+        "chinilla_seeder": "start_seeder",
+        "chinilla_crawler": "start_crawler",
     }
 
     def executable_for_service(service_name: str) -> str:
@@ -165,7 +165,7 @@ class WebSocketServer:
             self.log.warning(
                 (
                     "Deprecation Warning: Your version of SSL (%s) does not support TLS1.3. "
-                    "A future version of Chia will require TLS1.3."
+                    "A future version of Chinilla will require TLS1.3."
                 ),
                 ssl.OPENSSL_VERSION,
             )
@@ -615,7 +615,7 @@ class WebSocketServer:
         plotter: str = config["plotter"]
         final_words: List[str] = []
 
-        if plotter == "chiapos":
+        if plotter == "chinillapos":
             final_words = ["Renamed final file"]
         elif plotter == "bladebit":
             final_words = ["Finished plotting in"]
@@ -674,7 +674,7 @@ class WebSocketServer:
 
         return command_args
 
-    def _chiapos_plotting_command_args(self, request: Any, ignoreCount: bool) -> List[str]:
+    def _chinillapos_plotting_command_args(self, request: Any, ignoreCount: bool) -> List[str]:
         k = request["k"]  # Plot size
         t = request["t"]  # Temp directory
         t2 = request["t2"]  # Temp2 directory
@@ -806,20 +806,20 @@ class WebSocketServer:
         return command_args
 
     def _build_plotting_command_args(self, request: Any, ignoreCount: bool, index: int) -> List[str]:
-        plotter: str = request.get("plotter", "chiapos")
-        command_args: List[str] = ["chia", "plotters", plotter]
+        plotter: str = request.get("plotter", "chinillapos")
+        command_args: List[str] = ["chinilla", "plotters", plotter]
 
         if plotter == "bladebit":
             # plotter command must be either
-            # 'chia plotters bladebit ramplot' or 'chia plotters bladebit diskplot'
+            # 'chinilla plotters bladebit ramplot' or 'chinilla plotters bladebit diskplot'
             plot_type = request["plot_type"]
             assert plot_type == "diskplot" or plot_type == "ramplot"
             command_args.append(plot_type)
 
         command_args.extend(self._common_plotting_command_args(request, ignoreCount))
 
-        if plotter == "chiapos":
-            command_args.extend(self._chiapos_plotting_command_args(request, ignoreCount))
+        if plotter == "chinillapos":
+            command_args.extend(self._chinillapos_plotting_command_args(request, ignoreCount))
         elif plotter == "madmax":
             command_args.extend(self._madmax_plotting_command_args(request, ignoreCount, index))
         elif plotter == "bladebit":
@@ -932,7 +932,7 @@ class WebSocketServer:
     async def start_plotting(self, request: Dict[str, Any]):
         service_name = request["service"]
 
-        plotter = request.get("plotter", "chiapos")
+        plotter = request.get("plotter", "chinillapos")
         delay = int(request.get("delay", 0))
         parallel = request.get("parallel", False)
         size = request.get("k")
@@ -1121,7 +1121,7 @@ class WebSocketServer:
             self.webserver.close()
             await self.webserver.await_closed()
         self.shutdown_event.set()
-        log.info("chia daemon exiting")
+        log.info("chinilla daemon exiting")
 
     async def register_service(self, websocket: WebSocketResponse, request: Dict[str, Any]) -> Dict[str, Any]:
         self.log.info(f"Register service {request}")
@@ -1178,8 +1178,8 @@ def plotter_log_path(root_path: Path, id: str):
 
 
 def launch_plotter(root_path: Path, service_name: str, service_array: List[str], id: str):
-    # we need to pass on the possibly altered CHIA_ROOT
-    os.environ["CHIA_ROOT"] = str(root_path)
+    # we need to pass on the possibly altered CHINILLA_ROOT
+    os.environ["CHINILLA_ROOT"] = str(root_path)
     service_executable = executable_for_service(service_array[0])
 
     # Swap service name with name of executable
@@ -1224,12 +1224,12 @@ def launch_service(root_path: Path, service_command) -> Tuple[subprocess.Popen, 
     """
     Launch a child process.
     """
-    # set up CHIA_ROOT
+    # set up CHINILLA_ROOT
     # invoke correct script
     # save away PID
 
-    # we need to pass on the possibly altered CHIA_ROOT
-    os.environ["CHIA_ROOT"] = str(root_path)
+    # we need to pass on the possibly altered CHINILLA_ROOT
+    os.environ["CHINILLA_ROOT"] = str(root_path)
 
     # Insert proper e
     service_array = service_command.split()
@@ -1241,7 +1241,7 @@ def launch_service(root_path: Path, service_command) -> Tuple[subprocess.Popen, 
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    log.debug(f"Launching service {service_array} with CHIA_ROOT: {os.environ['CHIA_ROOT']}")
+    log.debug(f"Launching service {service_array} with CHINILLA_ROOT: {os.environ['CHINILLA_ROOT']}")
 
     # CREATE_NEW_PROCESS_GROUP allows graceful shutdown on windows, by CTRL_BREAK_EVENT signal
     if sys.platform == "win32" or sys.platform == "cygwin":
@@ -1316,11 +1316,11 @@ def is_running(services: Dict[str, subprocess.Popen], service_name: str) -> bool
 
 
 async def async_run_daemon(root_path: Path, wait_for_unlock: bool = False) -> int:
-    # When wait_for_unlock is true, we want to skip the check_keys() call in chia_init
+    # When wait_for_unlock is true, we want to skip the check_keys() call in chinilla_init
     # since it might be necessary to wait for the GUI to unlock the keyring first.
-    chia_init(root_path, should_check_keys=(not wait_for_unlock))
+    chinilla_init(root_path, should_check_keys=(not wait_for_unlock))
     config = load_config(root_path, "config.yaml")
-    setproctitle("chia_daemon")
+    setproctitle("chinilla_daemon")
     initialize_service_logging("daemon", config)
     crt_path = root_path / config["daemon_ssl"]["private_crt"]
     key_path = root_path / config["daemon_ssl"]["private_key"]
@@ -1340,7 +1340,7 @@ async def async_run_daemon(root_path: Path, wait_for_unlock: bool = False) -> in
     sys.stdout.flush()
     try:
         with Lockfile.create(daemon_launch_lock_path(root_path), timeout=1):
-            log.info(f"chia-blockchain version: {chia_full_version_str()}")
+            log.info(f"chinilla-blockchain version: {chinilla_full_version_str()}")
 
             beta_metrics: Optional[BetaMetricsLogger] = None
             if config.get("beta", {}).get("enabled", False):

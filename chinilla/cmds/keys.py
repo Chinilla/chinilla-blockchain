@@ -13,7 +13,7 @@ def keys_cmd(ctx: click.Context):
 
     root_path: Path = ctx.obj["root_path"]
     if not root_path.is_dir():
-        raise RuntimeError("Please initialize (or migrate) your config directory with chia init")
+        raise RuntimeError("Please initialize (or migrate) your config directory with chinilla init")
 
 
 @keys_cmd.command("generate", short_help="Generates and adds a key to keychain")
@@ -42,7 +42,7 @@ def generate_cmd(ctx: click.Context, label: Optional[str]):
     "--non-observer-derivation",
     "-d",
     help=(
-        "Show the first wallet address using non-observer derivation. Older Chia versions use "
+        "Show the first wallet address using non-observer derivation. Older Chinilla versions use "
         "non-observer derivation when generating wallet addresses."
     ),
     default=False,

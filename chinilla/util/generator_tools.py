@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Iterator, List, Optional, Tuple
 
-from chiabip158 import PyBIP158
+from chinillabip158 import PyBIP158
 
 from chinilla.consensus.cost_calculator import NPCResult
 from chinilla.types.blockchain_format.coin import Coin

@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 import aiosqlite
 from dnslib import A, AAAA, SOA, NS, MX, CNAME, RR, DNSRecord, QTYPE, DNSHeader
 
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.path import path_from_root
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH

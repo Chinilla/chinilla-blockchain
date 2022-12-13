@@ -14,9 +14,9 @@ from chinilla.util.ints import uint16
 
 class RpcClient:
     """
-    Client to Chia RPC, connects to a local service. Uses HTTP/JSON, and converts back from
+    Client to Chinilla RPC, connects to a local service. Uses HTTP/JSON, and converts back from
     JSON into native python objects before returning. All api calls use POST requests.
-    Note that this is not the same as the peer protocol, or wallet protocol (which run Chia's
+    Note that this is not the same as the peer protocol, or wallet protocol (which run Chinilla's
     protocol on top of TCP), it's a separate protocol on top of HTTP that provides easy access
     to the full node.
     """

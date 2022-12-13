@@ -47,7 +47,7 @@ from chinilla.wallet.wallet_coin_record import WalletCoinRecord
 from chinilla.wallet.wallet_info import WalletInfo
 
 if TYPE_CHECKING:
-    from chinilla.server.ws_connection import WSChiaConnection
+    from chinilla.server.ws_connection import WSChinillaConnection
 
 
 class Wallet:
@@ -334,11 +334,11 @@ class Wallet:
 
         total_balance = await self.get_spendable_balance()
         if total_amount > total_balance:
-            raise ValueError(f"Can't spend more than wallet balance: {total_balance} mojos")
+            raise ValueError(f"Can't spend more than wallet balance: {total_balance} vojos")
         if not ignore_max_send_amount:
             max_send = await self.get_max_send_amount()
             if total_amount > max_send:
-                raise ValueError(f"Can't send more than {max_send} mojos in a single transaction")
+                raise ValueError(f"Can't send more than {max_send} vojos in a single transaction")
             self.log.debug("Got back max send amount: %s", max_send)
         if coins is None:
             exclude_coins_list: Optional[List[Coin]] = None
@@ -448,7 +448,7 @@ class Wallet:
         pubkey, private = await self.wallet_state_manager.get_keys(puzzle_hash)
         synthetic_secret_key = calculate_synthetic_secret_key(private, DEFAULT_HIDDEN_PUZZLE_HASH)
         synthetic_pk = synthetic_secret_key.get_g1()
-        puzzle: Program = Program.to(("Chia Signed Message", message))
+        puzzle: Program = Program.to(("Chinilla Signed Message", message))
         return synthetic_pk, AugSchemeMPL.sign(synthetic_secret_key, puzzle.get_tree_hash())
 
     async def generate_signed_transaction(
@@ -543,14 +543,14 @@ class Wallet:
         await self.wallet_state_manager.wallet_node.update_ui()
 
     # This is to be aggregated together with a CAT offer to ensure that the trade happens
-    async def create_spend_bundle_relative_chia(self, chia_amount: int, exclude: List[Coin] = []) -> SpendBundle:
+    async def create_spend_bundle_relative_chinilla(self, chinilla_amount: int, exclude: List[Coin] = []) -> SpendBundle:
         list_of_solutions = []
         utxos = None
 
         # If we're losing value then get coins with at least that much value
         # If we're gaining value then our amount doesn't matter
-        if chia_amount < 0:
-            utxos = await self.select_coins(uint64(abs(chia_amount)), exclude)
+        if chinilla_amount < 0:
+            utxos = await self.select_coins(uint64(abs(chinilla_amount)), exclude)
         else:
             utxos = await self.select_coins(uint64(0), exclude)
 
@@ -558,7 +558,7 @@ class Wallet:
 
         # Calculate output amount given sum of utxos
         spend_value = sum([coin.amount for coin in utxos])
-        chia_amount = spend_value + chia_amount
+        chinilla_amount = spend_value + chinilla_amount
 
         # Create coin solutions for each utxo
         output_created = None
@@ -567,7 +567,7 @@ class Wallet:
             if output_created is None:
                 newpuzhash = await self.get_new_puzzlehash()
                 primaries: List[AmountWithPuzzlehash] = [
-                    {"puzzlehash": newpuzhash, "amount": uint64(chia_amount), "memos": []}
+                    {"puzzlehash": newpuzhash, "amount": uint64(chinilla_amount), "memos": []}
                 ]
                 solution = self.make_solution(primaries=primaries)
                 output_created = coin
@@ -596,9 +596,9 @@ class Wallet:
             raise Exception(f"insufficient funds in wallet {self.id()}")
         return await self.select_coins(amount, min_coin_amount=min_coin_amount, max_coin_amount=max_coin_amount)
 
-    # WSChiaConnection is only imported for type checking
+    # WSChinillaConnection is only imported for type checking
     async def coin_added(
-        self, coin: Coin, height: uint32, peer: WSChiaConnection
+        self, coin: Coin, height: uint32, peer: WSChinillaConnection
     ) -> None:  # pylint: disable=used-before-assignment
         pass
 

@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 
 import pkg_resources
 
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.network import get_host_addr
@@ -33,7 +33,7 @@ async def kill_processes(lock: asyncio.Lock):
 
 
 def find_vdf_client() -> pathlib.Path:
-    p = pathlib.Path(pkg_resources.get_distribution("chiavdf").location) / "vdf_client"
+    p = pathlib.Path(pkg_resources.get_distribution("chinillavdf").location) / "vdf_client"
     if p.is_file():
         return p
     raise FileNotFoundError("can't find vdf_client binary")
@@ -114,7 +114,7 @@ def main():
         log.info("Timelord launcher not supported on Windows.")
         return
     root_path = DEFAULT_ROOT_PATH
-    setproctitle("chia_timelord_launcher")
+    setproctitle("chinilla_timelord_launcher")
     net_config = load_config(root_path, "config.yaml")
     config = net_config["timelord_launcher"]
     initialize_logging("TLauncher", config["logging"], root_path)

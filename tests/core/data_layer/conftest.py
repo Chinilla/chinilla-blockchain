@@ -17,31 +17,31 @@ from chinilla.data_layer.data_layer_util import NodeType, Status
 from chinilla.data_layer.data_store import DataStore
 from chinilla.types.blockchain_format.tree_hash import bytes32
 from tests.core.data_layer.util import (
-    ChiaRoot,
+    ChinillaRoot,
     Example,
     add_0123_example,
     add_01234567_example,
     create_valid_node_values,
 )
-from tests.util.misc import closing_chia_root_popen
+from tests.util.misc import closing_chinilla_root_popen
 
 # TODO: These are more general than the data layer and should either move elsewhere or
 #       be replaced with an existing common approach.  For now they can at least be
 #       shared among the data layer test files.
 
 
-@pytest.fixture(name="chia_daemon", scope="function")
-def chia_daemon_fixture(chia_root: ChiaRoot) -> Iterator[None]:
-    with closing_chia_root_popen(chia_root=chia_root, args=[sys.executable, "-m", "chia.daemon.server"]):
+@pytest.fixture(name="chinilla_daemon", scope="function")
+def chinilla_daemon_fixture(chinilla_root: ChinillaRoot) -> Iterator[None]:
+    with closing_chinilla_root_popen(chinilla_root=chinilla_root, args=[sys.executable, "-m", "chinilla.daemon.server"]):
         # TODO: this is not pretty as a hard coded time
         # let it settle
         time.sleep(5)
         yield
 
 
-@pytest.fixture(name="chia_data", scope="function")
-def chia_data_fixture(chia_root: ChiaRoot, chia_daemon: None, scripts_path: pathlib.Path) -> Iterator[None]:
-    with closing_chia_root_popen(chia_root=chia_root, args=[os.fspath(scripts_path.joinpath("chia_data_layer"))]):
+@pytest.fixture(name="chinilla_data", scope="function")
+def chinilla_data_fixture(chinilla_root: ChinillaRoot, chinilla_daemon: None, scripts_path: pathlib.Path) -> Iterator[None]:
+    with closing_chinilla_root_popen(chinilla_root=chinilla_root, args=[os.fspath(scripts_path.joinpath("chinilla_data_layer"))]):
         # TODO: this is not pretty as a hard coded time
         # let it settle
         time.sleep(5)

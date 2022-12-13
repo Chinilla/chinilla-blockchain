@@ -132,7 +132,7 @@ async def make_db(db_file: Path, blocks: List[FullBlock]) -> None:
     db_wrapper = await DBWrapper2.create(database=db_file, reader_count=1, db_version=2)
     try:
         async with db_wrapper.writer_maybe_transaction() as conn:
-            # this is done by chia init normally
+            # this is done by chinilla init normally
             await conn.execute("CREATE TABLE database_version(version int)")
             await conn.execute("INSERT INTO database_version VALUES (2)")
 

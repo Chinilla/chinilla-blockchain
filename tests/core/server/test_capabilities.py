@@ -12,7 +12,7 @@ from chinilla.util.ints import uint16
 @pytest.mark.parametrize(
     argnames=["values", "expected"],
     argvalues=[
-        # nothing, not even Chia mainnet...
+        # nothing, not even Chinilla mainnet...
         [[], []],
         # single valid
         [[(uint16(Capability.BASE), "1")], [Capability.BASE]],

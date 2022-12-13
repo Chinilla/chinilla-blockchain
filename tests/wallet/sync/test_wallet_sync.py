@@ -648,7 +648,7 @@ class TestWalletSync:
        Those below the threshold should get filtered, and those above should not.
     6. Clear all coins from the dust wallet.
        Send to the dust wallet "spam_filter_after_n_txs" coins that are equal in value to "xch_spam_amount".
-       Send 1 mojo from the dust wallet. The dust wallet should receive a change coin valued at "xch_spam_amount-1".
+       Send 1 vojo from the dust wallet. The dust wallet should receive a change coin valued at "xch_spam_amount-1".
     7: Create an NFT wallet for the farmer wallet, and generate an NFT in that wallet.
        Create an NFT wallet for the dust wallet.
        Send the NFT to the dust wallet. The NFT should not be filtered.
@@ -664,7 +664,7 @@ class TestWalletSync:
             (10, 10000000000, 1),  # everything is dust
             (10, 10000000000, 10000000000),  # max dust threshold, dust is same size so not filtered
             # Test with more coins
-            (100, 1000000, 1),  # default filter level (1m mojos), default dust size (1)
+            (100, 1000000, 1),  # default filter level (1m vojos), default dust size (1)
         ],
     )
     async def test_dusted_wallet(
@@ -980,7 +980,7 @@ class TestWalletSync:
 
         # Part 6: Clear all coins from the dust wallet.
         # Send to the dust wallet "spam_filter_after_n_txs" coins that are equal in value to "xch_spam_amount".
-        # Send 1 mojo from the dust wallet. The dust wallet should receive a change coin valued at "xch_spam_amount-1".
+        # Send 1 vojo from the dust wallet. The dust wallet should receive a change coin valued at "xch_spam_amount-1".
 
         payee_ph = await farm_wallet.get_new_puzzlehash()
         payees: List[AmountWithPuzzlehash] = [{"amount": uint64(balance), "puzzlehash": payee_ph, "memos": []}]
@@ -1018,7 +1018,7 @@ class TestWalletSync:
         if xch_spam_amount > 1:
             coin_value = xch_spam_amount
         else:
-            # Handle the edge case to make sure the coin is at least 2 mojos
+            # Handle the edge case to make sure the coin is at least 2 vojos
             # This is needed to receive change
             coin_value = 2
 
@@ -1066,7 +1066,7 @@ class TestWalletSync:
             assert unspent_count == 1
         assert balance == unspent_count * coin_value
 
-        # Send a 1 mojo coin from the dust wallet to the farm wallet
+        # Send a 1 vojo coin from the dust wallet to the farm wallet
         payee_ph = await farm_wallet.get_new_puzzlehash()
         payees: List[AmountWithPuzzlehash] = [{"amount": uint64(1), "puzzlehash": payee_ph, "memos": []}]
 
@@ -1088,7 +1088,7 @@ class TestWalletSync:
         unspent_count = len([r for r in all_unspent])
         balance: Optional[Message] = await dust_wallet.get_confirmed_balance()
 
-        # Make sure the dust wallet received a change coin worth 1 mojo less than the original coin size
+        # Make sure the dust wallet received a change coin worth 1 vojo less than the original coin size
         if spam_filter_after_n_txs > 0:
             assert unspent_count == spam_filter_after_n_txs
         else:
@@ -1116,7 +1116,7 @@ class TestWalletSync:
         # Create a new NFT and send it to the farmer's NFT wallet
         metadata = Program.to(
             [
-                ("u", ["https://www.chia.net/img/branding/chia-logo.svg"]),
+                ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
                 ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
             ]
         )

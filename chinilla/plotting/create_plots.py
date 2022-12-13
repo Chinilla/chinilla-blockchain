@@ -7,7 +7,7 @@ from secrets import token_bytes
 from typing import Dict, List, Optional, Tuple
 
 from blspy import AugSchemeMPL, G1Element, PrivateKey
-from chiapos import DiskPlotter
+from chinillapos import DiskPlotter
 
 from chinilla.daemon.keychain_proxy import KeychainProxy, connect_to_keychain_and_validate, wrap_local_keychain
 from chinilla.plotting.util import stream_plot_info_ph, stream_plot_info_pk
@@ -118,7 +118,7 @@ class PlotKeysResolver:
         sk: Optional[PrivateKey] = await self.get_sk(keychain_proxy)
         if sk is None:
             raise RuntimeError(
-                "No keys, please run 'chia keys add', 'chia keys generate' or provide a public key with -f"
+                "No keys, please run 'chinilla keys add', 'chinilla keys generate' or provide a public key with -f"
             )
         return master_sk_to_farmer_sk(sk).get_g1()
 
@@ -126,7 +126,7 @@ class PlotKeysResolver:
         sk: Optional[PrivateKey] = await self.get_sk(keychain_proxy)
         if sk is None:
             raise RuntimeError(
-                "No keys, please run 'chia keys add', 'chia keys generate' or provide a public key with -p"
+                "No keys, please run 'chinilla keys add', 'chinilla keys generate' or provide a public key with -p"
             )
         return master_sk_to_pool_sk(sk).get_g1()
 

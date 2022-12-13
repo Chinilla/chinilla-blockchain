@@ -1,6 +1,6 @@
 """
-NOTE: This contains duplicate code from `chia.cmds.plots`.
-After `chia plots create` becomes obsolete, consider removing it from there.
+NOTE: This contains duplicate code from `chinilla.cmds.plots`.
+After `chinilla plots create` becomes obsolete, consider removing it from there.
 """
 import asyncio
 import logging
@@ -14,9 +14,9 @@ from chinilla.plotting.util import add_plot_directory, validate_plot_size
 log = logging.getLogger(__name__)
 
 
-def get_chiapos_install_info() -> Optional[Dict[str, Any]]:
-    chiapos_version: str = pkg_resources.get_distribution("chiapos").version
-    return {"display_name": "Chia Proof of Space", "version": chiapos_version, "installed": True}
+def get_chinillapos_install_info() -> Optional[Dict[str, Any]]:
+    chinillapos_version: str = pkg_resources.get_distribution("chinillapos").version
+    return {"display_name": "Chinilla Proof of Space", "version": chinillapos_version, "installed": True}
 
 
 class Params:
@@ -35,7 +35,7 @@ class Params:
         self.nobitfield = args.nobitfield
 
 
-def plot_chia(args, root_path):
+def plot_chinilla(args, root_path):
     try:
         validate_plot_size(root_path, args.size, args.override)
     except ValueError as e:

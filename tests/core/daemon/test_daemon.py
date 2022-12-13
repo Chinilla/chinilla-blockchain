@@ -168,7 +168,7 @@ def mock_daemon_with_services():
             "my_refrigerator": Service(True),
             "the_river": Service(True),
             "your_nose": Service(False),
-            "chia_plotter": [Service(True), Service(True)],
+            "chinilla_plotter": [Service(True), Service(True)],
         },
         connections={},
     )
@@ -180,7 +180,7 @@ def mock_daemon_with_services_and_connections():
     return Daemon(
         services={
             "my_refrigerator": Service(True),
-            "chia_plotter": [Service(True), Service(True)],
+            "chinilla_plotter": [Service(True), Service(True)],
             "apple": Service(True),
         },
         connections={
@@ -242,7 +242,7 @@ async def test_daemon_simulation(self_hostname, daemon_simulation):
 
     read_handler = asyncio.create_task(reader(ws, message_queue))
     data = {}
-    payload = create_payload("get_blockchain_state", data, service_name, "chia_full_node")
+    payload = create_payload("get_blockchain_state", data, service_name, "chinilla_full_node")
     await ws.send_str(payload)
 
     await asyncio.sleep(5)

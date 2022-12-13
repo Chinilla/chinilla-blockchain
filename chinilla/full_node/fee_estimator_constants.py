@@ -3,7 +3,7 @@ from __future__ import annotations
 
 MIN_FEE_RATE = 0  # Value of first bucket
 INITIAL_STEP = 100  # First bucket after zero value
-MAX_FEE_RATE = 40000000  # Mojo per 1000 cost unit
+MAX_FEE_RATE = 40000000  # Vojo per 1000 cost unit
 INFINITE_FEE_RATE = 1000000000
 
 STEP_SIZE = 1.05  # bucket increase by 1.05

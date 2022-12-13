@@ -4,4 +4,4 @@ from typing import NewType
 
 from chinilla.util.ints import uint64
 
-Mojos = NewType("Mojos", uint64)
+Vojos = NewType("Vojos", uint64)

@@ -10,7 +10,7 @@ from chinilla.server.start_service import Service, async_run
 from chinilla.simulator.simulator_full_node_rpc_api import SimulatorFullNodeRpcApi
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.bech32m import decode_puzzle_hash
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.config import load_config_cli, override_config, load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.simulator.block_tools import BlockTools, test_constants
@@ -82,7 +82,7 @@ async def async_main(test_mode: bool = False, automated_testing: bool = False, r
             "full_node.selected_network": "testnet0",
             "full_node.database_path": service_config["simulator_database_path"],
             "full_node.peers_file_path": service_config["simulator_peers_file_path"],
-            "full_node.introducer_peer": {"host": "127.0.0.1", "port": 58555},
+            "full_node.introducer_peer": {"host": "127.0.0.1", "port": 40555},
         }
     overrides["simulator.use_current_time"] = True
 

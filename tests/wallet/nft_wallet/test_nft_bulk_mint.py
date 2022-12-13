@@ -97,7 +97,7 @@ async def test_nft_mint_from_did(two_wallet_nodes: Any, trusted: Any) -> None:
     # construct sample metadata
     metadata = Program.to(
         [
-            ("u", ["https://www.chia.net/img/branding/chia-logo.svg"]),
+            ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
         ]
     )
@@ -583,7 +583,7 @@ async def test_nft_mint_from_did_multiple_xch(two_wallet_nodes: Any, trusted: An
     # construct sample metadata
     metadata = Program.to(
         [
-            ("u", ["https://www.chia.net/img/branding/chia-logo.svg"]),
+            ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
         ]
     )
@@ -691,7 +691,7 @@ async def test_nft_mint_from_xch(two_wallet_nodes: Any, trusted: Any) -> None:
     # construct sample metadata
     metadata = Program.to(
         [
-            ("u", ["https://www.chia.net/img/branding/chia-logo.svg"]),
+            ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
         ]
     )
@@ -985,7 +985,7 @@ async def test_nft_mint_from_xch_multiple_xch(two_wallet_nodes: Any, trusted: An
     # construct sample metadata
     metadata = Program.to(
         [
-            ("u", ["https://www.chia.net/img/branding/chia-logo.svg"]),
+            ("u", ["https://www.chinilla.net/img/branding/chinilla-logo.svg"]),
             ("h", "0xD4584AD463139FA8C0D9F68F4B59F185"),
         ]
     )

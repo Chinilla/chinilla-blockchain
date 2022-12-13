@@ -130,6 +130,6 @@ async def test_fee_increase() -> None:
         med_estimate = result.estimates[1].estimated_fee_rate
         long_estimate = result.estimates[2].estimated_fee_rate
 
-        assert short_estimate.mojos_per_clvm_cost == uint64(fee_tracker.buckets[3] / 1000)
-        assert med_estimate.mojos_per_clvm_cost == uint64(fee_tracker.buckets[3] / 1000)
-        assert long_estimate.mojos_per_clvm_cost == uint64(0)
+        assert short_estimate.vojos_per_clvm_cost == uint64(fee_tracker.buckets[3] / 1000)
+        assert med_estimate.vojos_per_clvm_cost == uint64(fee_tracker.buckets[3] / 1000)
+        assert long_estimate.vojos_per_clvm_cost == uint64(0)

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 from blspy import G1Element
-from chiapos import DiskProver
+from chinillapos import DiskProver
 
 from chinilla.consensus.pos_quality import UI_ACTUAL_SPACE_CONSTANT_FACTOR, _expected_plot_size
 from chinilla.plotting.cache import Cache, CacheEntry

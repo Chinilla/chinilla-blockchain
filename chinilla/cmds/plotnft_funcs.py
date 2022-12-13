@@ -58,7 +58,7 @@ async def create(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -
     state = args["state"]
     prompt = not args.get("yes", False)
     fee = Decimal(args.get("fee", 0))
-    fee_mojos = uint64(int(fee * units["chia"]))
+    fee_vojos = uint64(int(fee * units["chinilla"]))
     target_puzzle_hash: Optional[bytes32]
     # Could use initial_pool_state_from_dict to simplify
     if state == "SELF_POOLING":
@@ -94,7 +94,7 @@ async def create(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -
                 "localhost:5000",
                 "new",
                 state,
-                fee_mojos,
+                fee_vojos,
             )
             start = time.time()
             while time.time() - start < 10:
@@ -105,7 +105,7 @@ async def create(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -
                     print(transaction_status_msg(fingerprint, tx_record.name))
                     return None
         except Exception as e:
-            print(f"Error creating plot NFT: {e}\n    Please start both farmer and wallet with:  chia start -r farmer")
+            print(f"Error creating plot NFT: {e}\n    Please start both farmer and wallet with:  chinilla start -r farmer")
         return
     print("Aborting.")
 
@@ -266,7 +266,7 @@ async def join_pool(args: dict, wallet_client: WalletRpcClient, fingerprint: int
     enforce_https = config["full_node"]["selected_network"] == "mainnet"
     pool_url: str = args["pool_url"]
     fee = Decimal(args.get("fee", 0))
-    fee_mojos = uint64(int(fee * units["chia"]))
+    fee_vojos = uint64(int(fee * units["chinilla"]))
 
     if enforce_https and not pool_url.startswith("https://"):
         print(f"Pool URLs must be HTTPS on mainnet {pool_url}. Aborting.")
@@ -300,7 +300,7 @@ async def join_pool(args: dict, wallet_client: WalletRpcClient, fingerprint: int
         hexstr_to_bytes(json_dict["target_puzzle_hash"]),
         pool_url,
         json_dict["relative_lock_height"],
-        fee_mojos,
+        fee_vojos,
     )
 
     await submit_tx_with_confirmation(msg, prompt, func, wallet_client, fingerprint, wallet_id)
@@ -310,10 +310,10 @@ async def self_pool(args: dict, wallet_client: WalletRpcClient, fingerprint: int
     wallet_id = args.get("id", None)
     prompt = not args.get("yes", False)
     fee = Decimal(args.get("fee", 0))
-    fee_mojos = uint64(int(fee * units["chia"]))
+    fee_vojos = uint64(int(fee * units["chinilla"]))
 
     msg = f"Will start self-farming with Plot NFT on wallet id {wallet_id} fingerprint {fingerprint}."
-    func = functools.partial(wallet_client.pw_self_pool, wallet_id, fee_mojos)
+    func = functools.partial(wallet_client.pw_self_pool, wallet_id, fee_vojos)
     await submit_tx_with_confirmation(msg, prompt, func, wallet_client, fingerprint, wallet_id)
 
 
@@ -333,12 +333,12 @@ async def inspect_cmd(args: dict, wallet_client: WalletRpcClient, fingerprint: i
 async def claim_cmd(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -> None:
     wallet_id = args.get("id", None)
     fee = Decimal(args.get("fee", 0))
-    fee_mojos = uint64(int(fee * units["chia"]))
+    fee_vojos = uint64(int(fee * units["chinilla"]))
     msg = f"\nWill claim rewards for wallet ID: {wallet_id}."
     func = functools.partial(
         wallet_client.pw_absorb_rewards,
         wallet_id,
-        fee_mojos,
+        fee_vojos,
     )
     await submit_tx_with_confirmation(msg, False, func, wallet_client, fingerprint, wallet_id)
 

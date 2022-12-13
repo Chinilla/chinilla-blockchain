@@ -9,7 +9,7 @@ import click
 
 from chinilla.cmds.beta_funcs import (
     default_beta_root_path,
-    prepare_chia_blockchain_log,
+    prepare_chinilla_blockchain_log,
     prepare_logs,
     prepare_plotting_log,
     prompt_beta_warning,
@@ -24,7 +24,7 @@ from chinilla.util.config import lock_and_load_config, save_config
 
 
 def print_restart_warning() -> None:
-    print("\nRestart the daemon and any running chia services for changes to take effect.")
+    print("\nRestart the daemon and any running chinilla services for changes to take effect.")
 
 
 @click.group("beta", hidden=True)
@@ -40,7 +40,7 @@ def configure(ctx: click.Context, path: Optional[str], interval: Optional[int]) 
     root_path = ctx.obj["root_path"]
     with lock_and_load_config(root_path, "config.yaml") as config:
         if "beta" not in config:
-            raise click.ClickException("beta test mode is not enabled, enable it first with `chia beta enable`")
+            raise click.ClickException("beta test mode is not enabled, enable it first with `chinilla beta enable`")
 
         # Adjust the path
         if path is None:
@@ -124,7 +124,7 @@ def prepare_submission_cmd(ctx: click.Context) -> None:
     with lock_and_load_config(ctx.obj["root_path"], "config.yaml") as config:
         beta_root_path = config.get("beta", {}).get("path", None)
         if beta_root_path is None:
-            raise click.ClickException("beta test mode not enabled. Run `chia beta enable` first.")
+            raise click.ClickException("beta test mode not enabled. Run `chinilla beta enable` first.")
     beta_root_path = Path(beta_root_path)
     validate_beta_path(beta_root_path)
     available_results = sorted([path for path in beta_root_path.iterdir() if path.is_dir()])
@@ -142,9 +142,9 @@ def prepare_submission_cmd(ctx: click.Context) -> None:
     except IndexError:
         raise click.ClickException(f"Invalid choice: {user_input}")
     plotting_path = Path(prepare_result / "plotting")
-    chia_blockchain_path = Path(prepare_result / "chia-blockchain")
-    chia_logs = prepare_logs(plotting_path, prepare_chia_blockchain_log)
-    plotting_logs = prepare_logs(chia_blockchain_path, prepare_plotting_log)
+    chinilla_blockchain_path = Path(prepare_result / "chinilla-blockchain")
+    chinilla_logs = prepare_logs(plotting_path, prepare_chinilla_blockchain_log)
+    plotting_logs = prepare_logs(chinilla_blockchain_path, prepare_plotting_log)
 
     submission_file_path = (
         prepare_result / f"submission_{prepare_result.name}__{datetime.now().strftime('%m_%d_%Y__%H_%M_%S')}.zip"
@@ -160,11 +160,11 @@ def prepare_submission_cmd(ctx: click.Context) -> None:
         return added
 
     with zipfile.ZipFile(submission_file_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        files_added = add_files(chia_logs) + add_files(plotting_logs)
+        files_added = add_files(chinilla_logs) + add_files(plotting_logs)
 
     if files_added == 0:
         submission_file_path.unlink()
-        message = f"No logs files found in {str(plotting_path)!r} and {str(chia_blockchain_path)!r}."
+        message = f"No logs files found in {str(plotting_path)!r} and {str(chinilla_blockchain_path)!r}."
         raise click.ClickException(message)
 
     print(f"\nDone. You can find the prepared submission data in {submission_file_path}.")
@@ -176,7 +176,7 @@ def status(ctx: click.Context) -> None:
     with lock_and_load_config(ctx.obj["root_path"], "config.yaml") as config:
         beta_config = config.get("beta")
         if beta_config is None:
-            raise click.ClickException("beta test mode is not enabled, enable it first with `chia beta enable`")
+            raise click.ClickException("beta test mode is not enabled, enable it first with `chinilla beta enable`")
 
     print(f"enabled: {beta_config['enabled']}")
     print(f"path: {beta_config['path']}")

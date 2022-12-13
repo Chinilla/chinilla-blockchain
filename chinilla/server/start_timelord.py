@@ -13,7 +13,7 @@ from chinilla.server.start_service import RpcInfo, Service, async_run
 from chinilla.timelord.timelord import Timelord
 from chinilla.timelord.timelord_api import TimelordAPI
 from chinilla.types.peer_info import PeerInfo
-from chinilla.util.chia_logging import initialize_service_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 
@@ -44,7 +44,7 @@ def create_timelord_service(
 
     rpc_info: Optional[RpcInfo] = None
     if service_config.get("start_rpc_server", True):
-        rpc_info = (TimelordRpcApi, service_config.get("rpc_port", 8557))
+        rpc_info = (TimelordRpcApi, service_config.get("rpc_port", 43557))
 
     return Service(
         root_path=root_path,

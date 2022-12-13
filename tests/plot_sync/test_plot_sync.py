@@ -25,7 +25,7 @@ from chinilla.server.start_service import Service
 from chinilla.simulator.block_tools import BlockTools
 from chinilla.simulator.time_out_assert import time_out_assert
 from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.util.config import create_default_chia_config, lock_and_load_config, save_config
+from chinilla.util.config import create_default_chinilla_config, lock_and_load_config, save_config
 from chinilla.util.ints import uint8, uint32, uint64
 from chinilla.util.streamable import _T_Streamable
 from tests.plot_sync.util import start_harvester_service
@@ -291,7 +291,7 @@ async def environment(
     dir_invalid: Directory = new_test_dir("invalid", plots_invalid)
     dir_keys_missing: Directory = new_test_dir("keys_missing", plots_keys_missing)
     dir_duplicates: Directory = new_test_dir("duplicates", directories[3].plots)
-    create_default_chia_config(tmp_path)
+    create_default_chinilla_config(tmp_path)
 
     # Invalidate the plots in `dir_invalid`
     for path in dir_invalid.path_list():

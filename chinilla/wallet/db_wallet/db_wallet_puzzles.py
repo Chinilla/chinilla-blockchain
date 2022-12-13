@@ -9,8 +9,8 @@ from chinilla.util.ints import uint64
 from chinilla.wallet.nft_wallet.nft_puzzles import NFT_STATE_LAYER_MOD, create_nft_layer_puzzle_with_curry_params
 from chinilla.wallet.puzzles.load_clvm import load_clvm_maybe_recompile
 
-# from chia.types.condition_opcodes import ConditionOpcode
-# from chia.wallet.util.merkle_tree import MerkleTree, TreeType
+# from chinilla.types.condition_opcodes import ConditionOpcode
+# from chinilla.wallet.util.merkle_tree import MerkleTree, TreeType
 
 ACS_MU = Program.to(11)  # returns the third argument a.k.a the full solution
 ACS_MU_PH = ACS_MU.get_tree_hash()

@@ -11,8 +11,8 @@ from chinilla.server.outbound_message import make_msg
 from chinilla.server.rate_limit_numbers import compose_rate_limits, get_rate_limits_to_use
 from chinilla.server.rate_limit_numbers import rate_limits as rl_numbers
 from chinilla.server.rate_limits import RateLimiter
-from chinilla.server.server import ChiaServer
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.server import ChinillaServer
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.simulator.block_tools import test_constants
 from chinilla.types.peer_info import PeerInfo
 from chinilla.util.ints import uint16
@@ -306,16 +306,16 @@ class TestRateLimits:
         node_a = node_with_params
         node_b = node_with_params_b
 
-        full_node_server_a: ChiaServer = node_a.full_node.server
-        full_node_server_b: ChiaServer = node_b.full_node.server
+        full_node_server_a: ChinillaServer = node_a.full_node.server
+        full_node_server_b: ChinillaServer = node_b.full_node.server
 
         await full_node_server_b.start_client(PeerInfo(self_hostname, uint16(full_node_server_a._port)), None)
 
         assert len(full_node_server_b.get_connections()) == 1
         assert len(full_node_server_a.get_connections()) == 1
 
-        a_con: WSChiaConnection = full_node_server_a.get_connections()[0]
-        b_con: WSChiaConnection = full_node_server_b.get_connections()[0]
+        a_con: WSChinillaConnection = full_node_server_a.get_connections()[0]
+        b_con: WSChinillaConnection = full_node_server_b.get_connections()[0]
 
         print(a_con.local_capabilities, a_con.peer_capabilities)
         print(b_con.local_capabilities, b_con.peer_capabilities)

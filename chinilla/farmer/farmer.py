@@ -32,7 +32,7 @@ from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.rpc.rpc_server import default_get_connections
 from chinilla.server.outbound_message import NodeType, make_msg
 from chinilla.server.server import ssl_context_for_root
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.ssl.create_ssl import get_mozilla_ca_crt
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -134,7 +134,7 @@ class Farmer:
         return await keychain_proxy.get_all_private_keys()
 
     async def setup_keys(self) -> bool:
-        no_keys_error_str = "No keys exist. Please run 'chia keys generate' or open the UI."
+        no_keys_error_str = "No keys exist. Please run 'chinilla keys generate' or open the UI."
         try:
             self.all_root_sks: List[PrivateKey] = [sk for sk, _ in await self.get_all_private_keys()]
         except KeychainProxyConnectionFailure:
@@ -211,7 +211,7 @@ class Farmer:
     def _set_state_changed_callback(self, callback: Callable):
         self.state_changed_callback = callback
 
-    async def on_connect(self, peer: WSChiaConnection):
+    async def on_connect(self, peer: WSChinillaConnection):
         self.state_changed("add_connection", {})
 
         async def handshake_task():
@@ -256,7 +256,7 @@ class Farmer:
             ErrorResponse(uint16(PoolErrorCode.REQUEST_FAILED.value), error_message).to_json_dict()
         )
 
-    def on_disconnect(self, connection: WSChiaConnection):
+    def on_disconnect(self, connection: WSChinillaConnection):
         self.log.info(f"peer disconnected {connection.get_peer_logging()}")
         self.state_changed("close_connection", {})
         if connection.connection_type is NodeType.HARVESTER:

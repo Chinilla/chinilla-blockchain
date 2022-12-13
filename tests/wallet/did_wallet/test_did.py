@@ -1166,7 +1166,7 @@ class TestDIDWallet:
                 "message": message,
             }
         )
-        puzzle: Program = Program.to(("Chia Signed Message", message))
+        puzzle: Program = Program.to(("Chinilla Signed Message", message))
         assert AugSchemeMPL.verify(
             G1Element.from_bytes(bytes.fromhex(response["pubkey"])),
             puzzle.get_tree_hash(),

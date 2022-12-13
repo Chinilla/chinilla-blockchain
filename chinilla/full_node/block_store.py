@@ -60,7 +60,7 @@ class BlockStore:
                 await conn.execute("CREATE TABLE IF NOT EXISTS current_peak(key int PRIMARY KEY, hash blob)")
 
                 # If any of these indices are altered, they should also be altered
-                # in the chia/cmds/db_upgrade.py file
+                # in the chinilla/cmds/db_upgrade.py file
                 log.info("DB: Creating index height")
                 await conn.execute("CREATE INDEX IF NOT EXISTS height on full_blocks(height)")
 
@@ -72,7 +72,7 @@ class BlockStore:
                 )
 
                 # If any of these indices are altered, they should also be altered
-                # in the chia/cmds/db_upgrade.py file
+                # in the chinilla/cmds/db_upgrade.py file
                 log.info("DB: Creating index is_fully_compactified")
                 await conn.execute(
                     "CREATE INDEX IF NOT EXISTS is_fully_compactified ON"

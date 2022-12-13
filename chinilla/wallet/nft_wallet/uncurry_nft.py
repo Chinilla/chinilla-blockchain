@@ -22,7 +22,7 @@ class UncurriedNFT:
     """
     A simple solution for uncurry NFT puzzle.
     Initial the class with a full NFT puzzle, it will do a deep uncurry.
-    This is the only place you need to change after modified the Chialisp curried parameters.
+    This is the only place you need to change after modified the Chinillalisp curried parameters.
     """
 
     nft_mod_hash: bytes32

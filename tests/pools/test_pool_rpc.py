@@ -949,10 +949,10 @@ class TestPoolWalletRpc:
 
             await farm_blocks(full_node_api, our_ph, 3)
 
-            async def have_chia():
+            async def have_chinilla():
                 return (await wallets[0].get_confirmed_balance()) > FEE_AMOUNT
 
-            await time_out_assert(timeout=MAX_WAIT_SECS, function=have_chia)
+            await time_out_assert(timeout=MAX_WAIT_SECS, function=have_chinilla)
             await time_out_assert(20, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
             creation_tx: TransactionRecord = await client.create_new_pool_wallet(
@@ -1086,10 +1086,10 @@ class TestPoolWalletRpc:
 
             await farm_blocks(full_node_api, our_ph, 3)
 
-            async def have_chia():
+            async def have_chinilla():
                 return (await wallets[0].get_confirmed_balance()) > FEE_AMOUNT
 
-            await time_out_assert(timeout=WAIT_SECS, function=have_chia)
+            await time_out_assert(timeout=WAIT_SECS, function=have_chinilla)
             await time_out_assert(20, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
             creation_tx: TransactionRecord = await client.create_new_pool_wallet(
@@ -1185,10 +1185,10 @@ class TestPoolWalletRpc:
 
             await farm_blocks(full_node_api, our_ph, 3)
 
-            async def have_chia():
+            async def have_chinilla():
                 return (await wallets[0].get_confirmed_balance()) > FEE_AMOUNT
 
-            await time_out_assert(timeout=WAIT_SECS, function=have_chia)
+            await time_out_assert(timeout=WAIT_SECS, function=have_chinilla)
             await time_out_assert(20, wallet_is_synced, True, wallet_nodes[0], full_node_api)
 
             creation_tx: TransactionRecord = await client.create_new_pool_wallet(

@@ -67,7 +67,7 @@ proof_of_space = ProofOfSpace(
 )
 
 pool_target = PoolTarget(
-    bytes32.from_hexstr("d23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc"),
+    bytes32.from_hexstr("63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12"),
     uint32(421941852),
 )
 g2_element = G2Element(
@@ -475,7 +475,7 @@ respond_compact_vdf = full_node_protocol.RespondCompactVDF(
 
 request_peers = full_node_protocol.RequestPeers()
 
-timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(8444), uint64(10796))
+timestamped_peer_info = TimestampedPeerInfo("127.0.0.1", uint16(43444), uint64(10796))
 
 respond_peers = full_node_protocol.RespondPeers([timestamped_peer_info])
 

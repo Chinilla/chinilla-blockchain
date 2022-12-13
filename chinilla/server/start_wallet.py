@@ -12,7 +12,7 @@ from chinilla.rpc.wallet_rpc_api import WalletRpcApi
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import RpcInfo, Service, async_run
 from chinilla.types.peer_info import PeerInfo
-from chinilla.util.chia_logging import initialize_service_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.keychain import Keychain
@@ -112,7 +112,7 @@ async def async_main() -> int:
 def main() -> int:
     freeze_support()
 
-    with maybe_manage_task_instrumentation(enable=os.environ.get("CHIA_INSTRUMENT_WALLET") is not None):
+    with maybe_manage_task_instrumentation(enable=os.environ.get("CHINILLA_INSTRUMENT_WALLET") is not None):
         return async_run(async_main())
 
 

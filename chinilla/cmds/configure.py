@@ -100,10 +100,10 @@ def configure(
         if testnet:
             if testnet == "true" or testnet == "t":
                 print("Setting Testnet")
-                testnet_port = "58444"
-                testnet_introducer = "introducer-testnet10.chia.net"
-                testnet_dns_introducer = "dns-introducer-testnet10.chia.net"
-                bootstrap_peers = ["testnet10-node.chia.net"]
+                testnet_port = "40444"
+                testnet_introducer = "introducer-testnet10.chinilla.net"
+                testnet_dns_introducer = "dns-introducer-testnet10.chinilla.net"
+                bootstrap_peers = ["testnet10-node.chinilla.net"]
                 testnet = "testnet10"
                 config["full_node"]["port"] = int(testnet_port)
                 if config["full_node"]["introducer_peer"] is None:
@@ -144,10 +144,10 @@ def configure(
 
             elif testnet == "false" or testnet == "f":
                 print("Setting Mainnet")
-                mainnet_port = "8444"
-                mainnet_introducer = "introducer.chia.net"
-                mainnet_dns_introducer = "dns-introducer.chia.net"
-                bootstrap_peers = ["node.chia.net"]
+                mainnet_port = "43444"
+                mainnet_introducer = "introducer.chinilla.net"
+                mainnet_dns_introducer = "dns-introducer.chinilla.net"
+                bootstrap_peers = ["node.chinilla.net"]
                 net = "mainnet"
                 config["full_node"]["port"] = int(mainnet_port)
                 config["full_node"]["introducer_peer"]["port"] = int(mainnet_port)
@@ -203,7 +203,7 @@ def configure(
             change_made = True
 
         if change_made:
-            print("Restart any running chia services for changes to take effect")
+            print("Restart any running chinilla services for changes to take effect")
             save_config(root_path, "config.yaml", config)
 
 

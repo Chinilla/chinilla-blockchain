@@ -10,7 +10,7 @@ from typing_extensions import Literal
 
 from chinilla.data_layer.data_layer_wallet import DataLayerWallet
 from chinilla.protocols.wallet_protocol import CoinState
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.blockchain_format.coin import Coin, coin_as_list
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -46,7 +46,7 @@ class TradeManager:
     assets with this trade manager:
 
     Puzzle Drivers:
-      - See chia/wallet/outer_puzzles.py for a full description of how to build these
+      - See chinilla/wallet/outer_puzzles.py for a full description of how to build these
       - The `solve` method must be able to be solved by a Solver that looks like this:
             Solver(
                 {
@@ -120,7 +120,7 @@ class TradeManager:
         return None
 
     async def coins_of_interest_farmed(
-        self, coin_state: CoinState, fork_height: Optional[uint32], peer: WSChiaConnection
+        self, coin_state: CoinState, fork_height: Optional[uint32], peer: WSChinillaConnection
     ) -> None:
         """
         If both our coins and other coins in trade got removed that means that trade was successfully executed
@@ -594,7 +594,7 @@ class TradeManager:
             if exists is None:
                 await wsm.create_wallet_for_puzzle_info(offer.driver_dict[key])
 
-    async def check_offer_validity(self, offer: Offer, peer: WSChiaConnection) -> bool:
+    async def check_offer_validity(self, offer: Offer, peer: WSChinillaConnection) -> bool:
         all_removals: List[Coin] = offer.bundle.removals()
         all_removal_names: List[bytes32] = [c.name() for c in all_removals]
         non_ephemeral_removals: List[Coin] = list(
@@ -698,7 +698,7 @@ class TradeManager:
     async def respond_to_offer(
         self,
         offer: Offer,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         solver: Optional[Solver] = None,
         fee: uint64 = uint64(0),
         min_coin_amount: Optional[uint64] = None,

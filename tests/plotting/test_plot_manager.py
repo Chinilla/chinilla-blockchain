@@ -25,7 +25,7 @@ from chinilla.plotting.util import (
 )
 from chinilla.simulator.block_tools import get_plot_dir
 from chinilla.simulator.time_out_assert import time_out_assert
-from chinilla.util.config import create_default_chia_config, lock_and_load_config, save_config
+from chinilla.util.config import create_default_chinilla_config, lock_and_load_config, save_config
 from chinilla.util.ints import uint16, uint32
 from chinilla.util.misc import VersionedBlob
 from tests.plotting.util import get_test_plots
@@ -154,7 +154,7 @@ def environment(tmp_path, bt) -> Iterator[Environment]:
 
     dir_1: Directory = Directory(tmp_path / "plots" / "1", plots[0:dir_1_count])
     dir_2: Directory = Directory(tmp_path / "plots" / "2", plots[dir_1_count : dir_1_count + dir_2_count])
-    create_default_chia_config(tmp_path)
+    create_default_chinilla_config(tmp_path)
 
     refresh_tester = PlotRefreshTester(tmp_path)
     refresh_tester.plot_manager.set_public_keys(bt.plot_manager.farmer_public_keys, bt.plot_manager.pool_public_keys)
@@ -542,7 +542,7 @@ async def test_drop_too_large_cache_entries(environment, bt):
     def modify_cache_entry(index: int, additional_data: int, modify_memo: bool) -> str:
         path, cache_entry = cache_data.entries[index]
         prover_data = cache_entry.prover_data
-        # Size of length hints in chiapos serialization currently depends on the platform
+        # Size of length hints in chinillapos serialization currently depends on the platform
         size_length = 8 if sys.maxsize > 2**32 else 4
         # Version
         version_size = 2

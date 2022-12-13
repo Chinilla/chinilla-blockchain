@@ -14,7 +14,7 @@ from chinilla.full_node.full_node_api import FullNodeAPI
 from chinilla.rpc.full_node_rpc_api import FullNodeRpcApi
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import RpcInfo, Service, async_run
-from chinilla.util.chia_logging import initialize_service_logging
+from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint16
@@ -86,7 +86,7 @@ async def async_main() -> int:
 def main() -> int:
     freeze_support()
 
-    with maybe_manage_task_instrumentation(enable=os.environ.get("CHIA_INSTRUMENT_NODE") is not None):
+    with maybe_manage_task_instrumentation(enable=os.environ.get("CHINILLA_INSTRUMENT_NODE") is not None):
         return async_run(async_main())
 
 

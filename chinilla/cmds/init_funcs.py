@@ -14,7 +14,7 @@ from chinilla.consensus.coinbase import create_puzzlehash_for_pk
 from chinilla.ssl.create_ssl import create_all_ssl
 from chinilla.util.bech32m import encode_puzzle_hash
 from chinilla.util.config import (
-    create_default_chia_config,
+    create_default_chinilla_config,
     initial_config_file,
     load_config,
     lock_and_load_config,
@@ -67,7 +67,7 @@ def check_keys(new_root: Path, keychain: Optional[Keychain] = None) -> None:
         keychain = Keychain()
     all_sks = keychain.get_all_private_keys()
     if len(all_sks) == 0:
-        print("No keys are present in the keychain. Generate them with 'chia keys generate'")
+        print("No keys are present in the keychain. Generate them with 'chinilla keys generate'")
         return None
 
     with lock_and_load_config(new_root, "config.yaml") as config:
@@ -239,7 +239,7 @@ def init(
             print(f"** {root_path} does not exist. Executing core init **")
             # sanity check here to prevent infinite recursion
             if (
-                chia_init(
+                chinilla_init(
                     root_path,
                     fix_ssl_permissions=fix_ssl_permissions,
                     testnet=testnet,
@@ -253,10 +253,10 @@ def init(
             print(f"** {root_path} was not created. Exiting **")
             return -1
     else:
-        return chia_init(root_path, fix_ssl_permissions=fix_ssl_permissions, testnet=testnet, v1_db=v1_db)
+        return chinilla_init(root_path, fix_ssl_permissions=fix_ssl_permissions, testnet=testnet, v1_db=v1_db)
 
 
-def chia_version_number() -> Tuple[str, str, str, str]:
+def chinilla_version_number() -> Tuple[str, str, str, str]:
     scm_full_version = __version__
     left_full_version = scm_full_version.split("+")
 
@@ -304,12 +304,12 @@ def chia_version_number() -> Tuple[str, str, str, str]:
     return major_release_number, minor_release_number, patch_release_number, dev_release_number
 
 
-def chia_full_version_str() -> str:
-    major, minor, patch, dev = chia_version_number()
+def chinilla_full_version_str() -> str:
+    major, minor, patch, dev = chinilla_version_number()
     return f"{major}.{minor}.{patch}{dev}"
 
 
-def chia_init(
+def chinilla_init(
     root_path: Path,
     *,
     should_check_keys: bool = True,
@@ -325,13 +325,13 @@ def chia_init(
     protected Keychain. When launching the daemon from the GUI, we want the GUI to
     handle unlocking the keychain.
     """
-    chia_root = os.environ.get("CHIA_ROOT", None)
-    if chia_root is not None:
-        print(f"CHIA_ROOT is set to {chia_root}")
+    chinilla_root = os.environ.get("CHINILLA_ROOT", None)
+    if chinilla_root is not None:
+        print(f"CHINILLA_ROOT is set to {chinilla_root}")
 
-    print(f"Chia directory {root_path}")
+    print(f"Chinilla directory {root_path}")
     if root_path.is_dir() and Path(root_path / "config" / "config.yaml").exists():
-        # This is reached if CHIA_ROOT is set, or if user has run chia init twice
+        # This is reached if CHINILLA_ROOT is set, or if user has run chinilla init twice
         # before a new update.
         if testnet:
             configure(
@@ -358,7 +358,7 @@ def chia_init(
         print(f"{root_path} already exists, no migration action taken")
         return -1
 
-    create_default_chia_config(root_path)
+    create_default_chinilla_config(root_path)
     if testnet:
         configure(
             root_path,
@@ -414,6 +414,6 @@ def chia_init(
             pass
 
     print("")
-    print("To see your keys, run 'chia keys show --show-mnemonic-seed'")
+    print("To see your keys, run 'chinilla keys show --show-mnemonic-seed'")
 
     return 0

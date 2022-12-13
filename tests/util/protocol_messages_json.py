@@ -29,7 +29,7 @@ declare_proof_of_space_json: Dict[str, Any] = {
     "reward_chain_sp_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "farmer_puzzle_hash": "0x3843d1c2c574d376225733cf1a9c63da7051954b88b5adc1a4c198c1c7d5edfd",
     "pool_target": {
-        "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+        "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
         "max_height": 421941852,
     },
     "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -333,7 +333,7 @@ respond_proof_of_weight_json: Dict[str, Any] = {
                     "foliage_block_data": {
                         "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                         "pool_target": {
-                            "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                            "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                             "max_height": 421941852,
                         },
                         "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -527,7 +527,7 @@ respond_blocks_json: Dict[str, Any] = {
                 "foliage_block_data": {
                     "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                     "pool_target": {
-                        "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                        "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                         "max_height": 421941852,
                     },
                     "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -703,7 +703,7 @@ respond_blocks_json: Dict[str, Any] = {
                 "foliage_block_data": {
                     "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                     "pool_target": {
-                        "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                        "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                         "max_height": 421941852,
                     },
                     "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -885,7 +885,7 @@ respond_block_json: Dict[str, Any] = {
             "foliage_block_data": {
                 "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                 "pool_target": {
-                    "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                    "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                     "max_height": 421941852,
                 },
                 "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -1033,7 +1033,7 @@ respond_unfinished_block_json: Dict[str, Any] = {
             "foliage_block_data": {
                 "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                 "pool_target": {
-                    "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                    "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                     "max_height": 421941852,
                 },
                 "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -1218,7 +1218,7 @@ respond_compact_vdf_json: Dict[str, Any] = {
 
 request_peers_json: Dict[str, Any] = {}
 
-respond_peers_json: Dict[str, Any] = {"peer_list": [{"host": "127.0.0.1", "port": 8444, "timestamp": 10796}]}
+respond_peers_json: Dict[str, Any] = {"peer_list": [{"host": "127.0.0.1", "port": 43444, "timestamp": 10796}]}
 
 request_puzzle_solution_json: Dict[str, Any] = {
     "coin_name": "0x6edddb46bd154f50566b49c95812e0f1131a0a7162630349fc8d1d696e463e47",
@@ -1425,7 +1425,7 @@ respond_header_block_json: Dict[str, Any] = {
             "foliage_block_data": {
                 "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                 "pool_target": {
-                    "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                    "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                     "max_height": 421941852,
                 },
                 "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -1606,7 +1606,7 @@ respond_block_headers_json: Dict[str, Any] = {
                 "foliage_block_data": {
                     "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                     "pool_target": {
-                        "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                        "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                         "max_height": 421941852,
                     },
                     "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -1861,7 +1861,7 @@ respond_header_blocks_json: Dict[str, Any] = {
                 "foliage_block_data": {
                     "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
                     "pool_target": {
-                        "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                        "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                         "max_height": 421941852,
                     },
                     "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -2317,7 +2317,7 @@ new_unfinished_block_timelord_json: Dict[str, Any] = {
         "foliage_block_data": {
             "unfinished_reward_block_hash": "0x205be4e4efff5b8d99b3f5c8d0ad19072875b9bac1ec3edda1f0df5467e2e61a",
             "pool_target": {
-                "puzzle_hash": "0xd23da14695a188ae5708dd152263c4db883eb27edeb936178d4d988b8f3ce5fc",
+                "puzzle_hash": "0x63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12",
                 "max_height": 421941852,
             },
             "pool_signature": "0xc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",

@@ -13,7 +13,7 @@ from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.protocols.shared_protocol import Handshake
 from chinilla.server.outbound_message import Message, make_msg
 from chinilla.server.rate_limits import RateLimiter
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.simulator.time_out_assert import time_out_assert
 from chinilla.types.peer_info import PeerInfo
 from chinilla.util.errors import Err
@@ -170,8 +170,8 @@ class TestDos:
 
         assert len(server_1.all_connections) == 1
 
-        ws_con: WSChiaConnection = list(server_1.all_connections.values())[0]
-        ws_con_2: WSChiaConnection = list(server_2.all_connections.values())[0]
+        ws_con: WSChinillaConnection = list(server_1.all_connections.values())[0]
+        ws_con_2: WSChinillaConnection = list(server_2.all_connections.values())[0]
 
         ws_con.peer_host = "1.2.3.4"
         ws_con_2.peer_host = "1.2.3.4"
@@ -225,8 +225,8 @@ class TestDos:
 
         assert len(server_1.all_connections) == 1
 
-        ws_con: WSChiaConnection = list(server_1.all_connections.values())[0]
-        ws_con_2: WSChiaConnection = list(server_2.all_connections.values())[0]
+        ws_con: WSChinillaConnection = list(server_1.all_connections.values())[0]
+        ws_con_2: WSChinillaConnection = list(server_2.all_connections.values())[0]
 
         ws_con.peer_host = "1.2.3.4"
         ws_con_2.peer_host = "1.2.3.4"
@@ -274,8 +274,8 @@ class TestDos:
 
         assert len(server_1.all_connections) == 1
 
-        ws_con: WSChiaConnection = list(server_1.all_connections.values())[0]
-        ws_con_2: WSChiaConnection = list(server_2.all_connections.values())[0]
+        ws_con: WSChinillaConnection = list(server_1.all_connections.values())[0]
+        ws_con_2: WSChinillaConnection = list(server_2.all_connections.values())[0]
 
         ws_con.peer_host = "1.2.3.4"
         ws_con_2.peer_host = "1.2.3.4"

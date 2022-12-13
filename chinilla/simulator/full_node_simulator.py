@@ -297,7 +297,7 @@ class FullNodeSimulator(FullNodeAPI):
             farm_to: The puzzle hash to farm the block rewards to.
 
         Returns:
-            The total number of reward mojos for the processed blocks.
+            The total number of reward vojos for the processed blocks.
         """
         rewards = 0
         height = uint32(0)
@@ -332,7 +332,7 @@ class FullNodeSimulator(FullNodeAPI):
             wallet: The wallet to farm the block rewards to.
 
         Returns:
-            The total number of reward mojos farmed to the requested address.
+            The total number of reward vojos farmed to the requested address.
         """
         if count == 0:
             return 0
@@ -352,16 +352,16 @@ class FullNodeSimulator(FullNodeAPI):
         return rewards
 
     async def farm_rewards(self, amount: int, wallet: Wallet) -> int:
-        """Farm at least the requested amount of mojos to the passed wallet. Extra
-        mojos will be received based on the block rewards at the present block height.
+        """Farm at least the requested amount of vojos to the passed wallet. Extra
+        vojos will be received based on the block rewards at the present block height.
         The rewards will be present in the wall before returning.
 
         Arguments:
-            amount: The minimum number of mojos to farm.
+            amount: The minimum number of vojos to farm.
             wallet: The wallet to farm the block rewards to.
 
         Returns:
-            The total number of reward mojos farmed to the requested wallet.
+            The total number of reward vojos farmed to the requested wallet.
         """
         rewards = 0
 
@@ -474,7 +474,7 @@ class FullNodeSimulator(FullNodeAPI):
         bunch of coins for a test and don't need to farm that many.
 
         Arguments:
-            amounts: A list with entries of mojo amounts corresponding to each
+            amounts: A list with entries of vojo amounts corresponding to each
                 coin to create.
             wallet: The wallet to send the new coins to.
             per_transaction_record_group: The maximum number of coins to create in each

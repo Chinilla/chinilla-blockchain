@@ -16,7 +16,7 @@ from chinilla.util.service_groups import services_for_groups
 
 
 def launch_start_daemon(root_path: Path) -> subprocess.Popen:
-    os.environ["CHIA_ROOT"] = str(root_path)
+    os.environ["CHINILLA_ROOT"] = str(root_path)
     creationflags = 0
     if sys.platform == "win32":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
@@ -67,7 +67,7 @@ async def async_start(root_path: Path, config: Dict[str, Any], group: str, resta
         return None
 
     if daemon is None:
-        print("Failed to create the chia daemon")
+        print("Failed to create the chinilla daemon")
         return None
 
     for service in services_for_groups(group):

@@ -12,7 +12,7 @@ from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import RpcInfo, Service, async_run
 from chinilla.ssl.create_ssl import create_all_ssl
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.ints import uint16

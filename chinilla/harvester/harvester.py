@@ -22,8 +22,8 @@ from chinilla.plotting.util import (
 )
 from chinilla.rpc.rpc_server import default_get_connections
 from chinilla.server.outbound_message import NodeType
-from chinilla.server.server import ChiaServer
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.server import ChinillaServer
+from chinilla.server.ws_connection import WSChinillaConnection
 
 log = logging.getLogger(__name__)
 
@@ -39,10 +39,10 @@ class Harvester:
     constants: ConsensusConstants
     _refresh_lock: asyncio.Lock
     event_loop: asyncio.events.AbstractEventLoop
-    _server: Optional[ChiaServer]
+    _server: Optional[ChinillaServer]
 
     @property
-    def server(self) -> ChiaServer:
+    def server(self) -> ChinillaServer:
         # This is a stop gap until the class usage is refactored such the values of
         # integral attributes are known at creation of the instance.
         if self._server is None:
@@ -97,7 +97,7 @@ class Harvester:
     def get_connections(self, request_node_type: Optional[NodeType]) -> List[Dict[str, Any]]:
         return default_get_connections(server=self.server, request_node_type=request_node_type)
 
-    async def on_connect(self, connection: WSChiaConnection):
+    async def on_connect(self, connection: WSChinillaConnection):
         pass
 
     def _set_state_changed_callback(self, callback: Callable):
@@ -123,7 +123,7 @@ class Harvester:
         if event == PlotRefreshEvents.done:
             self.plot_sync_sender.sync_done(update_result.removed, update_result.duration)
 
-    def on_disconnect(self, connection: WSChiaConnection):
+    def on_disconnect(self, connection: WSChinillaConnection):
         self.log.info(f"peer disconnected {connection.get_peer_logging()}")
         self.state_changed("close_connection")
         self.plot_sync_sender.stop()
@@ -178,5 +178,5 @@ class Harvester:
         self.plot_manager.trigger_refresh()
         return True
 
-    def set_server(self, server: ChiaServer) -> None:
+    def set_server(self, server: ChinillaServer) -> None:
         self._server = server

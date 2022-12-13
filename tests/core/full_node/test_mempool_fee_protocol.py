@@ -9,7 +9,7 @@ from chinilla.full_node.full_node_api import FullNodeAPI
 from chinilla.protocols import full_node_protocol, wallet_protocol
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.protocols.wallet_protocol import RespondFeeEstimates
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.simulator.block_tools import BlockTools
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
 from chinilla.simulator.time_out_assert import time_out_assert
@@ -21,7 +21,7 @@ from tests.core.node_height import node_height_at_least
 @pytest.mark.asyncio
 async def test_protocol_messages(
     wallet_node_sim_and_wallet: Tuple[
-        List[Union[FullNodeAPI, FullNodeSimulator]], List[Tuple[Wallet, ChiaServer]], BlockTools
+        List[Union[FullNodeAPI, FullNodeSimulator]], List[Tuple[Wallet, ChinillaServer]], BlockTools
     ]
 ) -> None:
     full_nodes, wallets, bt = wallet_node_sim_and_wallet

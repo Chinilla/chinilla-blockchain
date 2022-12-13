@@ -23,7 +23,7 @@ from chinilla.wallet.puzzles.rom_bootstrap_generator import get_generator
 GENERATOR_MOD = get_generator()
 
 DESERIALIZE_MOD = load_serialized_clvm_maybe_recompile(
-    "chialisp_deserialisation.clvm", package_or_requirement="chia.wallet.puzzles"
+    "chinillalisp_deserialisation.clvm", package_or_requirement="chinilla.wallet.puzzles"
 )
 
 log = logging.getLogger(__name__)

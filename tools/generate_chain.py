@@ -16,7 +16,7 @@ from chinilla.simulator.block_tools import create_block_tools
 from chinilla.simulator.keyring import TempKeyring
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.spend_bundle import SpendBundle
-from chinilla.util.chia_logging import initialize_logging
+from chinilla.util.chinilla_logging import initialize_logging
 from chinilla.util.ints import uint32, uint64
 from tools.test_constants import test_constants
 

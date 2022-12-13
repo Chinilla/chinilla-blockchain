@@ -38,7 +38,7 @@ def coin_record_dict_backwards_compat(coin_record: Dict[str, Any]):
 class FullNodeRpcApi:
     def __init__(self, service: FullNode):
         self.service = service
-        self.service_name = "chia_full_node"
+        self.service_name = "chinilla_full_node"
         self.cached_blockchain_state: Optional[Dict] = None
 
     def get_routes(self) -> Dict[str, Endpoint]:
@@ -782,7 +782,7 @@ class FullNodeRpcApi:
         target_times = request["target_times"]
         estimator: FeeEstimatorInterface = self.service.mempool_manager.mempool.fee_estimator
         estimates = [
-            estimator.estimate_fee_rate(time_offset_seconds=time).mojos_per_clvm_cost * cost for time in target_times
+            estimator.estimate_fee_rate(time_offset_seconds=time).vojos_per_clvm_cost * cost for time in target_times
         ]
         current_fee_rate = estimator.estimate_fee_rate(time_offset_seconds=1)
         mempool_size = estimator.mempool_size()
@@ -804,7 +804,7 @@ class FullNodeRpcApi:
         return {
             "estimates": estimates,
             "target_times": target_times,
-            "current_fee_rate": current_fee_rate.mojos_per_clvm_cost,
+            "current_fee_rate": current_fee_rate.vojos_per_clvm_cost,
             "mempool_size": mempool_size,
             "mempool_max_size": mempool_max_size,
             "full_node_synced": synced,

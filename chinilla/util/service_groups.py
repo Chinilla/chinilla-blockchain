@@ -4,26 +4,26 @@ from typing import Generator, KeysView
 
 SERVICES_FOR_GROUP = {
     "all": (
-        "chia_harvester chia_timelord_launcher chia_timelord chia_farmer "
-        "chia_full_node chia_wallet chia_data_layer chia_data_layer_http"
+        "chinilla_harvester chinilla_timelord_launcher chinilla_timelord chinilla_farmer "
+        "chinilla_full_node chinilla_wallet chinilla_data_layer chinilla_data_layer_http"
     ).split(),
     # TODO: should this be `data_layer`?
-    "data": "chia_wallet chia_data_layer".split(),
-    "data_layer_http": "chia_data_layer_http".split(),
-    "node": "chia_full_node".split(),
-    "harvester": "chia_harvester".split(),
-    "farmer": "chia_harvester chia_farmer chia_full_node chia_wallet".split(),
-    "farmer-no-wallet": "chia_harvester chia_farmer chia_full_node".split(),
-    "farmer-only": "chia_farmer".split(),
-    "timelord": "chia_timelord_launcher chia_timelord chia_full_node".split(),
-    "timelord-only": "chia_timelord".split(),
-    "timelord-launcher-only": "chia_timelord_launcher".split(),
-    "wallet": "chia_wallet".split(),
-    "introducer": "chia_introducer".split(),
-    "simulator": "chia_full_node_simulator".split(),
-    "crawler": "chia_crawler".split(),
-    "seeder": "chia_crawler chia_seeder".split(),
-    "seeder-only": "chia_seeder".split(),
+    "data": "chinilla_wallet chinilla_data_layer".split(),
+    "data_layer_http": "chinilla_data_layer_http".split(),
+    "node": "chinilla_full_node".split(),
+    "harvester": "chinilla_harvester".split(),
+    "farmer": "chinilla_harvester chinilla_farmer chinilla_full_node chinilla_wallet".split(),
+    "farmer-no-wallet": "chinilla_harvester chinilla_farmer chinilla_full_node".split(),
+    "farmer-only": "chinilla_farmer".split(),
+    "timelord": "chinilla_timelord_launcher chinilla_timelord chinilla_full_node".split(),
+    "timelord-only": "chinilla_timelord".split(),
+    "timelord-launcher-only": "chinilla_timelord_launcher".split(),
+    "wallet": "chinilla_wallet".split(),
+    "introducer": "chinilla_introducer".split(),
+    "simulator": "chinilla_full_node_simulator".split(),
+    "crawler": "chinilla_crawler".split(),
+    "seeder": "chinilla_crawler chinilla_seeder".split(),
+    "seeder-only": "chinilla_seeder".split(),
 }
 
 

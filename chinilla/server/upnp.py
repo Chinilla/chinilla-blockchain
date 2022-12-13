@@ -15,7 +15,7 @@ try:
 except ImportError:
     log.info(
         "importing miniupnpc failed."
-        " This is not required to run chia, it allows incoming connections from other peers."
+        " This is not required to run chinilla, it allows incoming connections from other peers."
     )
     miniupnpc = None
 
@@ -60,7 +60,7 @@ class UPnP:
                         self._upnp.deleteportmapping(port, "TCP")
                     except Exception as e:
                         log.info(f"Removal of previous portmapping failed. This does not indicate an error: {e}")
-                    self._upnp.addportmapping(port, "TCP", self._upnp.lanaddr, port, "chia", "")
+                    self._upnp.addportmapping(port, "TCP", self._upnp.lanaddr, port, "chinilla", "")
                     log.info(
                         f"Port {port} opened with UPnP. lanaddr {self._upnp.lanaddr} "
                         f"external: {self._upnp.externalipaddress()}"
@@ -73,7 +73,7 @@ class UPnP:
                 elif msg[0] == "shutdown":
                     keep_going = False
         except Exception as e:
-            log.info("UPnP failed. This is not required to run chia, it allows incoming connections from other peers.")
+            log.info("UPnP failed. This is not required to run chinilla, it allows incoming connections from other peers.")
             log.info(e)
 
     def remap(self, port: int) -> None:

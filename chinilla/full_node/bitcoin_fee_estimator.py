@@ -11,7 +11,7 @@ from chinilla.full_node.fee_tracker import FeeTracker
 from chinilla.types.clvm_cost import CLVMCost
 from chinilla.types.fee_rate import FeeRate
 from chinilla.types.mempool_item import MempoolItem
-from chinilla.types.mojos import Mojos
+from chinilla.types.vojos import Vojos
 from chinilla.util.ints import uint32, uint64
 
 
@@ -26,7 +26,7 @@ class BitcoinFeeEstimator(FeeEstimatorInterface):
         self.tracker: FeeTracker = fee_tracker
         self.last_mempool_info = FeeMempoolInfo(
             CLVMCost(uint64(0)),
-            FeeRate.create(Mojos(uint64(0)), CLVMCost(uint64(1))),
+            FeeRate.create(Vojos(uint64(0)), CLVMCost(uint64(1))),
             CLVMCost(uint64(0)),
             datetime.min,
             CLVMCost(uint64(0)),

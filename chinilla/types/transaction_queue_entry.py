@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.spend_bundle import SpendBundle
 
@@ -17,7 +17,7 @@ class TransactionQueueEntry:
     transaction: SpendBundle
     transaction_bytes: Optional[bytes]
     spend_name: bytes32
-    peer: Optional[WSChiaConnection]
+    peer: Optional[WSChinillaConnection]
     test: bool
 
     def __lt__(self, other):

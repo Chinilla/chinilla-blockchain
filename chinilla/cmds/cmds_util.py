@@ -38,7 +38,7 @@ def transaction_submitted_msg(tx: TransactionRecord) -> str:
 
 
 def transaction_status_msg(fingerprint: int, tx_id: bytes32) -> str:
-    return f"Run 'chia wallet get_transaction -f {fingerprint} -tx 0x{tx_id}' to get status"
+    return f"Run 'chinilla wallet get_transaction -f {fingerprint} -tx 0x{tx_id}' to get status"
 
 
 async def validate_client_connection(
@@ -122,7 +122,7 @@ async def get_wallet(root_path: Path, wallet_client: WalletRpcClient, fingerprin
         # we don't immediately close the keychain proxy connection because it takes a noticeable amount of time
         fingerprints = [key.fingerprint for key in all_keys]
         if len(fingerprints) == 0:
-            print("No keys loaded. Run 'chia keys generate' or import a key")
+            print("No keys loaded. Run 'chinilla keys generate' or import a key")
         elif len(fingerprints) == 1:
             # if only a single key is available, select it automatically
             selected_fingerprint = fingerprints[0]

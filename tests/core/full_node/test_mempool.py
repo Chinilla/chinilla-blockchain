@@ -18,7 +18,7 @@ from chinilla.full_node.pending_tx_cache import PendingTxCache
 from chinilla.protocols import full_node_protocol, wallet_protocol
 from chinilla.protocols.wallet_protocol import TransactionAck
 from chinilla.server.outbound_message import Message
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.simulator.simulator_protocol import FarmNewBlockProtocol
 from chinilla.simulator.time_out_assert import time_out_assert
 from chinilla.simulator.wallet_tools import WalletTool
@@ -163,7 +163,7 @@ class TestMempool:
 async def respond_transaction(
     self: FullNodeAPI,
     tx: full_node_protocol.RespondTransaction,
-    peer: WSChiaConnection,
+    peer: WSChinillaConnection,
     tx_bytes: bytes = b"",
     test: bool = False,
 ) -> Tuple[MempoolInclusionStatus, Optional[Err]]:

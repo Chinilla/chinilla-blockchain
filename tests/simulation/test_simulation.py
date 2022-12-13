@@ -9,7 +9,7 @@ from chinilla.cmds.units import units
 from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
 from chinilla.full_node.full_node import FullNode
 from chinilla.server.outbound_message import NodeType
-from chinilla.server.server import ChiaServer
+from chinilla.server.server import ChinillaServer
 from chinilla.server.start_service import Service
 from chinilla.simulator.block_tools import BlockTools, create_block_tools_async
 from chinilla.simulator.full_node_simulator import FullNodeSimulator
@@ -73,7 +73,7 @@ class TestSimulation:
     @pytest.mark.asyncio
     async def test_simulation_1(self, simulation, extra_node, self_hostname):
         node1, node2, _, _, _, _, _, _, _, sanitizer_server = simulation
-        server1: ChiaServer = node1.full_node.server
+        server1: ChinillaServer = node1.full_node.server
 
         node1_port: uint16 = server1.get_port()
         node2_port: uint16 = node2.full_node.server.get_port()
@@ -85,7 +85,7 @@ class TestSimulation:
 
         # Connect node3 to node1 and node2 - checks come later
         node3: Service[FullNode] = extra_node
-        server3: ChiaServer = node3.full_node.server
+        server3: ChinillaServer = node3.full_node.server
         connected = await server3.start_client(PeerInfo(self_hostname, node1_port))
         assert connected, f"server3 was unable to connect to node1 on port {node1_port}"
         connected = await server3.start_client(PeerInfo(self_hostname, node2_port))
@@ -148,7 +148,7 @@ class TestSimulation:
     @pytest.mark.asyncio
     async def test_simulator_auto_farm_and_get_coins(
         self,
-        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChiaServer]], BlockTools],
+        two_wallet_nodes: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
         self_hostname: str,
     ) -> None:
         num_blocks = 2
@@ -270,11 +270,11 @@ class TestSimulation:
         argvalues=[
             [0, 0],
             [1, 2],
-            [(2 * units["chia"]) - 1, 2],
-            [2 * units["chia"], 2],
-            [(2 * units["chia"]) + 1, 4],
-            [3 * units["chia"], 4],
-            [10 * units["chia"], 10],
+            [(2 * units["chinilla"]) - 1, 2],
+            [2 * units["chinilla"], 2],
+            [(2 * units["chinilla"]) + 1, 4],
+            [3 * units["chinilla"], 4],
+            [10 * units["chinilla"], 10],
         ],
     )
     async def test_simulation_farm_rewards(
@@ -409,7 +409,7 @@ class TestSimulation:
     @pytest.mark.parametrize(
         argnames="amounts",
         argvalues=[
-            *[pytest.param([1] * n, id=f"1 mojo x {n}") for n in [0, 1, 10, 49, 51, 103]],
+            *[pytest.param([1] * n, id=f"1 vojo x {n}") for n in [0, 1, 10, 49, 51, 103]],
             *[pytest.param(list(range(1, n + 1)), id=f"incrementing x {n}") for n in [1, 10, 49, 51, 103]],
         ],
     )

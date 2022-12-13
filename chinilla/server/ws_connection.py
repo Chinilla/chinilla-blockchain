@@ -13,7 +13,7 @@ from aiohttp.client import ClientWebSocketResponse
 from aiohttp.web import WebSocketResponse
 from typing_extensions import Protocol, final
 
-from chinilla.cmds.init_funcs import chia_full_version_str
+from chinilla.cmds.init_funcs import chinilla_full_version_str
 from chinilla.protocols.protocol_message_types import ProtocolMessageTypes
 from chinilla.protocols.protocol_state_machine import message_response_ok
 from chinilla.protocols.protocol_timing import INTERNAL_PROTOCOL_ERROR_BAN_SECONDS
@@ -41,7 +41,7 @@ WebSocket = Union[WebSocketResponse, ClientWebSocketResponse]
 class ConnectionClosedCallbackProtocol(Protocol):
     def __call__(
         self,
-        connection: WSChiaConnection,
+        connection: WSChinillaConnection,
         ban_time: int,
         closed_connection: bool = ...,
     ) -> None:
@@ -50,7 +50,7 @@ class ConnectionClosedCallbackProtocol(Protocol):
 
 @final
 @dataclass
-class WSChiaConnection:
+class WSChinillaConnection:
     """
     Represents a connection to another node. Local host and port are ours, while peer host and
     port are the host and port of the peer that we are connected to. Node_id and connection_type are
@@ -75,10 +75,10 @@ class WSChiaConnection:
     is_outbound: bool
 
     # Messaging
-    incoming_queue: asyncio.Queue[Tuple[Message, WSChiaConnection]]
+    incoming_queue: asyncio.Queue[Tuple[Message, WSChinillaConnection]]
     outgoing_queue: asyncio.Queue[Message] = field(default_factory=asyncio.Queue)
 
-    # ChiaConnection metrics
+    # ChinillaConnection metrics
     creation_time: float = field(default_factory=time.time)
     bytes_read: int = 0
     bytes_written: int = 0
@@ -97,7 +97,7 @@ class WSChiaConnection:
     connection_type: Optional[NodeType] = None
     request_nonce: uint16 = uint16(0)
     peer_capabilities: List[Capability] = field(default_factory=list)
-    # Used by the Chia Seeder.
+    # Used by the Chinilla Seeder.
     version: str = field(default_factory=str)
     protocol_version: str = field(default_factory=str)
 
@@ -110,7 +110,7 @@ class WSChiaConnection:
         log: logging.Logger,
         is_outbound: bool,
         peer_host: str,
-        incoming_queue: asyncio.Queue[Tuple[Message, WSChiaConnection]],
+        incoming_queue: asyncio.Queue[Tuple[Message, WSChinillaConnection]],
         close_callback: Optional[ConnectionClosedCallbackProtocol],
         peer_id: bytes32,
         inbound_rate_limit_percent: int,
@@ -118,7 +118,7 @@ class WSChiaConnection:
         local_capabilities_for_handshake: List[Tuple[uint16, str]],
         close_event: Optional[asyncio.Event] = None,
         session: Optional[ClientSession] = None,
-    ) -> WSChiaConnection:
+    ) -> WSChinillaConnection:
 
         assert ws._writer is not None
         peername = ws._writer.transport.get_extra_info("peername")
@@ -169,7 +169,7 @@ class WSChiaConnection:
             Handshake(
                 network_id,
                 protocol_version,
-                chia_full_version_str(),
+                chinilla_full_version_str(),
                 uint16(server_port),
                 uint8(local_type.value),
                 self.local_capabilities_for_handshake,
@@ -532,7 +532,7 @@ class WSChiaConnection:
             await asyncio.sleep(3)
         return None
 
-    # Used by the Chia Seeder.
+    # Used by the Chinilla Seeder.
     def get_version(self) -> str:
         return self.version
 

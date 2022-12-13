@@ -16,7 +16,7 @@ from chinilla.util.lock import Lockfile
 
 compile_clvm_py = None
 
-recompile_requested = (os.environ.get("CHIA_DEV_COMPILE_CLVM_ON_IMPORT", "") != "") or ("pytest" in sys.modules)
+recompile_requested = (os.environ.get("CHINILLA_DEV_COMPILE_CLVM_ON_IMPORT", "") != "") or ("pytest" in sys.modules)
 
 
 def translate_path(p_):
@@ -90,8 +90,8 @@ def load_serialized_clvm(
     """
     hex_filename = f"{clvm_filename}.hex"
 
-    # Set the CHIA_DEV_COMPILE_CLVM_ON_IMPORT environment variable to anything except
-    # "" or "0" to trigger automatic recompilation of the Chialisp on load.
+    # Set the CHINILLA_DEV_COMPILE_CLVM_ON_IMPORT environment variable to anything except
+    # "" or "0" to trigger automatic recompilation of the Chinillalisp on load.
     if recompile:
         try:
             if pkg_resources.resource_exists(package_or_requirement, clvm_filename):
@@ -101,8 +101,8 @@ def load_serialized_clvm(
                 search_paths = [full_path.parent]
                 if include_standard_libraries:
                     # we can't get the dir, but we can get a file then get its parent.
-                    chia_puzzles_path = pathlib.Path(pkg_resources.resource_filename(__name__, "__init__.py")).parent
-                    search_paths.append(chia_puzzles_path)
+                    chinilla_puzzles_path = pathlib.Path(pkg_resources.resource_filename(__name__, "__init__.py")).parent
+                    search_paths.append(chinilla_puzzles_path)
                 compile_clvm(full_path, output, search_paths=search_paths)
 
         except NotImplementedError:

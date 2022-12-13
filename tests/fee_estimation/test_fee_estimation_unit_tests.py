@@ -14,7 +14,7 @@ from chinilla.simulator.wallet_tools import WalletTool
 from chinilla.types.clvm_cost import CLVMCost
 from chinilla.types.fee_rate import FeeRate
 from chinilla.types.mempool_item import MempoolItem
-from chinilla.types.mojos import Mojos
+from chinilla.types.vojos import Vojos
 from chinilla.util.ints import uint32, uint64
 
 log = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def test_interface() -> None:
     )
     zero = FeeRate(uint64(0))
     assert estimates == [zero, zero, zero]
-    assert current_fee_rate.mojos_per_clvm_cost == 0
+    assert current_fee_rate.vojos_per_clvm_cost == 0
 
 
 def test_estimator_create() -> None:
@@ -45,7 +45,7 @@ def test_single_estimate() -> None:
     height = uint32(1)
     estimator.new_block(FeeBlockInfo(height, []))
     fee_rate = estimator.estimate_fee_rate(time_offset_seconds=40 * height)
-    assert fee_rate.mojos_per_clvm_cost == 0
+    assert fee_rate.vojos_per_clvm_cost == 0
 
 
 def make_block(
@@ -93,7 +93,7 @@ def test_steady_fee_pressure() -> None:
         est2 = estimator.estimate_fee_rate(time_offset_seconds=seconds)
         e.append(est2)
 
-    assert est == FeeRate.create(Mojos(fee), CLVMCost(cost))
+    assert est == FeeRate.create(Vojos(fee), CLVMCost(cost))
     estimates_after = [estimator.estimate_fee_rate(time_offset_seconds=40 * height) for height in range(start, end)]
     block_estimates = [estimator.estimate_fee_rate_for_block(uint32(h)) for h in range(start, end)]
 
@@ -124,7 +124,7 @@ def test_fee_estimation_inception() -> None:
     e = []
     for seconds in range(40, 5 * 60, 40):
         est = estimator1.estimate_fee_rate(time_offset_seconds=seconds)
-        e.append(est.mojos_per_clvm_cost)
+        e.append(est.vojos_per_clvm_cost)
 
     # Confirm that estimates are available for near blocks
     assert e == [2, 2, 2, 2, 2, 2, 2]
@@ -141,7 +141,7 @@ def test_fee_estimation_inception() -> None:
     e1 = []
     for seconds in range(40, 5 * 60, 40):
         est = estimator5.estimate_fee_rate(time_offset_seconds=seconds)
-        e1.append(est.mojos_per_clvm_cost)
+        e1.append(est.vojos_per_clvm_cost)
 
     # Confirm that estimates start after block 4
     assert e1 == [0, 0, 0, 2, 2, 2, 2]

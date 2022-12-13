@@ -226,9 +226,9 @@ def check_is_did_puzzle(puzzle: Program) -> bool:
 
 def metadata_to_program(metadata: Dict) -> Program:
     """
-    Convert the metadata dict to a Chialisp program
+    Convert the metadata dict to a Chinillalisp program
     :param metadata: User defined metadata
-    :return: Chialisp program
+    :return: Chinillalisp program
     """
     kv_list = []
     for key, value in metadata.items():
@@ -239,7 +239,7 @@ def metadata_to_program(metadata: Dict) -> Program:
 def program_to_metadata(program: Program) -> Dict:
     """
     Convert a program to a metadata dict
-    :param program: Chialisp program contains the metadata
+    :param program: Chinillalisp program contains the metadata
     :return: Metadata dict
     """
     metadata = {}

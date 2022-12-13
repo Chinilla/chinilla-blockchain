@@ -31,7 +31,7 @@ hex_suffix = ".clvm.hex"
 hash_suffix = ".clvm.hex.sha256tree"
 all_suffixes = {"clvm": clvm_suffix, "hex": hex_suffix, "hash": hash_suffix}
 # TODO: could be cli options
-top_levels = {"chia"}
+top_levels = {"chinilla"}
 
 
 def generate_hash_bytes(hex_bytes: bytes) -> bytes:

@@ -7,9 +7,9 @@ from setuptools import setup
 dependencies = [
     "aiofiles==22.1.0",  # Async IO for files
     "blspy==1.0.16",  # Signature library
-    "chiavdf==1.0.8",  # timelord and vdf verification
-    "chiabip158==1.1",  # bip158-style wallet filters
-    "chiapos==1.0.11",  # proof of space
+    "chinillavdf==1.0.8",  # timelord and vdf verification
+    "chinillabip158==1.1",  # bip158-style wallet filters
+    "chinillapos==1.0.11",  # proof of space
     "clvm==0.9.7",
     "clvm_tools==0.4.6",  # Currying, Program.to, other conveniences
     "chia_rs==0.1.16",
@@ -24,7 +24,7 @@ dependencies = [
     "filelock==3.8.0",  # For reading and writing config multiprocess and multithread safely  (non-reentrant locks)
     "keyring==23.9.3",  # Store keys in MacOS Keychain, Windows Credential Locker
     "PyYAML==6.0",  # Used for config file format
-    "setproctitle==1.2.3",  # Gives the chia processes readable names
+    "setproctitle==1.2.3",  # Gives the chinilla processes readable names
     "sortedcontainers==2.4.0",  # For maintaining sorted mempools
     "click==8.1.3",  # For the CLI
     "dnspython==2.2.1",  # Query DNS seeds
@@ -68,14 +68,14 @@ dev_dependencies = [
 ]
 
 kwargs = dict(
-    name="chia-blockchain",
+    name="chinilla-blockchain",
     author="Mariano Sorgente",
-    author_email="mariano@chia.net",
-    description="Chia blockchain full node, farmer, timelord, and wallet.",
-    url="https://chia.net/",
+    author_email="mariano@chinilla.net",
+    description="Chinilla blockchain full node, farmer, timelord, and wallet.",
+    url="https://chinilla.net/",
     license="Apache License",
     python_requires=">=3.7, <4",
-    keywords="chia blockchain node",
+    keywords="chinilla blockchain node",
     install_requires=dependencies,
     extras_require=dict(
         dev=dev_dependencies,
@@ -83,75 +83,75 @@ kwargs = dict(
     ),
     packages=[
         "build_scripts",
-        "chia",
-        "chia.cmds",
-        "chia.clvm",
-        "chia.consensus",
-        "chia.daemon",
-        "chia.data_layer",
-        "chia.full_node",
-        "chia.timelord",
-        "chia.farmer",
-        "chia.harvester",
-        "chia.introducer",
-        "chia.plot_sync",
-        "chia.plotters",
-        "chia.plotting",
-        "chia.pools",
-        "chia.protocols",
-        "chia.rpc",
-        "chia.seeder",
-        "chia.server",
-        "chia.simulator",
-        "chia.types.blockchain_format",
-        "chia.types",
-        "chia.util",
-        "chia.wallet",
-        "chia.wallet.db_wallet",
-        "chia.wallet.puzzles",
-        "chia.wallet.cat_wallet",
-        "chia.wallet.did_wallet",
-        "chia.wallet.nft_wallet",
-        "chia.wallet.settings",
-        "chia.wallet.trading",
-        "chia.wallet.util",
-        "chia.ssl",
+        "chinilla",
+        "chinilla.cmds",
+        "chinilla.clvm",
+        "chinilla.consensus",
+        "chinilla.daemon",
+        "chinilla.data_layer",
+        "chinilla.full_node",
+        "chinilla.timelord",
+        "chinilla.farmer",
+        "chinilla.harvester",
+        "chinilla.introducer",
+        "chinilla.plot_sync",
+        "chinilla.plotters",
+        "chinilla.plotting",
+        "chinilla.pools",
+        "chinilla.protocols",
+        "chinilla.rpc",
+        "chinilla.seeder",
+        "chinilla.server",
+        "chinilla.simulator",
+        "chinilla.types.blockchain_format",
+        "chinilla.types",
+        "chinilla.util",
+        "chinilla.wallet",
+        "chinilla.wallet.db_wallet",
+        "chinilla.wallet.puzzles",
+        "chinilla.wallet.cat_wallet",
+        "chinilla.wallet.did_wallet",
+        "chinilla.wallet.nft_wallet",
+        "chinilla.wallet.settings",
+        "chinilla.wallet.trading",
+        "chinilla.wallet.util",
+        "chinilla.ssl",
         "mozilla-ca",
     ],
     entry_points={
         "console_scripts": [
-            "chia = chia.cmds.chia:main",
-            "chia_daemon = chia.daemon.server:main",
-            "chia_wallet = chia.server.start_wallet:main",
-            "chia_full_node = chia.server.start_full_node:main",
-            "chia_harvester = chia.server.start_harvester:main",
-            "chia_farmer = chia.server.start_farmer:main",
-            "chia_introducer = chia.server.start_introducer:main",
-            "chia_crawler = chia.seeder.start_crawler:main",
-            "chia_seeder = chia.seeder.dns_server:main",
-            "chia_timelord = chia.server.start_timelord:main",
-            "chia_timelord_launcher = chia.timelord.timelord_launcher:main",
-            "chia_full_node_simulator = chia.simulator.start_simulator:main",
-            "chia_data_layer = chia.server.start_data_layer:main",
-            "chia_data_layer_http = chia.data_layer.data_layer_server:main",
+            "chinilla = chinilla.cmds.chinilla:main",
+            "chinilla_daemon = chinilla.daemon.server:main",
+            "chinilla_wallet = chinilla.server.start_wallet:main",
+            "chinilla_full_node = chinilla.server.start_full_node:main",
+            "chinilla_harvester = chinilla.server.start_harvester:main",
+            "chinilla_farmer = chinilla.server.start_farmer:main",
+            "chinilla_introducer = chinilla.server.start_introducer:main",
+            "chinilla_crawler = chinilla.seeder.start_crawler:main",
+            "chinilla_seeder = chinilla.seeder.dns_server:main",
+            "chinilla_timelord = chinilla.server.start_timelord:main",
+            "chinilla_timelord_launcher = chinilla.timelord.timelord_launcher:main",
+            "chinilla_full_node_simulator = chinilla.simulator.start_simulator:main",
+            "chinilla_data_layer = chinilla.server.start_data_layer:main",
+            "chinilla_data_layer_http = chinilla.data_layer.data_layer_server:main",
         ]
     },
     package_data={
-        "chia": ["pyinstaller.spec"],
+        "chinilla": ["pyinstaller.spec"],
         "": ["*.clvm", "*.clvm.hex", "*.clib", "*.clinc", "*.clsp", "py.typed"],
-        "chia.util": ["initial-*.yaml", "english.txt"],
-        "chia.ssl": ["chia_ca.crt", "chia_ca.key", "dst_root_ca.pem"],
+        "chinilla.util": ["initial-*.yaml", "english.txt"],
+        "chinilla.ssl": ["chinilla_ca.crt", "chinilla_ca.key", "dst_root_ca.pem"],
         "mozilla-ca": ["cacert.pem"],
     },
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     zip_safe=False,
     project_urls={
-        "Source": "https://github.com/Chia-Network/chia-blockchain/",
-        "Changelog": "https://github.com/Chia-Network/chia-blockchain/blob/main/CHANGELOG.md",
+        "Source": "https://github.com/Chinilla/chinilla-blockchain/",
+        "Changelog": "https://github.com/Chinilla/chinilla-blockchain/blob/main/CHANGELOG.md",
     },
 )
 
 
-if len(os.environ.get("CHIA_SKIP_SETUP", "")) < 1:
+if len(os.environ.get("CHINILLA_SKIP_SETUP", "")) < 1:
     setup(**kwargs)  # type: ignore

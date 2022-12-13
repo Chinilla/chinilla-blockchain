@@ -48,7 +48,7 @@ async def print_blockchain_state(node_client: FullNodeRpcClient, config: Dict[st
         print(f"Current Blockchain Status: Not Synced. Peak height: {peak.height}")
     else:
         print("\nSearching for an initial chain\n")
-        print("You may be able to expedite with 'chia peer full_node -a host:port' using a known node.\n")
+        print("You may be able to expedite with 'chinilla peer full_node -a host:port' using a known node.\n")
 
     if peak is not None:
         if peak.is_transaction_block:
@@ -166,12 +166,12 @@ async def print_fee_info(node_client: FullNodeRpcClient) -> None:
     res = await node_client.get_fee_estimate(target_times=target_times, cost=1)
     print(f"  Mempool max size: {res['mempool_max_size']:>12} CLVM cost")
     print(f"      Mempool size: {res['mempool_size']:>12} CLVM cost")
-    print(f"  Current Fee Rate: {res['current_fee_rate']:>12} mojo per CLVM cost")
+    print(f"  Current Fee Rate: {res['current_fee_rate']:>12} vojo per CLVM cost")
 
     print("\nFee Rate Estimates:")
     max_name_len = max(len(name) for name in target_times_names)
     for (n, e) in zip(target_times_names, res["estimates"]):
-        print(f"    {n:>{max_name_len}}: {e} mojo per CLVM cost")
+        print(f"    {n:>{max_name_len}}: {e} vojo per CLVM cost")
     print("")
 
 

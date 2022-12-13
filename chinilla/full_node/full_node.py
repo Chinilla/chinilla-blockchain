@@ -43,8 +43,8 @@ from chinilla.protocols.wallet_protocol import CoinState, CoinStateUpdate
 from chinilla.server.node_discovery import FullNodePeers
 from chinilla.server.outbound_message import Message, NodeType, make_msg
 from chinilla.server.peer_store_resolver import PeerStoreResolver
-from chinilla.server.server import ChiaServer
-from chinilla.server.ws_connection import WSChiaConnection
+from chinilla.server.server import ChinillaServer
+from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.sized_bytes import bytes32
@@ -89,7 +89,7 @@ class FullNode:
     initialized: bool
     root_path: Path
     config: Dict[str, Any]
-    _server: Optional[ChiaServer]
+    _server: Optional[ChinillaServer]
     _shut_down: bool
     constants: ConsensusConstants
     pow_creation: Dict[bytes32, asyncio.Event]
@@ -137,7 +137,7 @@ class FullNode:
     _maybe_blockchain_lock_low_priority: Optional[LockClient]
 
     @property
-    def server(self) -> ChiaServer:
+    def server(self) -> ChinillaServer:
         # This is a stop gap until the class usage is refactored such the values of
         # integral attributes are known at creation of the instance.
         if self._server is None:
@@ -355,7 +355,7 @@ class FullNode:
                                 self.db_wrapper.db_version = 2
                                 self.log.info("blockchain database is empty, configuring as v2")
                         except sqlite3.OperationalError:
-                            # it could be a database created with "chia init", which is
+                            # it could be a database created with "chinilla init", which is
                             # empty except it has the database_version table
                             pass
 
@@ -489,7 +489,7 @@ class FullNode:
         if peak is not None:
             await self.weight_proof_handler.create_sub_epoch_segments()
 
-    def set_server(self, server: ChiaServer) -> None:
+    def set_server(self, server: ChinillaServer) -> None:
         self._server = server
         dns_servers: List[str] = []
         network_name = self.config["selected_network"]
@@ -500,9 +500,9 @@ class FullNode:
             default_port = None
         if "dns_servers" in self.config:
             dns_servers = self.config["dns_servers"]
-        elif self.config["port"] == 8444:
+        elif self.config["port"] == 43444:
             # If `dns_servers` misses from the `config`, hardcode it if we're running mainnet.
-            dns_servers.append("dns-introducer.chia.net")
+            dns_servers.append("dns-introducer.chinilla.net")
         try:
             self.full_node_peers = FullNodePeers(
                 self.server,
@@ -532,7 +532,7 @@ class FullNode:
         if self.state_changed_callback is not None:
             self.state_changed_callback(change, change_data)
 
-    async def short_sync_batch(self, peer: WSChiaConnection, start_height: uint32, target_height: uint32) -> bool:
+    async def short_sync_batch(self, peer: WSChinillaConnection, start_height: uint32, target_height: uint32) -> bool:
         """
         Tries to sync to a chain which is not too far in the future, by downloading batches of blocks. If the first
         block that we download is not connected to our chain, we return False and do an expensive long sync instead.
@@ -615,7 +615,7 @@ class FullNode:
         return True
 
     async def short_sync_backtrack(
-        self, peer: WSChiaConnection, peak_height: uint32, target_height: uint32, target_unf_hash: bytes32
+        self, peer: WSChinillaConnection, peak_height: uint32, target_height: uint32, target_unf_hash: bytes32
     ) -> bool:
         """
         Performs a backtrack sync, where blocks are downloaded one at a time from newest to oldest. If we do not
@@ -671,7 +671,7 @@ class FullNode:
             await asyncio.sleep(sleep_before)
         self._state_changed("peer_changed_peak")
 
-    async def new_peak(self, request: full_node_protocol.NewPeak, peer: WSChiaConnection) -> None:
+    async def new_peak(self, request: full_node_protocol.NewPeak, peer: WSChinillaConnection) -> None:
         """
         We have received a notification of a new peak from a peer. This happens either when we have just connected,
         or when the peer has updated their peak.
@@ -747,7 +747,7 @@ class FullNode:
             self._sync_task = asyncio.create_task(self._sync())
 
     async def send_peak_to_timelords(
-        self, peak_block: Optional[FullBlock] = None, peer: Optional[WSChiaConnection] = None
+        self, peak_block: Optional[FullBlock] = None, peer: Optional[WSChinillaConnection] = None
     ) -> None:
         """
         Sends current peak to timelords
@@ -822,7 +822,7 @@ class FullNode:
         else:
             return True
 
-    async def on_connect(self, connection: WSChiaConnection) -> None:
+    async def on_connect(self, connection: WSChinillaConnection) -> None:
         """
         Whenever we connect to another node / wallet, send them our current heads. Also send heads to farmers
         and challenges to timelords.
@@ -873,7 +873,7 @@ class FullNode:
             elif connection.connection_type is NodeType.TIMELORD:
                 await self.send_peak_to_timelords()
 
-    def on_disconnect(self, connection: WSChiaConnection) -> None:
+    def on_disconnect(self, connection: WSChinillaConnection) -> None:
         self.log.info(f"peer disconnected {connection.get_peer_logging()}")
         self._state_changed("close_connection")
         self._state_changed("sync_mode")
@@ -881,7 +881,7 @@ class FullNode:
             self.sync_store.peer_disconnected(connection.peer_node_id)
         self.remove_subscriptions(connection)
 
-    def remove_subscriptions(self, peer: WSChiaConnection) -> None:
+    def remove_subscriptions(self, peer: WSChinillaConnection) -> None:
         # Remove all ph | coin id subscription for this peer
         node_id = peer.peer_node_id
         if node_id in self.peer_puzzle_hash:
@@ -1007,13 +1007,13 @@ class FullNode:
             # TODO: disconnect from peer which gave us the heaviest_peak, if nobody has the peak
 
             peer_ids: Set[bytes32] = self.sync_store.get_peers_that_have_peak([target_peak.header_hash])
-            peers_with_peak: List[WSChiaConnection] = [
+            peers_with_peak: List[WSChinillaConnection] = [
                 c for c in self.server.all_connections.values() if c.peer_node_id in peer_ids
             ]
 
             # Request weight proof from a random peer
             self.log.info(f"Total of {len(peers_with_peak)} peers with peak {target_peak.height}")
-            weight_proof_peer: WSChiaConnection = random.choice(peers_with_peak)
+            weight_proof_peer: WSChinillaConnection = random.choice(peers_with_peak)
             self.log.info(
                 f"Requesting weight proof from peer {weight_proof_peer.peer_host} up to height" f" {target_peak.height}"
             )
@@ -1082,17 +1082,17 @@ class FullNode:
     ) -> None:
         buffer_size = 4
         self.log.info(f"Start syncing from fork point at {fork_point_height} up to {target_peak_sb_height}")
-        peers_with_peak: List[WSChiaConnection] = self.get_peers_with_peak(peak_hash)
+        peers_with_peak: List[WSChinillaConnection] = self.get_peers_with_peak(peak_hash)
         fork_point_height = await check_fork_next_block(
             self.blockchain, fork_point_height, peers_with_peak, node_next_block_check
         )
         batch_size = self.constants.MAX_BLOCK_COUNT_PER_REQUESTS
 
         async def fetch_block_batches(
-            batch_queue: asyncio.Queue[Optional[Tuple[WSChiaConnection, List[FullBlock]]]]
+            batch_queue: asyncio.Queue[Optional[Tuple[WSChinillaConnection, List[FullBlock]]]]
         ) -> None:
             start_height, end_height = 0, 0
-            new_peers_with_peak: List[WSChiaConnection] = peers_with_peak[:]
+            new_peers_with_peak: List[WSChinillaConnection] = peers_with_peak[:]
             try:
                 for start_height in range(fork_point_height, target_peak_sb_height, batch_size):
                     end_height = min(target_peak_sb_height, start_height + batch_size)
@@ -1124,11 +1124,11 @@ class FullNode:
                 await batch_queue.put(None)
 
         async def validate_block_batches(
-            inner_batch_queue: asyncio.Queue[Optional[Tuple[WSChiaConnection, List[FullBlock]]]]
+            inner_batch_queue: asyncio.Queue[Optional[Tuple[WSChinillaConnection, List[FullBlock]]]]
         ) -> None:
             advanced_peak: bool = False
             while True:
-                res: Optional[Tuple[WSChiaConnection, List[FullBlock]]] = await inner_batch_queue.get()
+                res: Optional[Tuple[WSChinillaConnection, List[FullBlock]]] = await inner_batch_queue.get()
                 if res is None:
                     self.log.debug("done fetching blocks")
                     return None
@@ -1157,7 +1157,7 @@ class FullNode:
                 await self.send_peak_to_wallets()
                 self.blockchain.clean_block_record(end_height - self.constants.BLOCKS_CACHE_SIZE)
 
-        batch_queue_input: asyncio.Queue[Optional[Tuple[WSChiaConnection, List[FullBlock]]]] = asyncio.Queue(
+        batch_queue_input: asyncio.Queue[Optional[Tuple[WSChinillaConnection, List[FullBlock]]]] = asyncio.Queue(
             maxsize=buffer_size
         )
         fetch_task = asyncio.Task(fetch_block_batches(batch_queue_input))
@@ -1180,7 +1180,7 @@ class FullNode:
         )
         await self.server.send_to_all([msg], NodeType.WALLET)
 
-    def get_peers_with_peak(self, peak_hash: bytes32) -> List[WSChiaConnection]:
+    def get_peers_with_peak(self, peak_hash: bytes32) -> List[WSChinillaConnection]:
         peer_ids: Set[bytes32] = self.sync_store.get_peers_that_have_peak([peak_hash])
         if len(peer_ids) == 0:
             self.log.warning(f"Not syncing, no peers with header_hash {peak_hash} ")
@@ -1223,7 +1223,7 @@ class FullNode:
         for peer, changes in changes_for_peer.items():
             if peer not in self.server.all_connections:
                 continue
-            ws_peer: WSChiaConnection = self.server.all_connections[peer]
+            ws_peer: WSChinillaConnection = self.server.all_connections[peer]
             state = CoinStateUpdate(
                 state_change_summary.peak.height,
                 state_change_summary.fork_height,
@@ -1236,7 +1236,7 @@ class FullNode:
     async def receive_block_batch(
         self,
         all_blocks: List[FullBlock],
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         fork_point: Optional[uint32],
         wp_summaries: Optional[List[SubEpochSummary]] = None,
     ) -> Tuple[bool, Optional[StateChangeSummary]]:
@@ -1360,7 +1360,7 @@ class FullNode:
     async def signage_point_post_processing(
         self,
         request: full_node_protocol.RespondSignagePoint,
-        peer: WSChiaConnection,
+        peer: WSChinillaConnection,
         ip_sub_slot: Optional[EndOfSubSlotBundle],
     ) -> None:
         self.log.info(
@@ -1420,7 +1420,7 @@ class FullNode:
         self,
         block: FullBlock,
         state_change_summary: StateChangeSummary,
-        peer: Optional[WSChiaConnection],
+        peer: Optional[WSChinillaConnection],
     ) -> PeakPostProcessingResult:
         """
         Must be called under self.blockchain.lock. This updates the internal state of the full node with the
@@ -1526,7 +1526,7 @@ class FullNode:
     async def peak_post_processing_2(
         self,
         block: FullBlock,
-        peer: Optional[WSChiaConnection],
+        peer: Optional[WSChinillaConnection],
         state_change_summary: StateChangeSummary,
         ppp_result: PeakPostProcessingResult,
     ) -> None:
@@ -1604,7 +1604,7 @@ class FullNode:
     async def respond_block(
         self,
         respond_block: full_node_protocol.RespondBlock,
-        peer: Optional[WSChiaConnection] = None,
+        peer: Optional[WSChinillaConnection] = None,
         raise_on_disconnected: bool = False,
     ) -> Optional[Message]:
         """
@@ -1809,7 +1809,7 @@ class FullNode:
     async def respond_unfinished_block(
         self,
         respond_unfinished_block: full_node_protocol.RespondUnfinishedBlock,
-        peer: Optional[WSChiaConnection],
+        peer: Optional[WSChinillaConnection],
         farmed_block: bool = False,
         block_bytes: Optional[bytes] = None,
     ) -> None:
@@ -2011,7 +2011,7 @@ class FullNode:
         self._state_changed("unfinished_block")
 
     async def new_infusion_point_vdf(
-        self, request: timelord_protocol.NewInfusionPointVDF, timelord_peer: Optional[WSChiaConnection] = None
+        self, request: timelord_protocol.NewInfusionPointVDF, timelord_peer: Optional[WSChinillaConnection] = None
     ) -> Optional[Message]:
         # Lookup unfinished blocks
         unfinished_block: Optional[UnfinishedBlock] = self.full_node_store.get_unfinished_block(
@@ -2114,7 +2114,7 @@ class FullNode:
         return None
 
     async def respond_end_of_sub_slot(
-        self, request: full_node_protocol.RespondEndOfSubSlot, peer: WSChiaConnection
+        self, request: full_node_protocol.RespondEndOfSubSlot, peer: WSChinillaConnection
     ) -> Tuple[Optional[Message], bool]:
 
         fetched_ss = self.full_node_store.get_sub_slot(request.end_of_slot_bundle.challenge_chain.get_hash())
@@ -2207,7 +2207,7 @@ class FullNode:
         self,
         transaction: SpendBundle,
         spend_name: bytes32,
-        peer: Optional[WSChiaConnection] = None,
+        peer: Optional[WSChinillaConnection] = None,
         test: bool = False,
         tx_bytes: Optional[bytes] = None,
     ) -> Tuple[MempoolInclusionStatus, Optional[Err]]:
@@ -2436,7 +2436,7 @@ class FullNode:
         if self._server is not None:
             await self.server.send_to_all([msg], NodeType.FULL_NODE)
 
-    async def new_compact_vdf(self, request: full_node_protocol.NewCompactVDF, peer: WSChiaConnection) -> None:
+    async def new_compact_vdf(self, request: full_node_protocol.NewCompactVDF, peer: WSChinillaConnection) -> None:
         is_fully_compactified = await self.block_store.is_fully_compactified(request.header_hash)
         if is_fully_compactified is None or is_fully_compactified:
             return None
@@ -2454,7 +2454,7 @@ class FullNode:
             if response is not None and isinstance(response, full_node_protocol.RespondCompactVDF):
                 await self.respond_compact_vdf(response, peer)
 
-    async def request_compact_vdf(self, request: full_node_protocol.RequestCompactVDF, peer: WSChiaConnection) -> None:
+    async def request_compact_vdf(self, request: full_node_protocol.RequestCompactVDF, peer: WSChinillaConnection) -> None:
         header_block = await self.blockchain.get_header_block_by_height(
             request.height, request.header_hash, tx_filter=False
         )
@@ -2498,7 +2498,7 @@ class FullNode:
         msg = make_msg(ProtocolMessageTypes.respond_compact_vdf, compact_vdf)
         await peer.send_message(msg)
 
-    async def respond_compact_vdf(self, request: full_node_protocol.RespondCompactVDF, peer: WSChiaConnection) -> None:
+    async def respond_compact_vdf(self, request: full_node_protocol.RespondCompactVDF, peer: WSChinillaConnection) -> None:
         field_vdf = CompressibleVDFField(int(request.field_vdf))
         if not await self._can_accept_compact_proof(
             request.vdf_info, request.vdf_proof, request.height, request.header_hash, field_vdf
@@ -2624,7 +2624,7 @@ class FullNode:
 
 
 async def node_next_block_check(
-    peer: WSChiaConnection, potential_peek: uint32, blockchain: BlockchainInterface
+    peer: WSChinillaConnection, potential_peek: uint32, blockchain: BlockchainInterface
 ) -> bool:
 
     block_response: Optional[Any] = await peer.request_block(full_node_protocol.RequestBlock(potential_peek, True))
