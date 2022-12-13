@@ -213,8 +213,8 @@ class TestConfig:
         assert config["daemon_port"] == default_config_dict["daemon_port"] == 43400
         assert config["self_hostname"] == default_config_dict["self_hostname"] == "localhost"
         assert (
-            config["farmer"]["network_overrides"]["constants"]["mainnet"]["GENESIS_CHALLENGE"]
-            == default_config_dict["farmer"]["network_overrides"]["constants"]["mainnet"]["GENESIS_CHALLENGE"]
+            config["farmer"]["network_overrides"]["constants"]["vanillanet"]["GENESIS_CHALLENGE"]
+            == default_config_dict["farmer"]["network_overrides"]["constants"]["vanillanet"]["GENESIS_CHALLENGE"]
             == "53f4690da000fe21fff9c7b84dcff4263bd2c0c5886f2f7bf486940b206cd558"
         )
 

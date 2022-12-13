@@ -1,4 +1,4 @@
-min_mainnet_k_size: 32
+min_vanillanet_k_size: 32
 
 # Send a ping to all peers after ping_interval seconds
 ping_interval: 120
@@ -11,7 +11,7 @@ outbound_rate_limit_percent: 30
 
 network_overrides: &network_overrides
   constants:
-    mainnet:
+    vanillanet:
       GENESIS_CHALLENGE: 53f4690da000fe21fff9c7b84dcff4263bd2c0c5886f2f7bf486940b206cd558
       GENESIS_PRE_FARM_POOL_PUZZLE_HASH: "63a6b7cf123828c913c50580ee2a8beda829a464ee1a7cfcfe312d5b89496b12"
       GENESIS_PRE_FARM_FARMER_PUZZLE_HASH: "09c505b9aae9fe97ba20d8622b63574fa2bfc19dcb9cbf2d45f3b53bcac60072"
@@ -31,7 +31,7 @@ network_overrides: &network_overrides
       MEMPOOL_BLOCK_BUFFER: 10
       MIN_PLOT_SIZE: 18
   config:
-    mainnet:
+    vanillanet:
       address_prefix: "xch"
       default_full_node_port: 43444
     testnet0:
@@ -41,8 +41,8 @@ network_overrides: &network_overrides
       address_prefix: "txch"
       default_full_node_port: 40444
 
-selected_network: &selected_network "mainnet"
-ALERTS_URL: https://download.chinilla.net/notify/mainnet_alert.txt
+selected_network: &selected_network "vanillanet"
+ALERTS_URL: https://download.chinilla.com/notify/vanillanet_alert.txt
 CHINILLA_ALERTS_PUBKEY: 89b7fd87cb56e926ecefb879a29aae308be01f31980569f6a75a69d2a9a69daefd71fb778d865f7c50d6c967e3025937
 
 # public ssl ca is included in source code
@@ -76,7 +76,7 @@ logging: &logging
 seeder:
   # The fake full node used for crawling will run on this port.
   port: 43444
-  # Most full nodes on the network run on this port. (i.e. 43444 for mainnet, 40444 for testnet).
+  # Most full nodes on the network run on this port. (i.e. 43444 for vanillanet, 40444 for testnet).
   other_peers_port: 43444
   # This will override the default full_node.peer_connect_timeout for the crawler full node
   peer_connect_timeout: 2
@@ -84,7 +84,7 @@ seeder:
   crawler_db_path: "crawler.db"
   # Peers used for the initial run.
   bootstrap_peers:
-    - "node.chinilla.net"
+    - "node.chinilla.com"
   # Only consider nodes synced at least to this height.
   minimum_height: 240000
   # How many of a particular version we need to see before reporting it in the logs
@@ -355,7 +355,7 @@ full_node:
   # List of trusted DNS seeders to bootstrap from.
   # If you modify this, please change the hardcode as well from FullNode.set_server()
   dns_servers:
-    - "dns-introducer.chinilla.net"
+    - "dns-introducer.chinilla.com"
   farmer_peer:
       host: *self_hostname
       port: 43447
@@ -363,7 +363,7 @@ full_node:
       host: *self_hostname
       port: 43446
   introducer_peer:
-      host: introducer.chinilla.net  # Chinilla AWS introducer IPv4/IPv6
+      host: introducer.chinilla.com  # Chinilla AWS introducer IPv4/IPv6
       port: 43444
   wallet_peer:
     host: *self_hostname
@@ -435,7 +435,7 @@ wallet:
   initial_num_public_keys: 425
 
   dns_servers:
-    - "dns-introducer.chinilla.net"
+    - "dns-introducer.chinilla.com"
 
   full_node_peer:
     host: *self_hostname
@@ -468,7 +468,7 @@ wallet:
   recent_peer_threshold: 6000
 
   introducer_peer:
-    host: introducer.chinilla.net # Chinilla AWS introducer IPv4/IPv6
+    host: introducer.chinilla.com # Chinilla AWS introducer IPv4/IPv6
     port: 43444
 
   ssl:

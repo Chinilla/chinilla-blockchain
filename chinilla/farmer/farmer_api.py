@@ -67,7 +67,7 @@ class FarmerAPI:
 
         max_pos_per_sp = 5
 
-        if self.farmer.config.get("selected_network") != "mainnet":
+        if self.farmer.config.get("selected_network") != "vanillanet":
             # This is meant to make testnets more stable, when difficulty is very low
             if self.farmer.number_of_responses[new_proof_of_space.sp_hash] > max_pos_per_sp:
                 self.farmer.log.info(

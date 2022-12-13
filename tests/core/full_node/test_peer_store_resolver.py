@@ -20,7 +20,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -44,7 +44,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -68,7 +68,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -92,7 +92,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -118,7 +118,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -144,7 +144,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -168,7 +168,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",
@@ -216,7 +216,7 @@ class TestPeerStoreResolver:
         resolver: PeerStoreResolver = PeerStoreResolver(
             root_path,
             config,
-            selected_network="mainnet",
+            selected_network="vanillanet",
             peers_file_path_key="peers_file_path",
             legacy_peer_db_path_key="peer_db_path",
             default_peers_file_path="db/peers.dat",

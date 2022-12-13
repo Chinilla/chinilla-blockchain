@@ -250,7 +250,7 @@ class CoinStore:
 
     async def get_all_coins(self, include_spent_coins: bool) -> List[CoinRecord]:
         # WARNING: this should only be used for testing or in a simulation,
-        # running it on a synced testnet or mainnet node will most likely result in an OOM error.
+        # running it on a synced testnet or vanillanet node will most likely result in an OOM error.
         coins = set()
 
         async with self.db_wrapper.reader_no_transaction() as conn:

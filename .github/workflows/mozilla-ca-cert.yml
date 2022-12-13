@@ -39,5 +39,5 @@ jobs:
           assignees: "wallentx"
           title: "CA Cert updates"
           token: "${{ secrets.GITHUB_TOKEN }}"
-          committer: "ChinillaAutomation <automation@chinilla.net>"
-          author: "ChinillaAutomation <automation@chinilla.net>"
+          committer: "ChinillaAutomation <automation@chinilla.com>"
+          author: "ChinillaAutomation <automation@chinilla.com>"

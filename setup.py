@@ -8,7 +8,7 @@ dependencies = [
     "aiofiles==22.1.0",  # Async IO for files
     "blspy==1.0.16",  # Signature library
     "chinillavdf==1.0.8",  # timelord and vdf verification
-    "chinillabip158==1.1",  # bip158-style wallet filters
+    "chinillabip158==1.2",  # bip158-style wallet filters
     "chinillapos==1.0.11",  # proof of space
     "clvm==0.9.7",
     "clvm_tools==0.4.6",  # Currying, Program.to, other conveniences
@@ -70,9 +70,9 @@ dev_dependencies = [
 kwargs = dict(
     name="chinilla-blockchain",
     author="Mariano Sorgente",
-    author_email="mariano@chinilla.net",
+    author_email="mariano@chinilla.com",
     description="Chinilla blockchain full node, farmer, timelord, and wallet.",
-    url="https://chinilla.net/",
+    url="https://chinilla.com/",
     license="Apache License",
     python_requires=">=3.7, <4",
     keywords="chinilla blockchain node",

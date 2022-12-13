@@ -1550,10 +1550,10 @@ class TestFullNodeProtocol:
 
         await time_out_assert(20, caught_up_slots)
 
-    @pytest.mark.skip("a timebomb causes mainnet to stop after transactions start, so this test doesn't work yet")
+    @pytest.mark.skip("a timebomb causes vanillanet to stop after transactions start, so this test doesn't work yet")
     @pytest.mark.asyncio
-    async def test_mainnet_softfork(self, wallet_nodes_mainnet):
-        full_node_1, full_node_2, server_1, server_2, wallet_a, wallet_receiver, bt = wallet_nodes_mainnet
+    async def test_vanillanet_softfork(self, wallet_nodes_vanillanet):
+        full_node_1, full_node_2, server_1, server_2, wallet_a, wallet_receiver, bt = wallet_nodes_vanillanet
         blocks = await full_node_1.get_all_full_blocks()
 
         wallet_ph = wallet_a.get_new_puzzlehash()
@@ -1961,7 +1961,7 @@ class TestFullNodeProtocol:
             [capabilities, True],
             # an additional enabled but unknown capability
             [[*capabilities, (uint16(max(Capability) + 1), "1")], True],
-            # no capability, not even Chinilla mainnet
+            # no capability, not even Chinilla vanillanet
             # TODO: shouldn't we fail without Capability.BASE?
             [[], True],
             # only an unknown capability

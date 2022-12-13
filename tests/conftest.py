@@ -440,7 +440,7 @@ async def wallet_nodes_perf():
 
 
 @pytest_asyncio.fixture(scope="function")
-async def wallet_nodes_mainnet(db_version):
+async def wallet_nodes_vanillanet(db_version):
     async_gen = setup_simulators_and_wallets(2, 1, {}, db_version=db_version)
     nodes, wallets, bt = await async_gen.__anext__()
     full_node_1 = nodes[0]

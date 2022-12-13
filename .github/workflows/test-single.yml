@@ -107,7 +107,7 @@ jobs:
                 ${{ inputs.matrix_mode }}: True
 
     env:
-      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/mainnet
+      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
       JOB_FILE_NAME: tests_${{ matrix.os.file_name }}_python-${{ matrix.python.file_name }}_${{ matrix.configuration.name }}
       BLOCKS_AND_PLOTS_VERSION: 0.29.0
 

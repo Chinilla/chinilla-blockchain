@@ -28,7 +28,7 @@ jobs:
       matrix:
         python-version: [ 3.9 ]
     env:
-      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/mainnet
+      CHINILLA_ROOT: ${{ github.workspace }}/.chinilla/vanillanet
       BLOCKS_AND_PLOTS_VERSION: 0.29.0
 
     steps:

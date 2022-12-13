@@ -923,39 +923,39 @@ class TestWalletSimulator:
 
 
 def test_get_wallet_db_path_v2_r1() -> None:
-    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/vanillanet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v2_r1_CHALLENGE_KEY.sqlite",
-        "selected_network": "mainnet",
+        "selected_network": "vanillanet",
     }
     fingerprint: str = "1234567890"
     wallet_db_path: Path = get_wallet_db_path(root_path, config, fingerprint)
 
-    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_mainnet_1234567890.sqlite")
+    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_vanillanet_1234567890.sqlite")
 
 
 def test_get_wallet_db_path_v2() -> None:
-    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/vanillanet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v2_CHALLENGE_KEY.sqlite",
-        "selected_network": "mainnet",
+        "selected_network": "vanillanet",
     }
     fingerprint: str = "1234567890"
     wallet_db_path: Path = get_wallet_db_path(root_path, config, fingerprint)
 
-    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_mainnet_1234567890.sqlite")
+    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_vanillanet_1234567890.sqlite")
 
 
 def test_get_wallet_db_path_v1() -> None:
-    root_path: Path = Path("/x/y/z/.chinilla/mainnet").resolve()
+    root_path: Path = Path("/x/y/z/.chinilla/vanillanet").resolve()
     config: Dict[str, Any] = {
         "database_path": "wallet/db/blockchain_wallet_v1_CHALLENGE_KEY.sqlite",
-        "selected_network": "mainnet",
+        "selected_network": "vanillanet",
     }
     fingerprint: str = "1234567890"
     wallet_db_path: Path = get_wallet_db_path(root_path, config, fingerprint)
 
-    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_mainnet_1234567890.sqlite")
+    assert wallet_db_path == root_path.joinpath("wallet/db/blockchain_wallet_v2_r1_vanillanet_1234567890.sqlite")
 
 
 def test_get_wallet_db_path_testnet() -> None:
