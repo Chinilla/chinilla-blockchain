@@ -11,8 +11,12 @@ from chinilla.wallet.puzzles.rom_bootstrap_generator import get_generator
 
 GENERATOR_MOD = get_generator()
 
-DECOMPRESS_BLOCK = load_clvm_maybe_recompile("block_program_zero.clvm", package_or_requirement="chinilla.wallet.puzzles")
-DECOMPRESS_PUZZLE = load_clvm_maybe_recompile("decompress_puzzle.clvm", package_or_requirement="chinilla.wallet.puzzles")
+DECOMPRESS_BLOCK = load_clvm_maybe_recompile(
+    "block_program_zero.clvm", package_or_requirement="chinilla.wallet.puzzles"
+)
+DECOMPRESS_PUZZLE = load_clvm_maybe_recompile(
+    "decompress_puzzle.clvm", package_or_requirement="chinilla.wallet.puzzles"
+)
 # DECOMPRESS_CSE = load_clvm_maybe_recompile(
 #     "decompress_coin_spend_entry.clvm",
 #     package_or_requirement="chinilla.wallet.puzzles",

@@ -72,7 +72,12 @@ from chinilla.simulator.wallet_tools import WalletTool
 from chinilla.ssl.create_ssl import create_all_ssl
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.coin import Coin, hash_coin_ids
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+)
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import INFINITE_COST
 from chinilla.types.blockchain_format.proof_of_space import (

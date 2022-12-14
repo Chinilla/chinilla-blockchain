@@ -528,7 +528,9 @@ class ChinillaServer:
 
         return False
 
-    def connection_closed(self, connection: WSChinillaConnection, ban_time: int, closed_connection: bool = False) -> None:
+    def connection_closed(
+        self, connection: WSChinillaConnection, ban_time: int, closed_connection: bool = False
+    ) -> None:
         # closed_connection is true if the callback is being called with a connection that was previously closed
         # in this case we still want to do the banning logic and remove the conection from the list
         # but the other cleanup should already have been done so we skip that

@@ -11,7 +11,13 @@ from clvm.EvalError import EvalError
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.data_layer.data_layer_errors import OfferIntegrityError
-from chinilla.data_layer.data_layer_util import OfferStore, ProofOfInclusion, ProofOfInclusionLayer, StoreProofs, leaf_hash
+from chinilla.data_layer.data_layer_util import (
+    OfferStore,
+    ProofOfInclusion,
+    ProofOfInclusionLayer,
+    StoreProofs,
+    leaf_hash,
+)
 from chinilla.protocols.wallet_protocol import CoinState
 from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.types.announcement import Announcement

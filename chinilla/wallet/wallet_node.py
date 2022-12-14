@@ -1053,7 +1053,9 @@ class WalletNode:
         async with self.wallet_state_manager.lock:
             await self.wallet_state_manager.new_peak(new_peak)
 
-    async def new_peak_from_trusted(self, new_peak_hb: HeaderBlock, latest_timestamp: uint64, peer: WSChinillaConnection):
+    async def new_peak_from_trusted(
+        self, new_peak_hb: HeaderBlock, latest_timestamp: uint64, peer: WSChinillaConnection
+    ):
         current_height: uint32 = await self.wallet_state_manager.blockchain.get_finished_sync_up_to()
         async with self.wallet_state_manager.lock:
             await self.wallet_state_manager.blockchain.set_peak_block(new_peak_hb, latest_timestamp)

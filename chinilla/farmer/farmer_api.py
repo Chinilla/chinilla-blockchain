@@ -56,7 +56,9 @@ class FarmerAPI:
         self.farmer = farmer
 
     @api_request(peer_required=True)
-    async def new_proof_of_space(self, new_proof_of_space: harvester_protocol.NewProofOfSpace, peer: WSChinillaConnection):
+    async def new_proof_of_space(
+        self, new_proof_of_space: harvester_protocol.NewProofOfSpace, peer: WSChinillaConnection
+    ):
         """
         This is a response from the harvester, for a NewChallenge. Here we check if the proof
         of space is sufficiently good, and if so, we ask for the whole proof.

@@ -106,7 +106,9 @@ def create_config(
     return config
 
 
-async def start_simulator(chinilla_root: Path, automated_testing: bool = False) -> AsyncGenerator[FullNodeSimulator, None]:
+async def start_simulator(
+    chinilla_root: Path, automated_testing: bool = False
+) -> AsyncGenerator[FullNodeSimulator, None]:
     sys.argv = [sys.argv[0]]  # clear sys.argv to avoid issues with config.yaml
     service = await start_simulator_main(True, automated_testing, root_path=chinilla_root)
     await service.start()

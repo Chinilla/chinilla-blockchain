@@ -105,7 +105,9 @@ async def create(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -
                     print(transaction_status_msg(fingerprint, tx_record.name))
                     return None
         except Exception as e:
-            print(f"Error creating plot NFT: {e}\n    Please start both farmer and wallet with:  chinilla start -r farmer")
+            print(
+                f"Error creating plot NFT: {e}\n    Please start both farmer and wallet with:  chinilla start -r farmer"
+            )
         return
     print("Aborting.")
 

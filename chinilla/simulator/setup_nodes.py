@@ -382,7 +382,9 @@ async def setup_full_system(
     b_tools: Optional[BlockTools] = None,
     b_tools_1: Optional[BlockTools] = None,
     db_version: int = 1,
-) -> AsyncGenerator[Tuple[Any, Any, Harvester, Farmer, Any, Service[Timelord], object, object, Any, ChinillaServer], None]:
+) -> AsyncGenerator[
+    Tuple[Any, Any, Harvester, Farmer, Any, Service[Timelord], object, object, Any, ChinillaServer], None
+]:
     with TempKeyring(populate=True) as keychain1, TempKeyring(populate=True) as keychain2:
         daemon_ws, node_iters, ret = await setup_full_system_inner(
             b_tools, b_tools_1, False, consensus_constants, db_version, keychain1, keychain2, shared_b_tools
@@ -401,7 +403,17 @@ async def setup_full_system_connect_to_deamon(
     db_version: int = 1,
 ) -> AsyncGenerator[
     Tuple[
-        Any, Any, Harvester, Farmer, Any, Service[Timelord], object, object, Any, ChinillaServer, Optional[WebSocketServer]
+        Any,
+        Any,
+        Harvester,
+        Farmer,
+        Any,
+        Service[Timelord],
+        object,
+        object,
+        Any,
+        ChinillaServer,
+        Optional[WebSocketServer],
     ],
     None,
 ]:
