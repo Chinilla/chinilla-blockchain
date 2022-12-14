@@ -58,8 +58,7 @@ async def test_daemon_terminates(signal_number: signal.Signals, chinilla_root: C
         save_config(root_path=chinilla_root.path, filename="config.yaml", config_data=config)
 
     with closing_chinilla_root_popen(
-        chinilla_root=chinilla_root,
-        args=[sys.executable, "-m", "chinilla.daemon.server"]
+        chinilla_root=chinilla_root, args=[sys.executable, "-m", "chinilla.daemon.server"]
     ) as process:
         client = await wait_for_daemon_connection(root_path=chinilla_root.path, config=config)
 

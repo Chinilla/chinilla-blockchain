@@ -32,9 +32,7 @@ async def disconnect_all(server: ChinillaServer) -> None:
 
 
 async def disconnect_all_and_reconnect(
-    server: ChinillaServer,
-    reconnect_to: ChinillaServer,
-    self_hostname: str
+    server: ChinillaServer, reconnect_to: ChinillaServer, self_hostname: str
 ) -> bool:
     await disconnect_all(server)
     return await server.start_client(PeerInfo(self_hostname, uint16(reconnect_to._port)), None)
@@ -78,9 +76,7 @@ async def add_dummy_connection(
 
 
 async def connect_and_get_peer(
-    server_1: ChinillaServer,
-    server_2: ChinillaServer,
-    self_hostname: str
+    server_1: ChinillaServer, server_2: ChinillaServer, self_hostname: str
 ) -> WSChinillaConnection:
     """
     Connect server_2 to server_1, and get return the connection in server_1.
