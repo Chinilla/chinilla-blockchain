@@ -6,7 +6,12 @@ from typing import Type
 import pytest
 
 from chinilla.simulator.keyring import using_temp_file_keyring
-from chinilla.util.errors import KeychainFingerprintNotFound, KeychainLabelError, KeychainLabelExists, KeychainLabelInvalid
+from chinilla.util.errors import (
+    KeychainFingerprintNotFound,
+    KeychainLabelError,
+    KeychainLabelExists,
+    KeychainLabelInvalid,
+)
 from chinilla.util.keyring_wrapper import DEFAULT_PASSPHRASE_IF_NO_MASTER_PASSPHRASE, KeyringWrapper
 
 log = logging.getLogger(__name__)

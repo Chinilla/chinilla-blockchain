@@ -165,7 +165,9 @@ class TestSSL:
     @pytest.mark.asyncio
     async def test_introducer(self, introducer_service, self_hostname):
         introducer_server = introducer_service._node.server
-        chinilla_ca_crt_path, chinilla_ca_key_path = chinilla_ssl_ca_paths(introducer_service.root_path, introducer_service.config)
+        chinilla_ca_crt_path, chinilla_ca_key_path = chinilla_ssl_ca_paths(
+            introducer_service.root_path, introducer_service.config
+        )
 
         # Create not authenticated cert
         pub_crt = introducer_server.root_path / "p2p.crt"
@@ -185,7 +187,9 @@ class TestSSL:
         ca_private_crt_path, ca_private_key_path = private_ssl_ca_paths(
             timelord_service.root_path, timelord_service.config
         )
-        chinilla_ca_crt_path, chinilla_ca_key_path = chinilla_ssl_ca_paths(timelord_service.root_path, timelord_service.config)
+        chinilla_ca_crt_path, chinilla_ca_key_path = chinilla_ssl_ca_paths(
+            timelord_service.root_path, timelord_service.config
+        )
 
         # timelord should not accept incoming connections
         pub_crt = timelord_server.root_path / "p2p.crt"

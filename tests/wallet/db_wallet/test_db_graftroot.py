@@ -14,7 +14,11 @@ from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.errors import Err
 from chinilla.wallet.puzzles.load_clvm import load_clvm
-from chinilla.wallet.util.merkle_utils import build_merkle_tree, build_merkle_tree_from_binary_tree, simplify_merkle_proof
+from chinilla.wallet.util.merkle_utils import (
+    build_merkle_tree,
+    build_merkle_tree_from_binary_tree,
+    simplify_merkle_proof,
+)
 
 GRAFTROOT_MOD = load_clvm("graftroot_dl_offers.clvm")
 

@@ -32,7 +32,10 @@ from tests.util.misc import closing_chinilla_root_popen
 
 @pytest.fixture(name="chinilla_daemon", scope="function")
 def chinilla_daemon_fixture(chinilla_root: ChinillaRoot) -> Iterator[None]:
-    with closing_chinilla_root_popen(chinilla_root=chinilla_root, args=[sys.executable, "-m", "chinilla.daemon.server"]):
+    with closing_chinilla_root_popen(
+        chinilla_root=chinilla_root,
+        args=[sys.executable, "-m", "chinilla.daemon.server"]
+    ):
         # TODO: this is not pretty as a hard coded time
         # let it settle
         time.sleep(5)
@@ -40,8 +43,15 @@ def chinilla_daemon_fixture(chinilla_root: ChinillaRoot) -> Iterator[None]:
 
 
 @pytest.fixture(name="chinilla_data", scope="function")
-def chinilla_data_fixture(chinilla_root: ChinillaRoot, chinilla_daemon: None, scripts_path: pathlib.Path) -> Iterator[None]:
-    with closing_chinilla_root_popen(chinilla_root=chinilla_root, args=[os.fspath(scripts_path.joinpath("chinilla_data_layer"))]):
+def chinilla_data_fixture(
+    chinilla_root: ChinillaRoot,
+    chinilla_daemon: None,
+    scripts_path: pathlib.Path
+) -> Iterator[None]:
+    with closing_chinilla_root_popen(
+        chinilla_root=chinilla_root,
+        args=[os.fspath(scripts_path.joinpath("chinilla_data_layer"))]
+    ):
         # TODO: this is not pretty as a hard coded time
         # let it settle
         time.sleep(5)

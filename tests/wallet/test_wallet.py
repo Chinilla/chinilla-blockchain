@@ -284,7 +284,11 @@ class TestWalletSimulator:
     @pytest.mark.asyncio
     async def test_wallet_make_transaction_hop(
         self,
-        two_wallet_nodes_five_freeze: Tuple[List[FullNodeSimulator], List[Tuple[WalletNode, ChinillaServer]], BlockTools],
+        two_wallet_nodes_five_freeze: Tuple[
+            List[FullNodeSimulator],
+            List[Tuple[WalletNode, ChinillaServer]],
+            BlockTools
+        ],
         trusted: bool,
         self_hostname: str,
     ) -> None:
