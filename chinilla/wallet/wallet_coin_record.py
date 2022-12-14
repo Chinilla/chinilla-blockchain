@@ -25,7 +25,7 @@ class WalletCoinRecord:
     wallet_id: int
 
     def name(self) -> bytes32:
-        return self.coin.name()
+        return self.coin.name()  # type: ignore
 
     def to_coin_record(self, timestamp: uint64) -> CoinRecord:
         return CoinRecord(self.coin, self.confirmed_block_height, self.spent_block_height, self.coinbase, timestamp)
