@@ -7,9 +7,9 @@ from setuptools import setup
 dependencies = [
     "aiofiles==22.1.0",  # Async IO for files
     "blspy==1.0.16",  # Signature library
-    "chinillavdf==1.0.8",  # timelord and vdf verification
-    "chinillabip158==1.2",  # bip158-style wallet filters
-    "chinillapos==1.0.11",  # proof of space
+    "chinillavdf==1.0.9",  # timelord and vdf verification
+    "chinillabip158==1.2.1",  # bip158-style wallet filters
+    "chinillapos==1.0.12",  # proof of space
     "clvm==0.9.7",
     "clvm_tools==0.4.6",  # Currying, Program.to, other conveniences
     "chia_rs==0.1.16",
