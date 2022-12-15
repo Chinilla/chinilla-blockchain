@@ -35,20 +35,6 @@ jobs:
             mac-package-name: "Chinilla-darwin-x64"
             glue-name: "build-macos"
             bladebit-suffix: macos-x86-64.tar.gz
-          - runs-on: [MacOS, ARM64]
-            name: m1
-            file-suffix: "-arm64"
-            mac-package-name: "Chinilla-darwin-arm64"
-            glue-name: "build-mac-m1"
-            bladebit-suffix: macos-arm64.tar.gz
-        exclude:
-          - os:
-            name: m1
-            arch:
-              name: ARM
-              matrix: arm
-
-      
     steps:
       - uses: Chinilla/actions/clean-workspace@main
 
