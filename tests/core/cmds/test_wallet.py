@@ -24,14 +24,14 @@ async def cat_name_resolver(asset_id: bytes32) -> Optional[Tuple[Optional[uint32
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch(capsys: Any) -> None:
-    summary_dict = {"xch": 1_000_000_000_000}
+async def test_print_offer_summary_hcx(capsys: Any) -> None:
+    summary_dict = {"hcx": 1_000_000_000_000}
 
     await print_offer_summary(cat_name_resolver, summary_dict)
 
     captured = capsys.readouterr()
 
-    assert "XCH (Wallet ID: 1): 1.0 (1000000000000 vojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 1.0 (1000000000000 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
@@ -63,9 +63,9 @@ async def test_print_offer_summary_multiple_cats(capsys: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_and_cats(capsys: Any) -> None:
+async def test_print_offer_summary_hcx_and_cats(capsys: Any) -> None:
     summary_dict = {
-        "xch": 2_500_000_000_000,
+        "hcx": 2_500_000_000_000,
         TEST_DUCKSAUCE_ASSET_ID: 1_111,
         TEST_CRUNCHBERRIES_ASSET_ID: 2_222,
         TEST_UNICORNTEARS_ASSET_ID: 3_333,
@@ -75,16 +75,16 @@ async def test_print_offer_summary_xch_and_cats(capsys: Any) -> None:
 
     captured = capsys.readouterr()
 
-    assert "XCH (Wallet ID: 1): 2.5 (2500000000000 vojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 2.5 (2500000000000 vojos)" in captured.out
     assert "DuckSauce (Wallet ID: 2): 1.111 (1111 vojos)" in captured.out
     assert "CrunchBerries (Wallet ID: 3): 2.222 (2222 vojos)" in captured.out
     assert "UnicornTears (Wallet ID: 4): 3.333 (3333 vojos)" in captured.out
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_and_cats_with_zero_values(capsys: Any) -> None:
+async def test_print_offer_summary_hcx_and_cats_with_zero_values(capsys: Any) -> None:
     summary_dict = {
-        "xch": 0,
+        "hcx": 0,
         TEST_DUCKSAUCE_ASSET_ID: 0,
         TEST_CRUNCHBERRIES_ASSET_ID: 0,
         TEST_UNICORNTEARS_ASSET_ID: 0,
@@ -94,7 +94,7 @@ async def test_print_offer_summary_xch_and_cats_with_zero_values(capsys: Any) ->
 
     captured = capsys.readouterr()
 
-    assert "XCH (Wallet ID: 1): 0.0 (0 vojos)" in captured.out
+    assert "HCX (Wallet ID: 1): 0.0 (0 vojos)" in captured.out
     assert "DuckSauce (Wallet ID: 2): 0.0 (0 vojos)" in captured.out
     assert "CrunchBerries (Wallet ID: 3): 0.0 (0 vojos)" in captured.out
     assert "UnicornTears (Wallet ID: 4): 0.0 (0 vojos)" in captured.out
@@ -116,11 +116,11 @@ async def test_print_offer_summary_cat_with_fee_and_change(capsys: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_print_offer_summary_xch_with_one_vojo(capsys: Any) -> None:
-    summary_dict = {"xch": 1}
+async def test_print_offer_summary_hcx_with_one_vojo(capsys: Any) -> None:
+    summary_dict = {"hcx": 1}
 
     await print_offer_summary(cat_name_resolver, summary_dict)
 
     captured = capsys.readouterr()
 
-    assert "XCH (Wallet ID: 1): 1e-12 (1 vojo)" in captured.out
+    assert "HCX (Wallet ID: 1): 1e-12 (1 vojo)" in captured.out

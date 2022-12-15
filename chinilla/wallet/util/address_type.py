@@ -8,13 +8,13 @@ from chinilla.util.config import selected_network_address_prefix
 
 
 class AddressType(Enum):
-    XCH = "xch"
+    HCX = "hcx"
     NFT = "nft"
     DID = "did:chinilla:"
 
     def hrp(self, config: Dict[str, Any]) -> str:
-        if self == AddressType.XCH:
-            # Special case to map XCH to the current network's address prefix
+        if self == AddressType.HCX:
+            # Special case to map HCX to the current network's address prefix
             return selected_network_address_prefix(config)
         return self.value
 

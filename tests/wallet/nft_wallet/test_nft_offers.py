@@ -104,7 +104,7 @@ async def test_nft_offer_with_fee(two_wallet_nodes: Any, trusted: Any) -> None:
     coins_taker = await nft_wallet_taker.get_current_nfts()
     assert len(coins_taker) == 0
 
-    # MAKE FIRST TRADE: 1 NFT for 100 xch
+    # MAKE FIRST TRADE: 1 NFT for 100 hcx
     maker_balance_pre = await wallet_maker.get_confirmed_balance()
     taker_balance_pre = await wallet_taker.get_confirmed_balance()
 
@@ -113,12 +113,12 @@ async def test_nft_offer_with_fee(two_wallet_nodes: Any, trusted: Any) -> None:
     nft_asset_id: bytes32 = create_asset_id(nft_info)  # type: ignore
     driver_dict: Dict[bytes32, Optional[PuzzleInfo]] = {nft_asset_id: nft_info}
 
-    xch_request = 100
+    hcx_request = 100
     maker_fee = uint64(10)
-    offer_nft_for_xch = {wallet_maker.id(): xch_request, nft_asset_id: -1}
+    offer_nft_for_hcx = {wallet_maker.id(): hcx_request, nft_asset_id: -1}
 
     success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
-        offer_nft_for_xch, driver_dict, fee=maker_fee
+        offer_nft_for_hcx, driver_dict, fee=maker_fee
     )
     assert success is True
     assert error is None
@@ -140,15 +140,15 @@ async def test_nft_offer_with_fee(two_wallet_nodes: Any, trusted: Any) -> None:
 
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_maker, trade_make)
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_taker, trade_take)
-    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre + xch_request - maker_fee)
-    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre - xch_request - taker_fee)
+    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre + hcx_request - maker_fee)
+    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre - hcx_request - taker_fee)
 
     coins_maker = await nft_wallet_maker.get_current_nfts()
     coins_taker = await nft_wallet_taker.get_current_nfts()
     assert len(coins_maker) == 0
     assert len(coins_taker) == 1
 
-    # MAKE SECOND TRADE: 100 xch for 1 NFT
+    # MAKE SECOND TRADE: 100 hcx for 1 NFT
 
     maker_balance_pre = await wallet_maker.get_confirmed_balance()
     taker_balance_pre = await wallet_taker.get_confirmed_balance()
@@ -158,11 +158,11 @@ async def test_nft_offer_with_fee(two_wallet_nodes: Any, trusted: Any) -> None:
     nft_to_buy_asset_id: bytes32 = create_asset_id(nft_to_buy_info)  # type: ignore
     driver_dict_to_buy: Dict[bytes32, Optional[PuzzleInfo]] = {nft_to_buy_asset_id: nft_to_buy_info}
 
-    xch_offered = 1000
+    hcx_offered = 1000
     maker_fee = uint64(10)
-    offer_xch_for_nft = {wallet_maker.id(): -xch_offered, nft_to_buy_asset_id: 1}
+    offer_hcx_for_nft = {wallet_maker.id(): -hcx_offered, nft_to_buy_asset_id: 1}
     success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
-        offer_xch_for_nft, driver_dict_to_buy, fee=maker_fee
+        offer_hcx_for_nft, driver_dict_to_buy, fee=maker_fee
     )
     assert success is True
     assert error is None
@@ -182,8 +182,8 @@ async def test_nft_offer_with_fee(two_wallet_nodes: Any, trusted: Any) -> None:
 
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_maker, trade_make)
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_taker, trade_take)
-    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre - xch_offered - maker_fee)
-    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre + xch_offered - taker_fee)
+    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre - hcx_offered - maker_fee)
+    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre + hcx_offered - taker_fee)
 
     coins_maker = await nft_wallet_maker.get_current_nfts()
     coins_taker = await nft_wallet_taker.get_current_nfts()
@@ -274,12 +274,12 @@ async def test_nft_offer_cancellations(two_wallet_nodes: Any, trusted: Any) -> N
     nft_asset_id: bytes32 = create_asset_id(nft_info)  # type: ignore
     driver_dict: Dict[bytes32, Optional[PuzzleInfo]] = {nft_asset_id: nft_info}
 
-    xch_request = 100
+    hcx_request = 100
     maker_fee = uint64(10)
-    offer_nft_for_xch = {wallet_maker.id(): xch_request, nft_asset_id: -1}
+    offer_nft_for_hcx = {wallet_maker.id(): hcx_request, nft_asset_id: -1}
 
     success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
-        offer_nft_for_xch, driver_dict, fee=maker_fee
+        offer_nft_for_hcx, driver_dict, fee=maker_fee
     )
     assert success is True
     assert error is None
@@ -400,7 +400,7 @@ async def test_nft_offer_with_metadata_update(two_wallet_nodes: Any, trusted: An
 
     assert url_to_add in updated_nft_info.also().info["metadata"]  # type: ignore
 
-    # MAKE FIRST TRADE: 1 NFT for 100 xch
+    # MAKE FIRST TRADE: 1 NFT for 100 hcx
     maker_balance_pre = await wallet_maker.get_confirmed_balance()
     taker_balance_pre = await wallet_taker.get_confirmed_balance()
 
@@ -409,12 +409,12 @@ async def test_nft_offer_with_metadata_update(two_wallet_nodes: Any, trusted: An
     nft_asset_id: bytes32 = create_asset_id(nft_info)  # type: ignore
     driver_dict: Dict[bytes32, Optional[PuzzleInfo]] = {nft_asset_id: nft_info}
 
-    xch_request = 100
+    hcx_request = 100
     maker_fee = uint64(10)
-    offer_nft_for_xch = {wallet_maker.id(): xch_request, nft_asset_id: -1}
+    offer_nft_for_hcx = {wallet_maker.id(): hcx_request, nft_asset_id: -1}
 
     success, trade_make, error = await trade_manager_maker.create_offer_for_ids(
-        offer_nft_for_xch, driver_dict, fee=maker_fee
+        offer_nft_for_hcx, driver_dict, fee=maker_fee
     )
     assert success is True
     assert error is None
@@ -436,8 +436,8 @@ async def test_nft_offer_with_metadata_update(two_wallet_nodes: Any, trusted: An
 
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_maker, trade_make)
     await time_out_assert(20, get_trade_and_status, TradeStatus.CONFIRMED, trade_manager_taker, trade_take)
-    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre + xch_request - maker_fee)
-    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre - xch_request - taker_fee)
+    await time_out_assert(20, wallet_maker.get_confirmed_balance, maker_balance_pre + hcx_request - maker_fee)
+    await time_out_assert(20, wallet_taker.get_confirmed_balance, taker_balance_pre - hcx_request - taker_fee)
 
     coins_maker = await nft_wallet_maker.get_current_nfts()
     coins_taker = await nft_wallet_taker.get_current_nfts()

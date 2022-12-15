@@ -17,8 +17,8 @@ class FeeMempoolInfo:
     Updated when `MemPoolItem`s are added or removed from the Mempool.
 
     Attributes:
-        current_mempool_cost (uint64):This is the current capacity of the mempool, measured in XCH per CLVM Cost
-        max_size_in_cost (uint64): This is the maximum capacity of the mempool, measured in XCH per CLVM Cost
+        current_mempool_cost (uint64):This is the current capacity of the mempool, measured in HCX per CLVM Cost
+        max_size_in_cost (uint64): This is the maximum capacity of the mempool, measured in HCX per CLVM Cost
         minimum_fee_per_cost_to_replace (uint64): Smallest FPC that  might be accepted to replace another SpendBundle
         time (datetime): Local time this sample was taken
 

@@ -289,7 +289,7 @@ class FullNodeSimulator(FullNodeAPI):
     async def process_blocks(self, count: int, farm_to: bytes32 = bytes32([0] * 32)) -> int:
         """Process the requested number of blocks including farming to the passed puzzle
         hash. Note that the rewards for the last block will not have been processed.
-        Consider `.farm_blocks()` or `.farm_rewards()` if the goal is to receive XCH at
+        Consider `.farm_blocks()` or `.farm_rewards()` if the goal is to receive HCX at
         an address.
 
         Arguments:

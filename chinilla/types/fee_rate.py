@@ -17,7 +17,7 @@ from chinilla.util.streamable import Streamable, streamable
 class FeeRate(Streamable):
     """
     Represents Fee Rate in vojos divided by CLVM Cost.
-    Performs XCH/vojo conversion.
+    Performs HCX/vojo conversion.
     Similar to 'Fee per cost'.
     """
 

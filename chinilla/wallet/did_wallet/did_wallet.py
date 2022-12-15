@@ -501,7 +501,7 @@ class DIDWallet:
             parent_coin = child_coin
         assert parent_info is not None
 
-    async def create_tandem_xch_tx(
+    async def create_tandem_hcx_tx(
         self, fee: uint64, announcement_to_assert: Optional[Announcement] = None
     ) -> TransactionRecord:
         chinilla_coins = await self.standard_wallet.select_coins(fee)
@@ -628,7 +628,7 @@ class DIDWallet:
         spend_bundle = await self.sign(unsigned_spend_bundle)
         if fee > 0:
             announcement_to_make = coin.name()
-            chinilla_tx = await self.create_tandem_xch_tx(fee, Announcement(coin.name(), announcement_to_make))
+            chinilla_tx = await self.create_tandem_hcx_tx(fee, Announcement(coin.name(), announcement_to_make))
         else:
             announcement_to_make = None
             chinilla_tx = None
@@ -723,7 +723,7 @@ class DIDWallet:
         spend_bundle = await self.sign(unsigned_spend_bundle)
         if fee > 0:
             announcement_to_make = coin.name()
-            chinilla_tx = await self.create_tandem_xch_tx(fee, Announcement(coin.name(), announcement_to_make))
+            chinilla_tx = await self.create_tandem_hcx_tx(fee, Announcement(coin.name(), announcement_to_make))
         else:
             chinilla_tx = None
         if chinilla_tx is not None and chinilla_tx.spend_bundle is not None:

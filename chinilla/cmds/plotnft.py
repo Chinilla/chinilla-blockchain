@@ -14,7 +14,7 @@ def validate_fee(ctx, param, value):
     try:
         fee = Decimal(value)
     except ValueError:
-        raise click.BadParameter("Fee must be decimal dotted value in XCH (e.g. 0.00005)")
+        raise click.BadParameter("Fee must be decimal dotted value in HCX (e.g. 0.00005)")
     if fee < 0 or fee > MAX_CMDLINE_FEE:
         raise click.BadParameter(f"Fee must be in the range 0 to {MAX_CMDLINE_FEE}")
     return value
@@ -63,7 +63,7 @@ def get_login_link_cmd(launcher_id: str) -> None:
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH. Fee is used TWICE: once to create the singleton, once for init.",
+    help="Set the fees per transaction, in HCX. Fee is used TWICE: once to create the singleton, once for init.",
     type=str,
     default="0",
     show_default=True,
@@ -113,7 +113,7 @@ def create_cmd(
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH. Fee is used TWICE: once to leave pool, once to join.",
+    help="Set the fees per transaction, in HCX. Fee is used TWICE: once to leave pool, once to join.",
     type=str,
     default="0",
     show_default=True,
@@ -143,7 +143,7 @@ def join_cmd(wallet_rpc_port: Optional[int], fingerprint: int, id: int, fee: int
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH. Fee is charged TWICE.",
+    help="Set the fees per transaction, in HCX. Fee is charged TWICE.",
     type=str,
     default="0",
     show_default=True,
@@ -191,7 +191,7 @@ def inspect(wallet_rpc_port: Optional[int], fingerprint: int, id: int) -> None:
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,

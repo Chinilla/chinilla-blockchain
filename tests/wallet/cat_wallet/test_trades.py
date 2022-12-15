@@ -373,20 +373,20 @@ class TestCATTrades:
         wallet_maker = wallet_node_maker.wallet_state_manager.main_wallet
         wallet_taker = wallet_node_taker.wallet_state_manager.main_wallet
 
-        xch_to_cat_amount = uint64(100)
+        hcx_to_cat_amount = uint64(100)
 
         async with wallet_node_maker.wallet_state_manager.lock:
             cat_wallet_maker: CATWallet = await CATWallet.create_new_cat_wallet(
-                wallet_node_maker.wallet_state_manager, wallet_maker, {"identifier": "genesis_by_id"}, xch_to_cat_amount
+                wallet_node_maker.wallet_state_manager, wallet_maker, {"identifier": "genesis_by_id"}, hcx_to_cat_amount
             )
 
             tx_records: List[TransactionRecord] = await wallet_node_maker.wallet_state_manager.tx_store.get_not_sent()
 
         await full_node.process_transaction_records(records=tx_records)
 
-        await time_out_assert(15, cat_wallet_maker.get_confirmed_balance, xch_to_cat_amount)
-        await time_out_assert(15, cat_wallet_maker.get_unconfirmed_balance, xch_to_cat_amount)
-        maker_funds -= xch_to_cat_amount
+        await time_out_assert(15, cat_wallet_maker.get_confirmed_balance, hcx_to_cat_amount)
+        await time_out_assert(15, cat_wallet_maker.get_unconfirmed_balance, hcx_to_cat_amount)
+        maker_funds -= hcx_to_cat_amount
         await time_out_assert(15, wallet_maker.get_confirmed_balance, maker_funds)
 
         cat_for_chinilla = {
@@ -452,7 +452,7 @@ class TestCATTrades:
 
         await time_out_assert(15, wallet_maker.get_pending_change_balance, 0)
         await time_out_assert(15, wallet_maker.get_confirmed_balance, maker_funds - fee)
-        await time_out_assert(15, cat_wallet_maker.get_confirmed_balance, xch_to_cat_amount)
+        await time_out_assert(15, cat_wallet_maker.get_confirmed_balance, hcx_to_cat_amount)
         await time_out_assert(15, wallet_taker.get_confirmed_balance, taker_funds)
 
         peer = wallet_node_taker.get_full_node_peer()

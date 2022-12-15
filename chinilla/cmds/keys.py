@@ -287,7 +287,7 @@ def derive_cmd(ctx: click.Context, fingerprint: Optional[int], filename: Optiona
     "non-observer derivation should be used at that index. Example HD path: m/12381n/8444n/2/",
     type=str,
 )
-@click.option("--prefix", "-x", help="Address prefix (xch for vanillanet, txch for testnet)", default=None, type=str)
+@click.option("--prefix", "-x", help="Address prefix (hcx for vanillanet, thcx for testnet)", default=None, type=str)
 @click.pass_context
 def search_cmd(
     ctx: click.Context,
@@ -333,7 +333,7 @@ def search_cmd(
     "--index", "-i", help="Index of the first wallet address to derive. Index 0 is the first wallet address.", default=0
 )
 @click.option("--count", "-n", help="Number of wallet addresses to derive, starting at index.", default=1)
-@click.option("--prefix", "-x", help="Address prefix (xch for vanillanet, txch for testnet)", default=None, type=str)
+@click.option("--prefix", "-x", help="Address prefix (hcx for vanillanet, thcx for testnet)", default=None, type=str)
 @click.option(
     "--non-observer-derivation",
     "-d",

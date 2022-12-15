@@ -425,8 +425,8 @@ class WalletRpcApi:
             return False, False
 
         config: Dict = load_config(new_root, "config.yaml")
-        farmer_target = config["farmer"].get("xch_target_address")
-        pool_target = config["pool"].get("xch_target_address")
+        farmer_target = config["farmer"].get("hcx_target_address")
+        pool_target = config["pool"].get("hcx_target_address")
         address_to_check: List[bytes32] = [decode_puzzle_hash(farmer_target), decode_puzzle_hash(pool_target)]
 
         found_addresses: Set[bytes32] = match_address_to_sk(sk, address_to_check, max_ph_to_search)
@@ -1638,7 +1638,7 @@ class WalletRpcApi:
         if cancel_all:
             asset_id = None
         else:
-            asset_id = request.get("asset_id", "xch")
+            asset_id = request.get("asset_id", "hcx")
 
         start: int = 0
         end: int = start + batch_size
@@ -1646,7 +1646,7 @@ class WalletRpcApi:
         log.info(f"Start cancelling offers for  {'asset_id: ' + asset_id if asset_id is not None else 'all'} ...")
         # Traverse offers page by page
         key = None
-        if asset_id is not None and asset_id != "xch":
+        if asset_id is not None and asset_id != "hcx":
             key = bytes32.from_hexstr(asset_id)
         while True:
             records: List[TradeRecord] = []
@@ -1762,7 +1762,7 @@ class WalletRpcApi:
         return {
             "success": True,
             "latest_coin": coin_state.coin.name().hex(),
-            "p2_address": encode_puzzle_hash(p2_puzzle.get_tree_hash(), AddressType.XCH.hrp(self.service.config)),
+            "p2_address": encode_puzzle_hash(p2_puzzle.get_tree_hash(), AddressType.HCX.hrp(self.service.config)),
             "public_key": public_key.as_python().hex(),
             "recovery_list_hash": recovery_list_hash.as_python().hex(),
             "num_verification": num_verification.as_int(),
@@ -2552,18 +2552,18 @@ class WalletRpcApi:
                 target_list.append(decode_puzzle_hash(target))
         mint_number_start = request.get("mint_number_start", 1)
         mint_total = request.get("mint_total", None)
-        xch_coin_list = request.get("xch_coins", None)
-        xch_coins = None
-        if xch_coin_list:
-            xch_coins = set([Coin.from_json_dict(xch_coin) for xch_coin in xch_coin_list])
-        xch_change_target = request.get("xch_change_target", None)
-        if xch_change_target is not None:
-            if xch_change_target[:2] == "xch":
-                xch_change_ph = decode_puzzle_hash(xch_change_target)
+        hcx_coin_list = request.get("hcx_coins", None)
+        hcx_coins = None
+        if hcx_coin_list:
+            hcx_coins = set([Coin.from_json_dict(hcx_coin) for hcx_coin in hcx_coin_list])
+        hcx_change_target = request.get("hcx_change_target", None)
+        if hcx_change_target is not None:
+            if hcx_change_target[:2] == "hcx":
+                hcx_change_ph = decode_puzzle_hash(hcx_change_target)
             else:
-                xch_change_ph = bytes32(hexstr_to_bytes(xch_change_target))
+                hcx_change_ph = bytes32(hexstr_to_bytes(hcx_change_target))
         else:
-            xch_change_ph = None
+            hcx_change_ph = None
         new_innerpuzhash = request.get("new_innerpuzhash", None)
         new_p2_puzhash = request.get("new_p2_puzhash", None)
         did_coin_dict = request.get("did_coin", None)
@@ -2584,8 +2584,8 @@ class WalletRpcApi:
                 mint_number_start=mint_number_start,
                 mint_total=mint_total,
                 target_list=target_list,
-                xch_coins=xch_coins,
-                xch_change_ph=xch_change_ph,
+                hcx_coins=hcx_coins,
+                hcx_change_ph=hcx_change_ph,
                 new_innerpuzhash=new_innerpuzhash,
                 new_p2_puzhash=new_p2_puzhash,
                 did_coin=did_coin,
@@ -2593,13 +2593,13 @@ class WalletRpcApi:
                 fee=fee,
             )
         else:
-            sb = await nft_wallet.mint_from_xch(
+            sb = await nft_wallet.mint_from_hcx(
                 metadata_list,
                 mint_number_start=mint_number_start,
                 mint_total=mint_total,
                 target_list=target_list,
-                xch_coins=xch_coins,
-                xch_change_ph=xch_change_ph,
+                hcx_coins=hcx_coins,
+                hcx_change_ph=hcx_change_ph,
                 fee=fee,
             )
         nft_id_list = []

@@ -141,25 +141,25 @@ def get_transactions_cmd(
 )
 @click.option("-f", "--fingerprint", help="Set the fingerprint to specify which wallet to use", type=int)
 @click.option("-i", "--id", help="Id of the wallet to use", type=int, default=1, show_default=True, required=True)
-@click.option("-a", "--amount", help="How much chinilla to send, in XCH", type=str, required=True)
+@click.option("-a", "--amount", help="How much chinilla to send, in HCX", type=str, required=True)
 @click.option("-e", "--memo", help="Additional memo for the transaction", type=str, default=None)
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees for the transaction, in XCH",
+    help="Set the fees for the transaction, in HCX",
     type=str,
     default="0",
     show_default=True,
     required=True,
 )
-@click.option("-t", "--address", help="Address to send the XCH", type=str, required=True)
+@click.option("-t", "--address", help="Address to send the HCX", type=str, required=True)
 @click.option(
     "-o", "--override", help="Submits transaction without checking for unusual values", is_flag=True, default=False
 )
 @click.option(
     "-ma",
     "--min-coin-amount",
-    help="Ignore coins worth less then this much XCH or CAT units",
+    help="Ignore coins worth less then this much HCX or CAT units",
     type=str,
     required=False,
     default="0",
@@ -167,7 +167,7 @@ def get_transactions_cmd(
 @click.option(
     "-l",
     "--max-coin-amount",
-    help="Ignore coins worth more then this much XCH or CAT units",
+    help="Ignore coins worth more then this much HCX or CAT units",
     type=str,
     required=False,
     default="0",
@@ -316,7 +316,7 @@ def get_derivation_index_cmd(wallet_rpc_port: Optional[int], fingerprint: int) -
 @click.option("-a", "--address", help="The address you want to use for signing", type=str, required=True)
 @click.option("-m", "--hex_message", help="The hex message you want sign", type=str, required=True)
 def address_sign_message(wallet_rpc_port: Optional[int], fingerprint: int, address: str, hex_message: str) -> None:
-    extra_params: Dict[str, Any] = {"address": address, "message": hex_message, "type": AddressType.XCH}
+    extra_params: Dict[str, Any] = {"address": address, "message": hex_message, "type": AddressType.HCX}
     import asyncio
 
     from .wallet_funcs import sign_message
@@ -382,7 +382,7 @@ def add_token_cmd(wallet_rpc_port: Optional[int], asset_id: str, token_name: str
     asyncio.run(execute_with_wallet(wallet_rpc_port, fingerprint, extra_params, add_token))
 
 
-@wallet_cmd.command("make_offer", short_help="Create an offer of XCH/CATs for XCH/CATs")
+@wallet_cmd.command("make_offer", short_help="Create an offer of HCX/CATs for HCX/CATs")
 @click.option(
     "-wp",
     "--wallet-rpc-port",
@@ -535,7 +535,7 @@ def did_cmd():
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,
@@ -682,7 +682,7 @@ def nft_sign_message(wallet_rpc_port: Optional[int], fingerprint: int, nft_id: s
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,
@@ -764,7 +764,7 @@ def nft_mint_cmd(
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,
@@ -810,7 +810,7 @@ def nft_add_uri_cmd(
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,
@@ -871,7 +871,7 @@ def nft_list_cmd(wallet_rpc_port: Optional[int], fingerprint: int, id: int) -> N
 @click.option(
     "-m",
     "--fee",
-    help="Set the fees per transaction, in XCH.",
+    help="Set the fees per transaction, in HCX.",
     type=str,
     default="0",
     show_default=True,
