@@ -43,8 +43,7 @@ jobs:
             bladebit-suffix: macos-arm64.tar.gz
         exclude:
           - os:
-            name: macOS
-            matrix: macos
+            name: m1
             arch:
               name: ARM
               matrix: arm
