@@ -48,6 +48,11 @@ jobs:
               matrix: windows
             arch:
               matrix: arm
+          - os:
+              matrix: macos
+            arch:
+              matrix: arm
+        
 
     steps:
     - name: Clean workspace
