@@ -29,7 +29,7 @@ jobs:
       matrix:
         python-version: [3.9]
         os:
-          - runs-on: macos-10.15
+          - runs-on: macos-latest
             name: intel
             file-suffix: ""
             mac-package-name: "Chinilla-darwin-x64"
@@ -41,7 +41,15 @@ jobs:
             mac-package-name: "Chinilla-darwin-arm64"
             glue-name: "build-mac-m1"
             bladebit-suffix: macos-arm64.tar.gz
+        exclude:
+          - os:
+            name: macOS
+            matrix: macos
+            arch:
+              name: ARM
+              matrix: arm
 
+      
     steps:
       - uses: Chinilla/actions/clean-workspace@main
 
