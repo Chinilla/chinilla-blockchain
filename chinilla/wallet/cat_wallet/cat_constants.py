@@ -1,32 +1,18 @@
 from __future__ import annotations
 
-SPACEBUCKS = {
-    "asset_id": "a628c1c2c6fcb74d53746157e438e108eab5c0bb3e5c80ff9b1910b3e4832913",
-    "name": "Spacebucks",
-    "symbol": "SBX",
+FOUNDER = {
+    "asset_id": "33bbcb7aa011958c7c3f2eb40b243779a70dedf6160c343670e7540f5403ab15",
+    "name": "Founder Token",
+    "symbol": "CFT",
 }
 
-MARMOT = {
-    "asset_id": "8ebf855de6eb146db5602f0456d2f0cbe750d57f821b6f91a8592ee9f1d4cf31",
-    "name": "Marmot",
-    "symbol": "MRMT",
-}
-
-STABLY_USDS = {
-    "asset_id": "6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589",
-    "name": "Stably USD",
-    "symbol": "USDS",
-}
-
-CHINILLA_HOLIDAY_TOKEN = {
-    "asset_id": "509deafe3cd8bbfbb9ccce1d930e3d7b57b40c964fa33379b18d628175eb7a8f",
-    "name": "Chinilla Holiday 2021 Token",
-    "symbol": "CH21",
+EARLY_FARMER = {
+    "asset_id": "9c0916102ee58599dd639542cbd069776759eb1af10901873b518b79191cbbf6",
+    "name": "Early Farmer Token",
+    "symbol": "CEF",
 }
 
 DEFAULT_CATS = {
-    SPACEBUCKS["asset_id"]: SPACEBUCKS,
-    MARMOT["asset_id"]: MARMOT,
-    STABLY_USDS["asset_id"]: STABLY_USDS,
-    CHINILLA_HOLIDAY_TOKEN["asset_id"]: CHINILLA_HOLIDAY_TOKEN,
+    FOUNDER["asset_id"]: FOUNDER,
+    EARLY_FARMER["asset_id"]: EARLY_FARMER,
 }
