@@ -52,7 +52,6 @@ jobs:
               matrix: macos
             arch:
               matrix: arm
-        
 
     steps:
     - name: Clean workspace
