@@ -219,7 +219,7 @@ async def send(args: dict, wallet_client: WalletRpcClient, fingerprint: int) -> 
         print(f"Wallet id: {wallet_id} not found.")
         return
 
-    final_fee = uint64(int(fee * vojo_per_unit))
+    final_fee: uint64 = uint64(int(fee * units["chinilla"]))  # fees are always in HCX vojos
     final_amount: uint64 = uint64(int(amount * vojo_per_unit))
     final_min_coin_amount: uint64 = uint64(int(min_coin_amount * vojo_per_unit))
     final_max_coin_amount: uint64 = uint64(int(max_coin_amount * vojo_per_unit))
