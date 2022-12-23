@@ -1,42 +1,8 @@
 # flake8: noqa
 
-from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
-from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
-from chinilla.types.blockchain_format.pool_target import PoolTarget
-from chinilla.types.coin_spend import CoinSpend
-from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.spend_bundle import SpendBundle
-from chinilla.types.blockchain_format.program import Program, SerializedProgram
-from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
-from chinilla.types.weight_proof import (
-    WeightProof,
-    SubEpochData,
-    SubEpochChallengeSegment,
-    SubSlotData,
-    RecentChainData,
-)
-from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
-from chinilla.types.blockchain_format.classgroup import ClassgroupElement
+from __future__ import annotations
+
 from blspy import G1Element, G2Element
-from chinilla.types.header_block import HeaderBlock
-from chinilla.types.full_block import FullBlock
-from chinilla.types.unfinished_block import UnfinishedBlock
-from chinilla.types.blockchain_format.slots import (
-    ChallengeChainSubSlot,
-    InfusedChallengeChainSubSlot,
-    RewardChainSubSlot,
-    SubSlotProofs,
-)
-from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
-from chinilla.types.peer_info import TimestampedPeerInfo
-from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
-from chinilla.types.blockchain_format.foliage import (
-    Foliage,
-    FoliageTransactionBlock,
-    FoliageBlockData,
-    TransactionsInfo,
-)
 
 from chinilla.protocols import (
     farmer_protocol,
@@ -47,6 +13,31 @@ from chinilla.protocols import (
     timelord_protocol,
     wallet_protocol,
 )
+from chinilla.types.blockchain_format.classgroup import ClassgroupElement
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.pool_target import PoolTarget
+from chinilla.types.blockchain_format.program import Program, SerializedProgram
+from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
+from chinilla.types.blockchain_format.reward_chain_block import RewardChainBlock
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.blockchain_format.slots import (
+    ChallengeChainSubSlot,
+    InfusedChallengeChainSubSlot,
+    RewardChainSubSlot,
+    SubSlotProofs,
+)
+from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
+from chinilla.types.blockchain_format.vdf import VDFInfo, VDFProof
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.end_of_slot_bundle import EndOfSubSlotBundle
+from chinilla.types.full_block import FullBlock
+from chinilla.types.header_block import HeaderBlock
+from chinilla.types.peer_info import TimestampedPeerInfo
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.types.unfinished_block import UnfinishedBlock
+from chinilla.types.weight_proof import RecentChainData, SubEpochChallengeSegment, SubEpochData, SubSlotData, WeightProof
+from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
 
 ### FARMER PROTOCOL
 new_signage_point = farmer_protocol.NewSignagePoint(

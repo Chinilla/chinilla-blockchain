@@ -9,7 +9,7 @@ from chinilla.rpc.rpc_client import RpcClient
 
 async def add_node_connection(rpc_client: RpcClient, add_connection: str) -> None:
     if ":" not in add_connection:
-        print("Enter a valid IP and port in the following format: 10.5.4.3:43000")
+        print("Enter a valid IP and port in the following format: 10.5.4.3:8000")
     else:
         ip, port = (
             ":".join(add_connection.split(":")[:-1]),
@@ -17,7 +17,10 @@ async def add_node_connection(rpc_client: RpcClient, add_connection: str) -> Non
         )
         print(f"Connecting to {ip}, {port}")
         try:
-            await rpc_client.open_connection(ip, int(port))
+            result = await rpc_client.open_connection(ip, int(port))
+            err = result.get("error")
+            if result["success"] is False or err is not None:
+                print(err)
         except Exception:
             print(f"Failed to connect to {ip}:{port}")
 

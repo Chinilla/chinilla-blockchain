@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import pytest
+
 from chinilla.util.errors import InvalidPathError
-from chinilla.util.misc import format_bytes, validate_directory_writable
-from chinilla.util.misc import format_minutes
+from chinilla.util.misc import format_bytes, format_minutes, validate_directory_writable
 
 
 class TestMisc:

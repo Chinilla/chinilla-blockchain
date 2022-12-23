@@ -28,6 +28,7 @@ from chinilla.consensus.pot_iterations import calculate_sp_iters
 from chinilla.full_node.block_store import BlockStore
 from chinilla.full_node.bundle_tools import detect_potential_template_generator
 from chinilla.full_node.coin_store import CoinStore
+from chinilla.full_node.full_node_api import FullNodeAPI
 from chinilla.full_node.full_node_store import FullNodeStore, FullNodeStorePeakResult
 from chinilla.full_node.hint_management import get_hints_and_subscription_coin_ids
 from chinilla.full_node.hint_store import HintStore
@@ -35,6 +36,7 @@ from chinilla.full_node.lock_queue import LockClient, LockQueue
 from chinilla.full_node.mempool_manager import MempoolManager
 from chinilla.full_node.signage_point import SignagePoint
 from chinilla.full_node.sync_store import SyncStore
+from chinilla.full_node.tx_processing_queue import TransactionQueue
 from chinilla.full_node.weight_proof import WeightProofHandler
 from chinilla.protocols import farmer_protocol, full_node_protocol, timelord_protocol, wallet_protocol
 from chinilla.protocols.full_node_protocol import RequestBlocks, RespondBlock, RespondBlocks, RespondSignagePoint
@@ -118,7 +120,7 @@ class FullNode:
     _transaction_queue_task: Optional[asyncio.Task[None]]
     simulator_transaction_callback: Optional[Callable[[bytes32], Awaitable[None]]]
     _sync_task: Optional[asyncio.Task[None]]
-    _transaction_queue: Optional[asyncio.PriorityQueue[Tuple[int, TransactionQueueEntry]]]
+    _transaction_queue: Optional[TransactionQueue]
     _compact_vdf_sem: Optional[LimitedSemaphore]
     _new_peak_sem: Optional[LimitedSemaphore]
     _respond_transaction_semaphore: Optional[asyncio.Semaphore]
@@ -246,7 +248,7 @@ class FullNode:
         return self._respond_transaction_semaphore
 
     @property
-    def transaction_queue(self) -> asyncio.PriorityQueue[Tuple[int, TransactionQueueEntry]]:
+    def transaction_queue(self) -> TransactionQueue:
         assert self._transaction_queue is not None
         return self._transaction_queue
 
@@ -394,7 +396,7 @@ class FullNode:
         self._maybe_blockchain_lock_low_priority = LockClient(1, blockchain_lock_queue)
 
         # Transactions go into this queue from the server, and get sent to respond_transaction
-        self._transaction_queue = asyncio.PriorityQueue(10000)
+        self._transaction_queue = TransactionQueue(1000, self.log)
         self._transaction_queue_task: asyncio.Task[None] = asyncio.create_task(self._handle_transactions())
         self.transaction_responses = []
 
@@ -474,7 +476,7 @@ class FullNode:
                 # We use a semaphore to make sure we don't send more than 200 concurrent calls of respond_transaction.
                 # However, doing them one at a time would be slow, because they get sent to other processes.
                 await self.respond_transaction_semaphore.acquire()
-                item: TransactionQueueEntry = (await self.transaction_queue.get())[1]
+                item: TransactionQueueEntry = await self.transaction_queue.pop()
                 asyncio.create_task(self._handle_one_transaction(item))
         except asyncio.CancelledError:
             raise
@@ -560,7 +562,9 @@ class FullNode:
 
         self.log.info(f"Starting batch short sync from {start_height} to height {target_height}")
         if start_height > 0:
-            first = await peer.request_block(full_node_protocol.RequestBlock(uint32(start_height), False))
+            first = await peer.call_api(
+                FullNodeAPI.request_block, full_node_protocol.RequestBlock(uint32(start_height), False)
+            )
             if first is None or not isinstance(first, full_node_protocol.RespondBlock):
                 self.sync_store.batch_syncing.remove(peer.peer_node_id)
                 raise ValueError(f"Error short batch syncing, could not fetch block at height {start_height}")
@@ -582,7 +586,7 @@ class FullNode:
             for height in range(start_height, target_height, batch_size):
                 end_height = min(target_height, height + batch_size)
                 request = RequestBlocks(uint32(height), uint32(end_height), True)
-                response = await peer.request_blocks(request)
+                response = await peer.call_api(FullNodeAPI.request_blocks, request)
                 if not response:
                     raise ValueError(f"Error short batch syncing, invalid/no response for {height}-{end_height}")
                 async with self._blockchain_lock_high_priority:
@@ -644,7 +648,9 @@ class FullNode:
                 # already have the unfinished block, from when it was broadcast, so we just need to download the header,
                 # but not the transactions
                 fetch_tx: bool = unfinished_block is None or curr_height != target_height
-                curr = await peer.request_block(full_node_protocol.RequestBlock(uint32(curr_height), fetch_tx))
+                curr = await peer.call_api(
+                    FullNodeAPI.request_block, full_node_protocol.RequestBlock(uint32(curr_height), fetch_tx)
+                )
                 if curr is None:
                     raise ValueError(f"Failed to fetch block {curr_height} from {peer.get_peer_logging()}, timed out")
                 if curr is None or not isinstance(curr, full_node_protocol.RespondBlock):
@@ -712,8 +718,10 @@ class FullNode:
                 peak_peers: Set[bytes32] = self.sync_store.get_peers_that_have_peak([target_peak.header_hash])
                 # Don't ask if we already know this peer has the peak
                 if peer.peer_node_id not in peak_peers:
-                    target_peak_response: Optional[RespondBlock] = await peer.request_block(
-                        full_node_protocol.RequestBlock(target_peak.height, False), timeout=10
+                    target_peak_response: Optional[RespondBlock] = await peer.call_api(
+                        FullNodeAPI.request_block,
+                        full_node_protocol.RequestBlock(target_peak.height, False),
+                        timeout=10,
                     )
                     if target_peak_response is not None and isinstance(target_peak_response, RespondBlock):
                         self.sync_store.peer_has_block(
@@ -997,7 +1005,11 @@ class FullNode:
                 if peer.connection_type == NodeType.FULL_NODE:
                     peers.append(peer.peer_node_id)
                     coroutines.append(
-                        peer.request_block(full_node_protocol.RequestBlock(target_peak.height, True), timeout=10)
+                        peer.call_api(
+                            FullNodeAPI.request_block,
+                            full_node_protocol.RequestBlock(target_peak.height, True),
+                            timeout=10,
+                        )
                     )
             for i, target_peak_response in enumerate(await asyncio.gather(*coroutines)):
                 if target_peak_response is not None and isinstance(target_peak_response, RespondBlock):
@@ -1026,7 +1038,9 @@ class FullNode:
                 wp_timeout = self.config["weight_proof_timeout"]
             self.log.debug(f"weight proof timeout is {wp_timeout} sec")
             request = full_node_protocol.RequestProofOfWeight(target_peak.height, target_peak.header_hash)
-            response = await weight_proof_peer.request_proof_of_weight(request, timeout=wp_timeout)
+            response = await weight_proof_peer.call_api(
+                FullNodeAPI.request_proof_of_weight, request, timeout=wp_timeout
+            )
 
             # Disconnect from this peer, because they have not behaved properly
             if response is None or not isinstance(response, full_node_protocol.RespondProofOfWeight):
@@ -1102,7 +1116,7 @@ class FullNode:
                         if peer.closed:
                             peers_with_peak.remove(peer)
                             continue
-                        response = await peer.request_blocks(request, timeout=30)
+                        response = await peer.call_api(FullNodeAPI.request_blocks, request, timeout=30)
                         if response is None:
                             await peer.close()
                             peers_with_peak.remove(peer)
@@ -1650,8 +1664,8 @@ class FullNode:
                 if peer is None:
                     return None
 
-                block_response: Optional[Any] = await peer.request_block(
-                    full_node_protocol.RequestBlock(block.height, True)
+                block_response: Optional[Any] = await peer.call_api(
+                    FullNodeAPI.request_block, full_node_protocol.RequestBlock(block.height, True)
                 )
                 if block_response is None or not isinstance(block_response, full_node_protocol.RespondBlock):
                     self.log.warning(
@@ -1878,7 +1892,11 @@ class FullNode:
             _, header_error = await self.blockchain.validate_unfinished_block_header(block)
             if header_error is not None:
                 raise ConsensusError(header_error)
-            self.log.warning(f"Time for header validate: {time.time() - start_header_time}")
+            validate_time = time.time() - start_header_time
+            self.log.log(
+                logging.WARNING if validate_time > 2 else logging.DEBUG,
+                f"Time for header validate: {validate_time:0.3f}s",
+            )
 
         if block.transactions_generator is not None:
             pre_validation_start = time.time()
@@ -2450,7 +2468,7 @@ class FullNode:
             peer_request = full_node_protocol.RequestCompactVDF(
                 request.height, request.header_hash, request.field_vdf, request.vdf_info
             )
-            response = await peer.request_compact_vdf(peer_request, timeout=10)
+            response = await peer.call_api(FullNodeAPI.request_compact_vdf, peer_request, timeout=10)
             if response is not None and isinstance(response, full_node_protocol.RespondCompactVDF):
                 await self.respond_compact_vdf(response, peer)
 
@@ -2631,7 +2649,9 @@ async def node_next_block_check(
     peer: WSChinillaConnection, potential_peek: uint32, blockchain: BlockchainInterface
 ) -> bool:
 
-    block_response: Optional[Any] = await peer.request_block(full_node_protocol.RequestBlock(potential_peek, True))
+    block_response: Optional[Any] = await peer.call_api(
+        FullNodeAPI.request_block, full_node_protocol.RequestBlock(potential_peek, True)
+    )
     if block_response is not None and isinstance(block_response, full_node_protocol.RespondBlock):
         peak = blockchain.get_peak()
         if peak is not None and block_response.block.prev_header_hash == peak.header_hash:

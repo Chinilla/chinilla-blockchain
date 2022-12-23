@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import pytest
+
 from chinilla.util.generator_tools import list_to_batches
 
 

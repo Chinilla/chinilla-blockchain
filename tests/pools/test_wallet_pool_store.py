@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from secrets import token_bytes
 from typing import Optional
 
@@ -9,7 +11,6 @@ from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.util.ints import uint64
-
 from chinilla.wallet.wallet_pool_store import WalletPoolStore
 from tests.util.db_connection import DBConnection
 

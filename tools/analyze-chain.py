@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 import sqlite3
 import sys
-import zstd
-import click
 from functools import partial
 from pathlib import Path
-from blspy import AugSchemeMPL, G1Element
-
-from typing import Callable, Optional, Union, List
 from time import time
+from typing import Callable, List, Optional, Union
 
-from chia_rs import run_generator, MEMPOOL_MODE
+import click
+import zstd
+from blspy import AugSchemeMPL, G1Element
+from chia_rs import MEMPOOL_MODE, run_generator
 
-from chinilla.types.blockchain_format.program import Program
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
-from chinilla.wallet.puzzles.rom_bootstrap_generator import get_generator
-from chinilla.util.full_block_utils import block_info_from_block, generator_from_block
-from chinilla.util.condition_tools import pkm_pairs
-from chinilla.types.full_block import FullBlock
-from chinilla.types.blockchain_format.sized_bytes import bytes32, bytes48
 from chinilla.types.block_protocol import BlockInfo
+from chinilla.types.blockchain_format.program import Program
+from chinilla.types.blockchain_format.sized_bytes import bytes32, bytes48
+from chinilla.types.full_block import FullBlock
+from chinilla.util.condition_tools import pkm_pairs
+from chinilla.util.full_block_utils import block_info_from_block, generator_from_block
+from chinilla.wallet.puzzles.rom_bootstrap_generator import get_generator
 
 GENERATOR_ROM = bytes(get_generator())
 

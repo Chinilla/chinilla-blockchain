@@ -6,7 +6,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import click
 
 from chinilla.cmds.cmds_util import execute_with_wallet
-from chinilla.cmds.coins import coins_cmd
+
+# from chinilla.cmds.coins import coins_cmd
 from chinilla.cmds.plotnft import validate_fee
 from chinilla.wallet.transaction_sorting import SortKey
 from chinilla.wallet.util.address_type import AddressType
@@ -924,7 +925,8 @@ def nft_get_info_cmd(
 
 
 # Keep at bottom.
-wallet_cmd.add_command(coins_cmd)
+# Remove coins subcommand from wallet for now pending further testing
+# wallet_cmd.add_command(coins_cmd)
 
 
 @wallet_cmd.group("notifications", short_help="Send/Manage notifications")

@@ -71,6 +71,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           development: true
+          legacy_keyring: true
 
       - uses: chinilla/actions/activate-venv@main
 

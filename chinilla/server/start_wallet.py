@@ -16,6 +16,7 @@ from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.keychain import Keychain
+from chinilla.util.network import get_host_addr
 from chinilla.util.task_timing import maybe_manage_task_instrumentation
 from chinilla.wallet.wallet_node import WalletNode
 
@@ -56,8 +57,10 @@ def create_wallet_service(
     fnp = service_config.get("full_node_peer")
 
     if fnp:
-        connect_peers = [PeerInfo(fnp["host"], fnp["port"])]
-        node.full_node_peer = PeerInfo(fnp["host"], fnp["port"])
+        node.full_node_peer = PeerInfo(
+            str(get_host_addr(fnp["host"], prefer_ipv6=config.get("prefer_ipv6", False))), fnp["port"]
+        )
+        connect_peers = [node.full_node_peer]
     else:
         connect_peers = []
         node.full_node_peer = None

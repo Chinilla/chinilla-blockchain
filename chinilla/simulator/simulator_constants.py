@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 if __name__ == "__main__":
-    from chinilla.util.default_root import DEFAULT_ROOT_PATH
     from chinilla.simulator.block_tools import create_block_tools, test_constants
     from chinilla.simulator.keyring import TempKeyring
+    from chinilla.util.default_root import DEFAULT_ROOT_PATH
 
     with TempKeyring() as keychain:
         # TODO: mariano: fix this with new consensus

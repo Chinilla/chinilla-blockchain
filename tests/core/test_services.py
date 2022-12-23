@@ -19,6 +19,7 @@ from chinilla.rpc.harvester_rpc_client import HarvesterRpcClient
 from chinilla.rpc.rpc_client import RpcClient
 from chinilla.rpc.wallet_rpc_client import WalletRpcClient
 from chinilla.simulator.socket import find_available_listen_port
+from chinilla.simulator.time_out_assert import adjusted_timeout
 from chinilla.util.config import lock_and_load_config, save_config
 from chinilla.util.ints import uint16
 from chinilla.util.misc import sendable_termination_signals
@@ -37,7 +38,9 @@ class CreateServiceProtocol(Protocol):
         ...
 
 
-async def wait_for_daemon_connection(root_path: Path, config: Dict[str, Any], timeout: int = 15) -> DaemonProxy:
+async def wait_for_daemon_connection(root_path: Path, config: Dict[str, Any], timeout: float = 15) -> DaemonProxy:
+    timeout = adjusted_timeout(timeout=timeout)
+
     start = time.monotonic()
     while time.monotonic() - start < timeout:
         client = await connect_to_daemon_and_validate(root_path=root_path, config=config, quiet=True)
@@ -67,7 +70,7 @@ async def test_daemon_terminates(signal_number: signal.Signals, chinilla_root: C
             assert return_code is None
 
             process.send_signal(signal_number)
-            process.communicate(timeout=5)
+            process.communicate(timeout=adjusted_timeout(timeout=5))
         finally:
             await client.close()
 
@@ -151,7 +154,7 @@ async def test_services_terminate(
                 assert return_code is None
 
                 process.send_signal(signal_number)
-                process.communicate(timeout=30)
+                process.communicate(timeout=adjusted_timeout(timeout=30))
             finally:
                 client.close()
                 await client.await_closed()

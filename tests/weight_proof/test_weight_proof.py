@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from typing import Dict, List, Optional, Tuple
 
@@ -7,23 +9,18 @@ import pytest
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.consensus.full_block_to_block_record import block_to_block_record
+from chinilla.consensus.pot_iterations import calculate_iterations_quality
 from chinilla.full_node.block_store import BlockStore
+from chinilla.full_node.weight_proof import WeightProofHandler, _map_sub_epoch_summaries, _validate_summaries_weight
+from chinilla.simulator.block_tools import test_constants
+from chinilla.types.blockchain_format.proof_of_space import verify_and_get_quality_string
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.blockchain_format.sub_epoch_summary import SubEpochSummary
-from chinilla.util.block_cache import BlockCache
-from chinilla.simulator.block_tools import test_constants
-from chinilla.util.generator_tools import get_block_header
-
-from chinilla.consensus.pot_iterations import calculate_iterations_quality
-from chinilla.full_node.weight_proof import (
-    WeightProofHandler,
-    _map_sub_epoch_summaries,
-    _validate_summaries_weight,
-)
 from chinilla.types.full_block import FullBlock
 from chinilla.types.header_block import HeaderBlock
+from chinilla.util.block_cache import BlockCache
+from chinilla.util.generator_tools import get_block_header
 from chinilla.util.ints import uint32, uint64
-from chinilla.types.blockchain_format.proof_of_space import verify_and_get_quality_string
 
 
 def count_sub_epochs(blockchain, last_hash) -> int:

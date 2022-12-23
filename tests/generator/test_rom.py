@@ -1,15 +1,17 @@
+from __future__ import annotations
+
 from clvm_tools import binutils
 from clvm_tools.clvmc import compile_clvm_text
 
+from chinilla.consensus.condition_costs import ConditionCost
 from chinilla.full_node.generator import run_generator_unsafe
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.generator_types import BlockGenerator
+from chinilla.types.spend_bundle_conditions import ELIGIBLE_FOR_DEDUP, Spend
 from chinilla.util.ints import uint32
 from chinilla.wallet.puzzles.load_clvm import load_clvm
-from chinilla.consensus.condition_costs import ConditionCost
-from chinilla.types.spend_bundle_conditions import Spend, ELIGIBLE_FOR_DEDUP
 
 MAX_COST = int(1e15)
 COST_PER_BYTE = int(12000)

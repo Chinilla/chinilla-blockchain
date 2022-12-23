@@ -1,21 +1,23 @@
+from __future__ import annotations
+
 import logging
 import sys
 from multiprocessing import freeze_support
 from pathlib import Path
-from typing import Optional, Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from chinilla.full_node.full_node import FullNode
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.start_service import Service, async_run
+from chinilla.simulator.block_tools import BlockTools, test_constants
+from chinilla.simulator.full_node_simulator import FullNodeSimulator
 from chinilla.simulator.simulator_full_node_rpc_api import SimulatorFullNodeRpcApi
 from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.util.bech32m import decode_puzzle_hash
 from chinilla.util.chinilla_logging import initialize_logging
-from chinilla.util.config import load_config_cli, override_config, load_config
+from chinilla.util.config import load_config, load_config_cli, override_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
-from chinilla.simulator.block_tools import BlockTools, test_constants
 from chinilla.util.ints import uint16
-from chinilla.simulator.full_node_simulator import FullNodeSimulator
 
 # See: https://bugs.python.org/issue29288
 "".encode("idna")

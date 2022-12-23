@@ -16,6 +16,7 @@ from chinilla.util.chinilla_logging import initialize_service_logging
 from chinilla.util.config import load_config, load_config_cli
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
 from chinilla.util.keychain import Keychain
+from chinilla.util.network import get_host_addr
 
 # See: https://bugs.python.org/issue29288
 "".encode("idna")
@@ -36,7 +37,9 @@ def create_farmer_service(
     connect_peers = []
     fnp = service_config.get("full_node_peer")
     if fnp is not None:
-        connect_peers.append(PeerInfo(fnp["host"], fnp["port"]))
+        connect_peers.append(
+            PeerInfo(str(get_host_addr(fnp["host"], prefer_ipv6=config.get("prefer_ipv6", False))), fnp["port"])
+        )
 
     overrides = service_config["network_overrides"]["constants"][service_config["selected_network"]]
     updated_constants = consensus_constants.replace_str_to_bytes(**overrides)

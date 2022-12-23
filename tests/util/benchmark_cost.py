@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import time
 from secrets import token_bytes
 
@@ -5,11 +7,11 @@ from blspy import AugSchemeMPL, PrivateKey
 from clvm_tools import binutils
 
 from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
-from chinilla.types.blockchain_format.program import Program, INFINITE_COST
+from chinilla.simulator.wallet_tools import WalletTool
+from chinilla.types.blockchain_format.program import INFINITE_COST, Program
 from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.condition_with_args import ConditionWithArgs
 from chinilla.util.ints import uint32
-from chinilla.simulator.wallet_tools import WalletTool
 from chinilla.wallet.derive_keys import master_sk_to_wallet_sk
 from chinilla.wallet.puzzles.p2_delegated_puzzle import puzzle_for_pk
 

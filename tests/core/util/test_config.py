@@ -15,6 +15,7 @@ from typing import Any, Dict, Optional
 import pytest
 import yaml
 
+from chinilla.simulator.time_out_assert import adjusted_timeout
 from chinilla.util.config import (
     config_path_for_filename,
     create_default_chinilla_config,
@@ -273,7 +274,7 @@ class TestConfig:
         with Pool(processes=num_workers) as pool:
             res = pool.starmap_async(run_reader_and_writer_tasks, args)
             try:
-                res.get(timeout=60)
+                res.get(timeout=adjusted_timeout(timeout=60))
             except TimeoutError:
                 pytest.skip("Timed out waiting for reader/writer processes to complete")
 

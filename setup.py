@@ -41,6 +41,7 @@ upnp_dependencies = [
 ]
 
 dev_dependencies = [
+    "anyio",
     "build",
     "coverage",
     "diff-cover",
@@ -67,6 +68,10 @@ dev_dependencies = [
     "types-setuptools",
 ]
 
+legacy_keyring_dependencies = [
+    "keyrings.cryptfile==1.3.9",
+]
+
 kwargs = dict(
     name="chinilla-blockchain",
     author="Mariano Sorgente",
@@ -80,6 +85,7 @@ kwargs = dict(
     extras_require=dict(
         dev=dev_dependencies,
         upnp=upnp_dependencies,
+        legacy_keyring=legacy_keyring_dependencies,
     ),
     packages=[
         "build_scripts",

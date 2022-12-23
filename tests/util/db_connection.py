@@ -1,6 +1,9 @@
-from pathlib import Path
-from chinilla.util.db_wrapper import DBWrapper2
+from __future__ import annotations
+
 import tempfile
+from pathlib import Path
+
+from chinilla.util.db_wrapper import DBWrapper2
 
 
 class DBConnection:

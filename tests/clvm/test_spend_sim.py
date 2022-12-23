@@ -1,12 +1,13 @@
-import pytest
+from __future__ import annotations
 
+import pytest
 from blspy import G2Element
 
-from chinilla.clvm.spend_sim import SpendSim, SimClient
-from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.clvm.spend_sim import SimClient, SpendSim
 from chinilla.types.blockchain_format.program import Program
-from chinilla.types.spend_bundle import SpendBundle
+from chinilla.types.blockchain_format.sized_bytes import bytes32
 from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.spend_bundle import SpendBundle
 
 
 class TestSpendSim:

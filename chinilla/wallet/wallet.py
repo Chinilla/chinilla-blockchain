@@ -604,6 +604,9 @@ class Wallet:
     ) -> None:  # pylint: disable=used-before-assignment
         pass
 
+    def get_name(self) -> str:
+        return "Standard Wallet"
+
 
 if TYPE_CHECKING:
     from chinilla.wallet.wallet_protocol import WalletProtocol

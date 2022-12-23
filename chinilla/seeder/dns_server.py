@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import ipaddress
 import logging
@@ -8,12 +10,12 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import aiosqlite
-from dnslib import A, AAAA, SOA, NS, MX, CNAME, RR, DNSRecord, QTYPE, DNSHeader
+from dnslib import AAAA, CNAME, MX, NS, QTYPE, RR, SOA, A, DNSHeader, DNSRecord
 
 from chinilla.util.chinilla_logging import initialize_logging
-from chinilla.util.path import path_from_root
 from chinilla.util.config import load_config
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
+from chinilla.util.path import path_from_root
 
 SERVICE_NAME = "seeder"
 log = logging.getLogger(__name__)

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from unittest import TestCase
 
-from chinilla.types.blockchain_format.program import Program, INFINITE_COST
+from chinilla.types.blockchain_format.program import INFINITE_COST, Program
 from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.wallet.puzzles.load_clvm import load_clvm
 

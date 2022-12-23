@@ -1,7 +1,14 @@
 # flake8: noqa: F501
+from __future__ import annotations
+
+import io
 from dataclasses import dataclass
-from typing import List, Any
+from typing import Any, List
 from unittest import TestCase
+
+from clvm import SExp
+from clvm.serialize import sexp_from_stream
+from clvm_tools import binutils
 
 from chinilla.full_node.bundle_tools import (
     bundle_suitable_for_compression,
@@ -11,22 +18,15 @@ from chinilla.full_node.bundle_tools import (
     simple_solution_generator,
     spend_bundle_to_serialized_coin_spend_entry_list,
 )
-from chinilla.full_node.generator import run_generator_unsafe, create_generator_args
+from chinilla.full_node.generator import create_generator_args, run_generator_unsafe
 from chinilla.full_node.mempool_check_conditions import get_puzzle_and_solution_for_coin
-from chinilla.types.blockchain_format.program import Program, SerializedProgram, INFINITE_COST
+from chinilla.types.blockchain_format.program import INFINITE_COST, Program, SerializedProgram
 from chinilla.types.generator_types import BlockGenerator, CompressorArg
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.byte_types import hexstr_to_bytes
 from chinilla.util.ints import uint32
 from chinilla.wallet.puzzles.load_clvm import load_clvm
-
 from tests.core.make_block_generator import make_spend_bundle
-
-from clvm import SExp
-import io
-from clvm.serialize import sexp_from_stream
-
-from clvm_tools import binutils
 
 TEST_GEN_DESERIALIZE = load_clvm("test_generator_deserialize.clvm", package_or_requirement="chinilla.wallet.puzzles")
 DESERIALIZE_MOD = load_clvm("chinillalisp_deserialisation.clvm", package_or_requirement="chinilla.wallet.puzzles")

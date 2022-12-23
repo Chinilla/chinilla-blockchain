@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import multiprocessing
 import time
@@ -17,6 +19,9 @@ from chinilla.consensus.multiprocess_validation import PreValidationResult
 from chinilla.consensus.pot_iterations import is_overflow_block
 from chinilla.full_node.bundle_tools import detect_potential_template_generator
 from chinilla.full_node.mempool_check_conditions import get_name_puzzle_conditions
+from chinilla.simulator.block_tools import create_block_tools_async, test_constants
+from chinilla.simulator.keyring import TempKeyring
+from chinilla.simulator.wallet_tools import WalletTool
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.foliage import TransactionsInfo
@@ -31,27 +36,24 @@ from chinilla.types.full_block import FullBlock
 from chinilla.types.generator_types import BlockGenerator
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.types.unfinished_block import UnfinishedBlock
-from chinilla.util.generator_tools import get_block_header
-from chinilla.util.vdf_prover import get_vdf_info_and_proof
-from chinilla.simulator.block_tools import create_block_tools_async, test_constants
 from chinilla.util.errors import Err
+from chinilla.util.generator_tools import get_block_header
 from chinilla.util.hash import std_hash
-from chinilla.util.ints import uint8, uint64, uint32
+from chinilla.util.ints import uint8, uint32, uint64
 from chinilla.util.merkle_set import MerkleSet
 from chinilla.util.recursive_replace import recursive_replace
+from chinilla.util.vdf_prover import get_vdf_info_and_proof
+from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
+    DEFAULT_HIDDEN_PUZZLE_HASH,
+    calculate_synthetic_secret_key,
+)
 from tests.blockchain.blockchain_test_utils import (
     _validate_and_add_block,
     _validate_and_add_block_multi_error,
     _validate_and_add_block_multi_result,
     _validate_and_add_block_no_error,
 )
-from chinilla.simulator.wallet_tools import WalletTool
 from tests.util.blockchain import create_blockchain
-from chinilla.simulator.keyring import TempKeyring
-from chinilla.wallet.puzzles.p2_delegated_puzzle_or_hidden_puzzle import (
-    DEFAULT_HIDDEN_PUZZLE_HASH,
-    calculate_synthetic_secret_key,
-)
 
 log = logging.getLogger(__name__)
 bad_element = ClassgroupElement.from_bytes(b"\x00")

@@ -8,9 +8,8 @@ from chinilla.util.ints import uint16, uint64
 from chinilla.util.streamable import Streamable, streamable
 
 
-@streamable
 @dataclass(frozen=True)
-class PeerInfo(Streamable):
+class PeerInfo:
     host: str
     port: uint16
 

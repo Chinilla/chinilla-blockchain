@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 import argparse
 import binascii
 import os
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, Optional
+
 from chinilla.plotters.bladebit import get_bladebit_install_info, plot_bladebit
 from chinilla.plotters.chinillapos import get_chinillapos_install_info, plot_chinilla
 from chinilla.plotters.madmax import get_madmax_install_info, plot_madmax
-from pathlib import Path
-from typing import Any, Dict, Optional
 
 
 class Options(Enum):

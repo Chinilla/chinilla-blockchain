@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from typing import Dict
 from unittest import TestCase
 
+from chinilla.full_node.generator import create_block_generator, create_generator_args
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.generator_types import GeneratorBlockCacheInterface
-from chinilla.full_node.generator import create_block_generator, create_generator_args
 from chinilla.util.ints import uint32
 
 gen0 = SerializedProgram.from_bytes(

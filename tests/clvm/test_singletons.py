@@ -1,27 +1,24 @@
+from __future__ import annotations
+
+from typing import List, Optional, Tuple
+
 import pytest
-
-from typing import List, Tuple, Optional
-
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
+from chinilla.clvm.spend_sim import SimClient, SpendSim
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
+from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.blockchain_format.program import Program
 from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.types.blockchain_format.coin import Coin
 from chinilla.types.coin_spend import CoinSpend
 from chinilla.types.condition_opcodes import ConditionOpcode
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.util.errors import Err
 from chinilla.util.ints import uint64
-from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.wallet.lineage_proof import LineageProof
 from chinilla.wallet.puzzles import p2_conditions, p2_delegated_puzzle_or_hidden_puzzle
+from tests.clvm.test_puzzles import public_key_for_index, secret_exponent_for_index
 from tests.util.key_tool import KeyTool
-from tests.clvm.test_puzzles import (
-    public_key_for_index,
-    secret_exponent_for_index,
-)
-
-from chinilla.clvm.spend_sim import SpendSim, SimClient
 
 """
 This test suite aims to test:

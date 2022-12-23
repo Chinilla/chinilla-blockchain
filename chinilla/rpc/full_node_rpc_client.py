@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional, Tuple, Any
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional, Tuple
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.full_node.signage_point import SignagePoint

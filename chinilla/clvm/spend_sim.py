@@ -1,31 +1,32 @@
+from __future__ import annotations
+
 import random
-from pathlib import Path
-
 from dataclasses import dataclass
-from typing import Optional, List, Dict, Tuple, Any, Type, TypeVar, Callable
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar
 
-from chinilla.types.blockchain_format.sized_bytes import bytes32
-from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.mempool_item import MempoolItem
-from chinilla.util.ints import uint64, uint32
-from chinilla.util.hash import std_hash
-from chinilla.util.errors import Err, ValidationError
-from chinilla.util.db_wrapper import DBWrapper2
-from chinilla.util.streamable import Streamable, streamable
-from chinilla.types.coin_record import CoinRecord
-from chinilla.types.spend_bundle import SpendBundle
-from chinilla.types.generator_types import BlockGenerator
-from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
-from chinilla.types.coin_spend import CoinSpend
+from chinilla.consensus.block_rewards import calculate_base_farmer_reward, calculate_pool_reward
+from chinilla.consensus.coinbase import create_farmer_coin, create_pool_coin
+from chinilla.consensus.constants import ConsensusConstants
+from chinilla.consensus.cost_calculator import NPCResult
+from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
 from chinilla.full_node.bundle_tools import simple_solution_generator
-from chinilla.full_node.mempool_manager import MempoolManager
 from chinilla.full_node.coin_store import CoinStore
 from chinilla.full_node.mempool_check_conditions import get_puzzle_and_solution_for_coin
-from chinilla.consensus.constants import ConsensusConstants
-from chinilla.consensus.default_constants import DEFAULT_CONSTANTS
-from chinilla.consensus.coinbase import create_pool_coin, create_farmer_coin
-from chinilla.consensus.block_rewards import calculate_pool_reward, calculate_base_farmer_reward
-from chinilla.consensus.cost_calculator import NPCResult
+from chinilla.full_node.mempool_manager import MempoolManager
+from chinilla.types.blockchain_format.coin import Coin
+from chinilla.types.blockchain_format.sized_bytes import bytes32
+from chinilla.types.coin_record import CoinRecord
+from chinilla.types.coin_spend import CoinSpend
+from chinilla.types.generator_types import BlockGenerator
+from chinilla.types.mempool_inclusion_status import MempoolInclusionStatus
+from chinilla.types.mempool_item import MempoolItem
+from chinilla.types.spend_bundle import SpendBundle
+from chinilla.util.db_wrapper import DBWrapper2
+from chinilla.util.errors import Err, ValidationError
+from chinilla.util.hash import std_hash
+from chinilla.util.ints import uint32, uint64
+from chinilla.util.streamable import Streamable, streamable
 
 """
 The purpose of this file is to provide a lightweight simulator for the testing of Chinillalisp smart contracts.
@@ -211,7 +212,7 @@ class SpendSim:
         if (len(self.block_records) > 0) and (self.mempool_manager.mempool.spends):
             peak = self.mempool_manager.peak
             if peak is not None:
-                result = await self.mempool_manager.create_bundle_from_mempool(peak.header_hash, item_inclusion_filter)
+                result = self.mempool_manager.create_bundle_from_mempool(peak.header_hash, item_inclusion_filter)
 
                 if result is not None:
                     bundle, additions, removals = result
@@ -271,14 +272,15 @@ class SimClient:
 
     async def push_tx(self, spend_bundle: SpendBundle) -> Tuple[MempoolInclusionStatus, Optional[Err]]:
         try:
+            spend_bundle_id = spend_bundle.name()
             cost_result: NPCResult = await self.service.mempool_manager.pre_validate_spendbundle(
-                spend_bundle, None, spend_bundle.name()
+                spend_bundle, None, spend_bundle_id
             )
         except ValidationError as e:
             return MempoolInclusionStatus.FAILED, e.code
         assert self.service.mempool_manager.peak
         cost, status, error = await self.service.mempool_manager.add_spend_bundle(
-            spend_bundle, cost_result, spend_bundle.name(), self.service.mempool_manager.peak.height
+            spend_bundle, cost_result, spend_bundle_id, self.service.mempool_manager.peak.height
         )
         return status, error
 

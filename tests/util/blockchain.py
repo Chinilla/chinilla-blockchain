@@ -1,18 +1,19 @@
+from __future__ import annotations
+
 import os
 import pickle
+import tempfile
 from pathlib import Path
 from typing import List, Optional
-
-import tempfile
 
 from chinilla.consensus.blockchain import Blockchain
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.full_node.block_store import BlockStore
 from chinilla.full_node.coin_store import CoinStore
+from chinilla.simulator.block_tools import BlockTools
 from chinilla.types.full_block import FullBlock
 from chinilla.util.db_wrapper import DBWrapper2
 from chinilla.util.default_root import DEFAULT_ROOT_PATH
-from chinilla.simulator.block_tools import BlockTools
 
 
 async def create_blockchain(constants: ConsensusConstants, db_version: int):

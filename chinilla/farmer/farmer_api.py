@@ -10,6 +10,7 @@ from blspy import AugSchemeMPL, G2Element, PrivateKey
 from chinilla import __version__
 from chinilla.consensus.pot_iterations import calculate_iterations_quality, calculate_sp_interval_iters
 from chinilla.farmer.farmer import Farmer
+from chinilla.harvester.harvester_api import HarvesterAPI
 from chinilla.protocols import farmer_protocol, harvester_protocol
 from chinilla.protocols.harvester_protocol import (
     PlotSyncDone,
@@ -197,7 +198,7 @@ class FarmerAPI:
                     new_proof_of_space.sp_hash,
                     [m_to_sign],
                 )
-                response: Any = await peer.request_signatures(request)
+                response: Any = await peer.call_api(HarvesterAPI.request_signatures, request)
                 if not isinstance(response, harvester_protocol.RespondSignatures):
                     self.farmer.log.error(f"Invalid response from harvester: {response}")
                     return

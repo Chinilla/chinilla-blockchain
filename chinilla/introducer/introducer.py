@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 import time
 from typing import Any, Callable, Dict, List, Optional
 
 from chinilla.rpc.rpc_server import default_get_connections
+from chinilla.server.introducer_peers import VettedPeer
 from chinilla.server.outbound_message import NodeType
 from chinilla.server.server import ChinillaServer
-from chinilla.server.introducer_peers import VettedPeer
 from chinilla.server.ws_connection import WSChinillaConnection
 from chinilla.util.ints import uint64
 
