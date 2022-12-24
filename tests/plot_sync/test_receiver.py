@@ -78,7 +78,7 @@ def create_payload(payload_type: Any, start: bool, *args: Any) -> Any:
 def assert_error_response(plot_sync: Receiver, error_code: ErrorCodes) -> None:
     connection = plot_sync.connection()
     assert connection is not None
-    # WSChinillaConnection doesn't have last_sent_message its part of the WSChinillaConnectionDummy class used for testing
+    # WSChinillaConnection doesn't have last_sent_message its part of the WSChinillaConnectionDummy class used for test
     message = connection.last_sent_message  # type: ignore[attr-defined]
     assert message is not None
     response: PlotSyncResponse = PlotSyncResponse.from_bytes(message.data)
