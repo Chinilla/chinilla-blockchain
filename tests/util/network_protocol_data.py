@@ -15,7 +15,12 @@ from chinilla.protocols import (
 )
 from chinilla.types.blockchain_format.classgroup import ClassgroupElement
 from chinilla.types.blockchain_format.coin import Coin
-from chinilla.types.blockchain_format.foliage import Foliage, FoliageBlockData, FoliageTransactionBlock, TransactionsInfo
+from chinilla.types.blockchain_format.foliage import (
+    Foliage,
+    FoliageBlockData,
+    FoliageTransactionBlock,
+    TransactionsInfo,
+)
 from chinilla.types.blockchain_format.pool_target import PoolTarget
 from chinilla.types.blockchain_format.program import Program, SerializedProgram
 from chinilla.types.blockchain_format.proof_of_space import ProofOfSpace
@@ -36,7 +41,13 @@ from chinilla.types.header_block import HeaderBlock
 from chinilla.types.peer_info import TimestampedPeerInfo
 from chinilla.types.spend_bundle import SpendBundle
 from chinilla.types.unfinished_block import UnfinishedBlock
-from chinilla.types.weight_proof import RecentChainData, SubEpochChallengeSegment, SubEpochData, SubSlotData, WeightProof
+from chinilla.types.weight_proof import (
+    RecentChainData,
+    SubEpochChallengeSegment,
+    SubEpochData,
+    SubSlotData,
+    WeightProof,
+)
 from chinilla.util.ints import uint8, uint16, uint32, uint64, uint128
 
 ### FARMER PROTOCOL
