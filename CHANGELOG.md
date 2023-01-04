@@ -47,7 +47,7 @@ This release aligns with Chia 1.6.2
 - Add coin id and address to NFT Details screen in GUI
 - New GUI prefs location under `CHINILLA_ROOT`
 - Removed SkyNFT references
-- Add GUI memo field when sending XCH
+- Add GUI memo field when sending HCX
 - Update to Electron 20.3.5
 
 ### Fixed
@@ -80,7 +80,7 @@ This release aligns with Chia 1.6.0.
 
 ### Added
 - DataLayer
-- XCH Spam Filter
+- HCX Spam Filter
 - GUI Settings `Auto-Login` toggle (GUI only)
 - GUI Settings section for `DataLayer`
   - `Enable DataLayer` toggle
