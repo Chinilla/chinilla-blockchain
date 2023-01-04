@@ -1874,7 +1874,7 @@ class FullNode:
         pre_validation_time = None
 
         async with self._blockchain_lock_high_priority:
-            start_header_time = time.time()
+            # start_header_time = time.time()
             _, header_error = await self.blockchain.validate_unfinished_block_header(block)
             if header_error is not None:
                 raise ConsensusError(header_error)
