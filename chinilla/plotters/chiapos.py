@@ -14,9 +14,9 @@ from chinilla.plotting.util import add_plot_directory, validate_plot_size
 log = logging.getLogger(__name__)
 
 
-def get_chinillapos_install_info() -> Optional[Dict[str, Any]]:
-    chinillapos_version: str = pkg_resources.get_distribution("chinillapos").version
-    return {"display_name": "Chinilla Proof of Space", "version": chinillapos_version, "installed": True}
+def get_chiapos_install_info() -> Optional[Dict[str, Any]]:
+    chiapos_version: str = pkg_resources.get_distribution("chiapos").version
+    return {"display_name": "Chinilla Proof of Space", "version": chiapos_version, "installed": True}
 
 
 class Params:

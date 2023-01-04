@@ -12,7 +12,7 @@ import traceback
 from concurrent.futures import ProcessPoolExecutor
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
-from chinillavdf import create_discriminant, prove
+from chiavdf import create_discriminant, prove
 
 from chinilla.consensus.constants import ConsensusConstants
 from chinilla.consensus.pot_iterations import calculate_sp_iters, is_overflow_block
@@ -149,7 +149,7 @@ class Timelord:
             self.main_loop = asyncio.create_task(self._manage_chains())
         else:
             if os.name == "nt" or slow_bluebox:
-                # `vdf_client` doesn't build on windows, use `prove()` from chinillavdf.
+                # `vdf_client` doesn't build on windows, use `prove()` from chiavdf.
                 workers = self.config.get("slow_bluebox_process_count", 1)
                 self.bluebox_pool = ProcessPoolExecutor(
                     max_workers=workers,

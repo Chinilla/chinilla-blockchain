@@ -7,7 +7,7 @@ from secrets import token_bytes
 from typing import Dict, List, Optional, Tuple
 
 from blspy import AugSchemeMPL, G1Element, PrivateKey
-from chinillapos import DiskPlotter
+from chiapos import DiskPlotter
 
 from chinilla.daemon.keychain_proxy import KeychainProxy, connect_to_keychain_and_validate, wrap_local_keychain
 from chinilla.plotting.util import stream_plot_info_ph, stream_plot_info_pk

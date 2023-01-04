@@ -128,7 +128,7 @@ harvester:
     batch_sleep_milliseconds: 1 # Milliseconds the harvester sleeps between batch processing
 
 
-  # If True use parallel reads in chinillapos
+  # If True use parallel reads in chiapos
   parallel_read: True
 
   logging: *logging

@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 from chia_rs import compute_merkle_set_root
-from chinillabip158 import PyBIP158
+from chiabip158 import PyBIP158
 
 from chinilla.cmds.init_funcs import create_default_chinilla_config
 from chinilla.consensus.block_creation import unfinished_block_to_full_block

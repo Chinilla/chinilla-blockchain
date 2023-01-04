@@ -10,7 +10,7 @@ from multiprocessing.context import BaseContext
 from typing import Awaitable, Callable, Dict, List, Optional, Set, Tuple
 
 from blspy import GTElement
-from chinillabip158 import PyBIP158
+from chiabip158 import PyBIP158
 
 from chinilla.consensus.block_record import BlockRecord
 from chinilla.consensus.constants import ConsensusConstants

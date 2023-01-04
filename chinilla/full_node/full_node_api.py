@@ -12,7 +12,7 @@ from secrets import token_bytes
 from typing import Dict, List, Optional, Set, Tuple
 
 from blspy import AugSchemeMPL, G1Element, G2Element
-from chinillabip158 import PyBIP158
+from chiabip158 import PyBIP158
 
 from chinilla.consensus.block_creation import create_unfinished_block
 from chinilla.consensus.block_record import BlockRecord

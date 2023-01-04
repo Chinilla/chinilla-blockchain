@@ -7,7 +7,7 @@ from time import sleep, time
 from typing import List
 
 from blspy import G1Element
-from chinillapos import Verifier
+from chiapos import Verifier
 
 from chinilla.plotting.manager import PlotManager
 from chinilla.plotting.util import (

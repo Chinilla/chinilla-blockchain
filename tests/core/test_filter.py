@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 
 import pytest
-from chinillabip158 import PyBIP158
+from chiabip158 import PyBIP158
 
 
 class TestFilter:

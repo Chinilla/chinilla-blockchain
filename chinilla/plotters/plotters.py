@@ -3,7 +3,7 @@ import binascii
 import os
 from enum import Enum
 from chinilla.plotters.bladebit import get_bladebit_install_info, plot_bladebit
-from chinilla.plotters.chinillapos import get_chinillapos_install_info, plot_chinilla
+from chinilla.plotters.chiapos import get_chiapos_install_info, plot_chinilla
 from chinilla.plotters.madmax import get_madmax_install_info, plot_madmax
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -148,7 +148,7 @@ def build_parser(subparsers, root_path, option_list, name, plotter_desc):
                 default=32,
             )
         if option is Options.NUM_BUCKETS:
-            u_default = 0 if name == "chinillapos" else 256
+            u_default = 0 if name == "chiapos" else 256
             parser.add_argument(
                 "-u",
                 "--buckets",
@@ -440,7 +440,7 @@ def call_plotters(root_path: Path, args):
         subparsers,
         root_path,
         chinilla_plotter_options,
-        "chinillapos",
+        "chiapos",
         "Create a plot with the default chinilla plotter",
     )
     build_parser(subparsers, root_path, madmax_plotter_options, "madmax", "Create a plot with madMAx")
@@ -468,7 +468,7 @@ def call_plotters(root_path: Path, args):
 
     if args.plotter is None:
         plotters.print_help()
-    elif args.plotter == "chinillapos":
+    elif args.plotter == "chiapos":
         plot_chinilla(args, chinilla_root_path)
     elif args.plotter == "madmax":
         plot_madmax(args, chinilla_root_path, root_path)
@@ -485,12 +485,12 @@ def call_plotters(root_path: Path, args):
 def get_available_plotters(root_path) -> Dict[str, Any]:
     plotters_root_path: Path = get_plotters_root_path(root_path)
     plotters: Dict[str, Any] = {}
-    chinillapos: Optional[Dict[str, Any]] = get_chinillapos_install_info()
+    chiapos: Optional[Dict[str, Any]] = get_chiapos_install_info()
     bladebit: Optional[Dict[str, Any]] = get_bladebit_install_info(plotters_root_path)
     madmax: Optional[Dict[str, Any]] = get_madmax_install_info(plotters_root_path)
 
-    if chinillapos is not None:
-        plotters["chinillapos"] = chinillapos
+    if chiapos is not None:
+        plotters["chiapos"] = chiapos
     if bladebit and bladebit.get("version") is not None:
         bladebit_major_version = bladebit["version"].split(".")[0]
         if bladebit_major_version == "2":
@@ -505,8 +505,8 @@ def get_available_plotters(root_path) -> Dict[str, Any]:
 
 def show_plotters_version(root_path: Path):
     info = get_available_plotters(root_path)
-    if "chinillapos" in info and "version" in info["chinillapos"]:
-        print(f"chinillapos: {info['chinillapos']['version']}")
+    if "chiapos" in info and "version" in info["chiapos"]:
+        print(f"chiapos: {info['chiapos']['version']}")
     if "bladebit" in info and "version" in info["bladebit"]:
         print(f"bladebit: {info['bladebit']['version']}")
     if "bladebit2" in info and "version" in info["bladebit2"]:

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, ItemsView, KeysView, List, Optional, Tuple, ValuesView
 
 from blspy import G1Element
-from chinillapos import DiskProver
+from chiapos import DiskProver
 
 from chinilla.plotting.util import parse_plot_info
 from chinilla.types.blockchain_format.proof_of_space import generate_plot_public_key
@@ -150,7 +150,7 @@ class Cache:
                     # TODO, drop the below entry dropping after few versions or whenever we force a cache recreation.
                     #       it's here to filter invalid cache entries coming from bladebit RAM plotting.
                     #       Related: - https://github.com/Chinilla/chinilla-blockchain/issues/13084
-                    #                - https://github.com/Chinilla/chinillapos/pull/337
+                    #                - https://github.com/Chinilla/chiapos/pull/337
                     k = new_entry.prover.get_size()
                     if k not in estimated_c2_sizes:
                         estimated_c2_sizes[k] = ceil(2**k / 100_000_000) * ceil(k / 8)
@@ -159,7 +159,7 @@ class Cache:
                     # Estimated C2 size + memo size + 2000 (static data + path)
                     # static data: version(2) + table pointers (<=96) + id(32) + k(1) => ~130
                     # path: up to ~1870, all above will lead to false positive.
-                    # See https://github.com/Chinilla/chinillapos/blob/3ee062b86315823dd775453ad320b8be892c7df3/src/prover_disk.hpp#L282-L287  # noqa: E501
+                    # See https://github.com/Chinilla/chiapos/blob/3ee062b86315823dd775453ad320b8be892c7df3/src/prover_disk.hpp#L282-L287  # noqa: E501
                     if prover_size > (estimated_c2_sizes[k] + memo_size + 2000):
                         log.warning(
                             "Suspicious cache entry dropped. Recommended: stop the harvester, remove "

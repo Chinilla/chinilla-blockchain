@@ -46,7 +46,7 @@ $Env:NODE_OPTIONS = "--max-old-space-size=3000"
 Set-Location -Path "chinilla-blockchain-gui\packages\gui" -PassThru
 
 Write-Output "   ---"
-Write-Output "Increase the stack for chinilla command for (chinilla plots create) chinillapos limitations"
+Write-Output "Increase the stack for chinilla command for (chinilla plots create) chiapos limitations"
 # editbin.exe needs to be in the path
 editbin.exe /STACK:8000000 daemon\chinilla.exe
 Write-Output "   ---"

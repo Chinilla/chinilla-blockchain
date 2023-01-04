@@ -615,7 +615,7 @@ class WebSocketServer:
         plotter: str = config["plotter"]
         final_words: List[str] = []
 
-        if plotter == "chinillapos":
+        if plotter == "chiapos":
             final_words = ["Renamed final file"]
         elif plotter == "bladebit":
             final_words = ["Finished plotting in"]
@@ -674,7 +674,7 @@ class WebSocketServer:
 
         return command_args
 
-    def _chinillapos_plotting_command_args(self, request: Any, ignoreCount: bool) -> List[str]:
+    def _chiapos_plotting_command_args(self, request: Any, ignoreCount: bool) -> List[str]:
         k = request["k"]  # Plot size
         t = request["t"]  # Temp directory
         t2 = request["t2"]  # Temp2 directory
@@ -806,7 +806,7 @@ class WebSocketServer:
         return command_args
 
     def _build_plotting_command_args(self, request: Any, ignoreCount: bool, index: int) -> List[str]:
-        plotter: str = request.get("plotter", "chinillapos")
+        plotter: str = request.get("plotter", "chiapos")
         command_args: List[str] = ["chinilla", "plotters", plotter]
 
         if plotter == "bladebit":
@@ -818,8 +818,8 @@ class WebSocketServer:
 
         command_args.extend(self._common_plotting_command_args(request, ignoreCount))
 
-        if plotter == "chinillapos":
-            command_args.extend(self._chinillapos_plotting_command_args(request, ignoreCount))
+        if plotter == "chiapos":
+            command_args.extend(self._chiapos_plotting_command_args(request, ignoreCount))
         elif plotter == "madmax":
             command_args.extend(self._madmax_plotting_command_args(request, ignoreCount, index))
         elif plotter == "bladebit":
@@ -932,7 +932,7 @@ class WebSocketServer:
     async def start_plotting(self, request: Dict[str, Any]):
         service_name = request["service"]
 
-        plotter = request.get("plotter", "chinillapos")
+        plotter = request.get("plotter", "chiapos")
         delay = int(request.get("delay", 0))
         parallel = request.get("parallel", False)
         size = request.get("k")
