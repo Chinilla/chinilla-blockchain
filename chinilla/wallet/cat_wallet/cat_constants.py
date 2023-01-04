@@ -12,7 +12,14 @@ EARLY_FARMER = {
     "symbol": "CEF",
 }
 
+BANANABUX = {
+    "asset_id": "8fefde88b328039840b462a9d3317bef3cb773e050ad2369f76be552de0b83e5",
+    "name": "BananaBux",
+    "symbol": "BBX",
+}
+
 DEFAULT_CATS = {
     FOUNDER["asset_id"]: FOUNDER,
     EARLY_FARMER["asset_id"]: EARLY_FARMER,
+    BANANABUX["asset_id"]: BANANABUX,
 }
